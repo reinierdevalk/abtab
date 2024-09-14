@@ -1,0 +1,10 @@
+.
+analysis/
+formats/
+machine_learning/
+melody_models/
+representations/
+tabmapper/
+transcriber/
+utils/
+voice_separation/

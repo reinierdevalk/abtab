@@ -1,0 +1,543 @@
+#!/bin/bash
+
+# Script that runs abtab.
+
+# BASH SYNTAX
+# - variable expansion
+#   - when referencing a variable var (like "$var"), you ask Bash to replace it with its value
+#   - curly braces help clarify where the variable name starts and ends
+#   - when the variable is an array, curly braces are required to correctly expand all elements
+#     - example: "${my_arr[@]}" 
+#       - expands to all (hence the '@') elements of my_arr, separating them by the  
+#         first character of the Internal Field Separator (IFS, which is a space by default)  
+#       - the double quotes ("...") ensure that each array element is treated as a single word, 
+#         preserving any spaces or special characters within the element
+#   - it is good practice to use double quotes around variables ("$my_var"), unless you
+#     specifically want to allow word splitting or glob expansion 
+# - command substitution with $(...) 
+#   - the $(...) syntax captures the output of the command or function. This means that 
+#     the entire output of what is inside the parentheses is treated as a single string
+# - indirect expansion
+#   - indirect expansion allows referencing the value of a variable whose name is stored
+#     in another variable
+#     my_var="Hello, World!"
+#     varname="my_var"
+#     echo "$varname"        # direct reference; output: "my_var"
+#     echo "${!varname}"     # indirect expansion; output: "Hello, World!""
+
+
+# 0. GLOBAL VARIABLES
+# a. Set manually
+TOOLS_DESC=(
+	"analyser,Analyse", 
+	"converter,Convert", 
+	"tabmapper,Map",
+	"transcriber,Transcribe"
+)
+# Each row in an OPTS_VALS array contains seven comma-separated elements, i.e., at index
+# [0] short opt; [1] long opt; [2] values; [3] long values (or ""); 
+# [4] default value (or ""); [5] opt values catch-all (or ""); [6] help text
+# NB Identical short opts can have different long opts; 
+#    identical long opts always have the same short opt
+file="-f,--file,*.tc *.tbp *.xml *.mei,,,filename,Process only the given file; options"
+help="-h,--help,,,,,Display this help message"
+OPTS_WITHOUT_VAL=("-h" "--help")
+ANALYSER_OPTS_VALS=(
+	"-a,--analysis,VC VR VRO,,,analysis,Analysis; options",
+	"$file", 
+	"$help"
+)
+TABMAPPER_OPTS_VALS=(
+	"-o,--ornamentation,y n,,y,,Include ornamentation",
+	"-s,--score,y n,,n,,Show as score",
+	"-t,--tablature,t b,top bottom,b,,Placement of the tablature; options",
+	"-d,--duration,y n,,n,,Complete note durations",
+	"$file", 
+	"$help"
+)
+TRANSCRIBER_OPTS_VALS=(
+	"-u,--tuning,F F- G G- A A-,,G,tuning,Tuning; options",
+	"-k,--key,-5 -4 -3 -2 -1 0 1 2 3 4 5,,0,key,Key; options",
+	"-m,--mode,0 1,major minor,0,,Mode; options",
+	"-s,--staff,s d,single double,s,,Staff; options",
+	"-t,--tablature,y n,,y,,Include tablature",
+	"-y,--type,FLT ILT SLT GLT,,FLT,type,Tablature type; options",
+	"-d,--diplomatic,y n,,n,,Diplomatic transcription",
+	"$file", 
+	"$help"
+)
+
+# b. Set automatically
+TOOLBOX=$(basename "$0")
+unset TOOL
+unset OPTS
+unset OPTS_LONG
+unset OPTS_VALS
+
+
+# 1. FUNCTIONS
+_get_column() {
+	# Gets the column at the given index from the given array. 
+
+	local arg_col="$1"
+	shift # shifts the args to skip the first
+	local arg_opts_vals_array=("$@") # reconstructs array from remaining args
+	local res=()
+
+	for row in "${arg_opts_vals_array[@]}"; do
+		# Split the row into an array
+		IFS=',' read -r -a row_array <<< "$row"
+		res+=("${row_array[$arg_col]}")
+	done
+
+	# Echo the result array as a space-separated string
+    echo "${res[@]}"
+}
+
+
+_check_for_exact_str() {
+	# Checks if the given array contains an exact match of the given string.
+
+	local val="$1"
+	shift # shifts the args to skip the first
+	local array=("$@") # reconstructs array from remaining args
+
+	for item in "${array[@]}"; do
+		if [[ "$item" == "$val" ]]; then
+			return 0
+		fi
+	done
+
+	return 1
+}
+
+
+set_global_vars() {
+	# Sets the global variables for the given tool.
+
+	local arg_tool="$1"
+	# Set appropriate opts_vals
+	case "$arg_tool" in
+		analyser)
+			OPTS_VALS=("${ANALYSER_OPTS_VALS[@]}")
+			;;
+		tabmapper)
+			OPTS_VALS=("${TABMAPPER_OPTS_VALS[@]}")
+			;;
+		transcriber)
+			OPTS_VALS=("${TRANSCRIBER_OPTS_VALS[@]}")
+			;;
+	esac
+
+	# Create options arrays
+	OPTS=($(_get_column 0 "${OPTS_VALS[@]}"))
+	OPTS_LONG=($(_get_column 1 "${OPTS_VALS[@]}"))
+}
+
+
+show_help() {
+	local arg_tool="$1"
+
+	if [ "$arg_tool" == "all" ]; then
+		tools=($(_get_column 0 "${TOOLS_DESC[@]}"))
+		descs=($(_get_column 1 "${TOOLS_DESC[@]}"))
+		echo "Usage: $TOOLBOX [tool] [options]"
+    	echo
+    	echo "Tools:"
+		for i in "${!TOOLS_DESC[@]}"; do
+			printf "%-30s %-20s\n" "  ${tools[i]}" "${descs[i]}"
+    	done
+    	echo
+    	echo "Use '$TOOLBOX [tool] -h' to see options for each tool"
+	else
+    	echo "Usage: $TOOLBOX $TOOL [options]"
+		echo
+    	echo "Options for $TOOL:"
+		for row in "${OPTS_VALS[@]}"; do # str
+			IFS=',' read -r -a row_array <<< "$row" # array
+			short_opt="${row_array[0]}"
+			long_opt="${row_array[1]}"
+			vals="${row_array[2]}"
+			long_vals="${row_array[3]}"
+			default="${row_array[4]}"
+			vals_catch_all="${row_array[5]}"
+			help_text="${row_array[6]}"
+			
+			# Form of the string to output (parts between {curly brackets} are optional):
+			# short_opt, long_opt <choice_text> \t help_text{options_text} {default_text}
+			# - choice_text: only two values (a); more than two values (b) 
+			#   (a) "<short_val1|short_val2>"
+			#   (b) "<catch_all>"
+			# - options_text: only two values (but not 'y/n') (a); more than two values (b)
+			#   (a) "; options long_val1 (short_val1) or long_val2 (short_val2)"
+			#       e.g., 
+			#       "; options major (0) or minor (1)"
+			#   (b) "; options [short_val1, ..., short_valn]"
+			#       e.g.
+			#       "; options [-5, ..., 5]"
+			# - default_text
+			#   "(default: short_val)"
+			#
+			# Determine choice_text
+			IFS=' ' read -r -a vals_arr <<< "$vals"
+			num_vals="${#vals_arr[@]}"
+			if [[ "$num_vals" -eq 2 ]]; then
+				choice_text="<$(echo "$vals" | tr ' ' '|')>"
+			else
+				if [[ "$short_opt" == "-h" ]]; then
+					choice_text=""
+				else 
+					choice_text="<$vals_catch_all>"
+				fi
+				
+			fi
+			# Determine options_text
+			options_text=""
+			if [[ "$help_text" == *"options" ]]; then # help_text ends with 'options'
+				if [[ "$num_vals" -eq 2 && !( "$vals" == "y n" || "$vals" == "n y") ]]; then
+					IFS=' ' read -r -a long_vals_arr <<< "$long_vals"
+					options_text=" ${long_vals_arr[0]} (${vals_arr[0]}) or ${long_vals_arr[1]} (${vals_arr[1]})"
+				else 
+					options_text=" [$(echo "$vals" | sed 's/ /, /g')]"
+				fi
+			fi
+			# Determine default_text
+			default_text=""
+			if [[ ! "$default" == "" ]]; then
+				default_text=" (default: $default)"
+			fi
+			help_text="$help_text""$options_text""$default_text"
+
+			printf "%-30s %-20s\n" "  $short_opt, $long_opt $choice_text" "$help_text"
+		done
+    fi
+}
+
+
+make_options_str() {
+	# Creates a string of all options in the given list. By default, all options
+	# are followed by a colon (indicating that they require a value); only those
+	# in OPTS_WITHOUT_VAL are not. Long options (but not the last) are separated 
+	# separated by a comma.
+	#
+	# Example inputs and outputs
+	# -a -b -c -h --> a:b:c:h
+	# --longa --longb -- longc --help --> longa:,longb:,longc:,help
+
+	local arg_options=("$@") # reconstructs array from args
+	local res=""
+
+	# Check if the given list contains long or short options
+	local is_long=false
+	if [[ "${arg_options[1]}" == --* ]]; then # if starts with two hyphens
+		is_long=true
+	fi
+	local unique_options=()
+	for o in "${arg_options[@]}"; do
+		o_no_dashes="${o##*-}" # remove all leading hyphens
+		if ! _check_for_exact_str "$o" "${unique_options[@]}"; then
+			res+="$o_no_dashes"
+			unique_options+=("$o")
+			# Add colon (if appropriate)
+			if ! _check_for_exact_str "$o" "${OPTS_WITHOUT_VAL[@]}"; then
+				res+=":"
+			fi
+			# Long option: add comma (not after the last, which is always '--help')
+			if "$is_long" && [[ "$o" != "--help" ]]; then
+				res+=","
+			fi
+		fi
+	done
+
+	echo "$res"
+}
+
+
+get_option_details() {
+	# Finds the row in OPTS_VALS that goes with the given opt and
+	# assigns it to the declared array.
+	
+	local search_opt="$1"
+	local -n result_array="$2"  # declare second arg as a nameref for the array
+
+	for row in "${OPTS_VALS[@]}"; do # str
+		IFS=',' read -r -a row_array <<< "$row" # array
+		short_opt="${row_array[0]}"
+		long_opt="${row_array[1]}"
+		if [[ $short_opt == "$search_opt" || $long_opt == "$search_opt" ]]; then
+			result_array=("${row_array[@]}")
+			return 0
+		fi  
+	done
+
+	return 1
+}
+
+
+create_cli_args() {
+	local arg_options_used=("${!1}") # use indirect expansion to access array
+	local arg_values_used=("${!2}") # use indirect expansion to access array
+	local arg_ignore_opts=("${!3}") # use indirect expansion to access array
+	local arg_sep=$4
+	local arg_suff=$5
+
+	args=""
+	for i in "${!arg_options_used[@]}"; do
+		o="${arg_options_used[$i]}"
+		v="${arg_values_used[$i]}"
+		if ! _check_for_exact_str "$o" "${arg_ignore_opts[@]}"; then
+			args+="$o$arg_sep$v"
+			# If not last element in $arg_options_used 
+			if [[ $i -lt $((${#arg_options_used[@]} - 1)) ]]; then
+				args+="$arg_suff"
+			fi
+		fi
+	done
+
+	echo $args
+}
+
+
+# 1. Set paths
+# Paths (unix-style) are read from config.cfg 
+# Dev case: paths set every time this script is called (below)
+if [[ "$(pwd)" == *"software/code/eclipse" ]]; then
+	source "config.cfg"
+	# Remove any carriage returns ('\r')
+	ROOT_PATH_=$(echo -e "$ROOT_PATH" | tr -d '\r')
+	LIB_PATH_=$(echo -e "$LIB_PATH" | tr -d '\r')
+# Real-world case: paths added once during installation (in install.sh)
+else
+	ROOT_PATH_=""
+	LIB_PATH_=""
+fi
+PYTHON_PATH="${LIB_PATH_}transcriber/py/"
+
+# Create the class path
+# NB Instead of creating the class path every time this script is
+# called, it can also be created once, in install.sh. However, the
+# former is more flexible as it enables addition of code to the 
+# class path after installation (and it is very fast anyway (< 0.5s)).
+# Check OS: Windows or Linux-like
+is_win=true
+if [[ ! (-n "$WINDIR" || "$os_type" == "CYGWIN"* || "$os_type" == "MINGW"* || \
+	  "$os_type" == "MSYS"*) ]]; then
+    is_win=false
+fi
+class_path=$($LIB_PATH_/cp.sh $LIB_PATH_ $is_win)
+
+
+# 2. Check first argument provided, which must be -h/--help or a valid tool
+# No args provided or -h/--help
+if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help" ]]; then
+	show_help "all"
+    exit 1 
+# Invalid tool
+elif ! _check_for_exact_str "$1" $(_get_column 0 "${TOOLS_DESC[@]}"); then
+	echo "$TOOLBOX: unknown tool -- $1"
+	show_help "all"
+	exit 1
+else
+	TOOL="$1"
+	shift # make the next arg $1
+fi
+
+
+# 3. Set global vars
+set_global_vars "$TOOL"
+
+
+# 4. Parse options. This is a three-step process:
+# (1) `getopt` processes the input args ($@), ensuring they conform to the
+#     expected format (as encoded in opts_str and opts_long_str), and 
+#     a. If all input args are correct: returns a string ($PARSED) representing 
+#     the parsed options in a normalized format, i.e., 
+#     "--option1 'value1' --option2 'value2' --"
+#     b. If one or more input args are incorrect: shell exits with an error
+# (2) `set` uses $PARSED to set the positional parameters
+# (3) `eval` forces the shell to execute the resulting command after all  
+#     variable expansions have taken place
+opts_str="$(make_options_str "${OPTS[@]}")"
+opts_long_str="$(make_options_str "${OPTS_LONG[@]}")"
+PARSED=$(getopt --options="$opts_str" --longoptions="$opts_long_str" --name "$0" -- "$@")
+if [[ $? -ne 0 ]]; then # if the exit status of the last command (`getopt`) is not 0
+    show_help ""
+    exit 1
+fi
+eval set -- "$PARSED"
+
+
+# 5. List input options and values by parsing $PARSED; in the process, validate 
+#    input values (`getopt` has no built-in functionality to do the latter)
+#    a. If all input values are correct: returns two lists, containing the
+#       options and values used
+#    b. If one or more input values are incorrect: shell exits with an error
+options_used=()
+values_used=()
+while true; do
+	# $1 is the current option; $2 its value. The `shift` command
+	# makes the next (`shift`) or second-next (`shift 2`) arg $1  
+    case "$1" in
+		# End of the options; all subsequent arguments are positional
+		--)
+			shift
+			break
+			;;
+        # Help case
+        -h|--help)
+			show_help ""
+            exit 0
+            ;;
+        # Remaining cases
+        *)
+			declare -a option_details
+			get_option_details "$1" option_details
+			vals_str="${option_details[2]}" # str
+			IFS=' ' read -r -a vals <<< "$vals_str" # array
+
+			# Validate option value or file type
+			if [[ "$1" != "-f" && "$1" != "--file" ]]; then
+				if ! _check_for_exact_str "$2" "${vals[@]}"; then
+   					# NB same layout as 'unknown option -- <opt>' message given by getopt
+					echo ""$TOOLBOX": unknown value for option "${1##*-}" -- "$2""
+					show_help ""
+					exit 1
+				fi
+			else
+				extension="*.${2##*.}" # wildcard (*) + extension
+				if ! _check_for_exact_str "$extension" "${vals[@]}"; then 
+					# NB same layout as 'unknown option -- <opt>' message given by getopt
+					echo ""$TOOLBOX": invalid file type -- "$extension""
+					show_help ""
+					exit 1
+				fi
+			fi
+			# All OK? Add to lists
+			options_used+=("$short_opt")
+			values_used+=("$2")
+			shift 2
+			;;
+    esac
+done
+
+
+# 6. Call tool
+# a. tabmapper
+# No args: default values 
+if [ "$TOOL" == "tabmapper" ]; then
+	ignore_opts=("")
+	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" "=" " ")
+	if [[ "$args_str" == "" ]]; then
+		java -cp "$class_path" tabmapper.TabMapper
+	else 
+		java -cp "$class_path" tabmapper.TabMapper "$args_str"
+	fi
+fi
+
+if [ "$TOOL" == "transcriber" ]; then
+	# Determine the transcription type (diplomatic or polyphonic)
+	dipl=0
+	fname=""
+	for i in "${!options_used[@]}"; do
+		# Diplomatic if -d was specifically set to y (default is n)
+		if [[ "${options_used[$i]}" == "-d" && "${values_used[$i]}" == "y" ]]; then
+			dipl=1
+		fi
+		if [[ "${options_used[$i]}" == "-f" ]]; then
+			fname="${values_used[$i]}"
+		fi
+	done
+
+	# Diplomatic
+	# TODO -s has -s as default, not -d. Separate dipl and poly somehow
+	if [ "$dipl" -eq 1 ]; then
+		# Build args_str; exclude option -d (not in transcriber.py's argparse)
+		ignore_opts=("-d")
+		args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" " " " ")
+#		echo $args_str
+#6.9		python $PYTHON_PATH"transcriber.py" $args_str $ROOT_PATH_ $LIB_PATH_ $class_path
+	# Polyphonic
+	else
+		# Remove -f from *_used lists (passed as its own arg)
+		new_options_used=()
+		new_values_used=()
+		for i in "${!options_used[@]}"; do
+			o="${options_used[$i]}"
+			v="${values_used[$i]}"
+    		if [[ "$o" != "-f" ]]; then
+        		new_options_used+=("$o")
+        		new_values_used+=("$v")
+    		fi
+		done
+		options_used=("${new_options_used[@]}")
+		values_used=("${new_values_used[@]}")
+#		echo ${options_used[@]}
+#		echo ${values_used[@]}
+
+		# Build args_str, exclude options -s and -d- (not in Java code)
+		ignore_opts=("-s" "-d")
+		args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" "=" "|")
+
+#		echo $args_str
+		ignore_opts=("-s" "-d" "-f")
+		# Add default values for options not used
+		i=0
+		for opt in "${!TRANSCRIBER_OPTS_DEFAULTS[@]}"; do
+#			opt="${TRANSCRIBER_OPTS_DEFAULTS[$i]}"
+#    		echo "$opt: ${TRANSCRIBER_OPTS_DEFAULTS[$opt]}"
+    		# If opt is not in options_used and also not in ignore_opts: add opt + default val
+			if ! _check_for_exact_str "$opt" "${options_used[@]}" && ! _check_for_exact_str "$opt" "${ignore_opts[@]}"; then
+#    		if [[ ! " ${options_used[@]} " =~ " $opt " ]] && [[ ! " ${ignore_opts[@]} " =~ " $opt " ]]; then 
+    			# First opt: prepend '|'
+    			if [[ i -eq 0 ]] && [[ $args_str != "" ]]; then
+    				args_str+="|"
+				fi
+				# Add opt + val
+				args_str+="$opt=${TRANSCRIBER_OPTS_DEFAULTS[$opt]}"
+				# Not last opt: add '|'
+    			if [[ $i -lt $((${#TRANSCRIBER_OPTS_DEFAULTS[@]} - 1)) ]]; then
+					args_str+="|"
+    			fi
+    		fi
+    		((i++))
+		done
+
+#		echo $args_str
+
+#		# Add provided options and values
+#		for opt in "${!TRANSCRIBER_OPTS_DEFAULTS[@]}"; do
+
+#		done
+#		for opt in "${!TRANSCRIBER_OPTS_DEFAULTS[@]}"; do
+#    		# If provided, add provided value 
+#    		if [[ " ${options_used[@]} " =~ $opt ]]; then
+#				args_str+=$opt    			
+#    		# Else: add default value
+#    		echo "$opt: ${TRANSCRIBER_OPTS_DEFAULTS[$opt]}"
+#		done
+#
+#		args_str=$(create_cli_args "$options_used[@]" "$values_used[@]" "java")
+#		echo $args_str
+#		# "-u=A|-k=-2|-m=0|-t=y|-y=ILT"
+		model_id="N-bwd-thesis-int-4vv"
+		rootpath="$ROOT_PATH_"
+		verbose=""
+		datasetname=""
+		filename="$fname"
+#6.9		java -cp "$class_path" "ui.UI" "$model_id" "$rootpath" "$verbose" "$datasetname" "$filename" "$args_str"
+	fi
+fi
+
+if [ "$TOOL" == "analyser" ]; then
+	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" "=" "|")
+#	echo "$args_str" 
+	model_id="N-bwd-thesis-int-4vv"
+	java -cp "$class_path" "analysis.Analyser" $args_str $model_id  
+fi
+
+if [ "$TOOL" == "converter" ]; then
+	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" "=" "|")
+#	echo "$args_str" 
+	model_id="N-bwd-thesis-int-4vv"
+	java -cp "$class_path" "tbp.editor.Editor"
+fi

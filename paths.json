@@ -1,0 +1,23 @@
+{
+  // ROOT_PATH
+  "ROOT_PATH":                  "", // set in PathTools.getPaths() from config.cfg
+
+  // paths on ROOT_PATH
+  "CODE_PATH":                  "", // set in PathTools.getPaths() from config.cfg
+  "DEPLOYMENT_DEV_PATH":        "data/",
+  "DATA_PATH":                  "data/annotated/",
+  "EXPERIMENTS_PATH":           "experiments/",
+  "MODELS_PATH":                "models/",
+  "TEMPLATES_PATH":             "templates/",
+  "TABMAPPER_PATH":             "tool_data/tabmapper/",
+  "DIPLOMAT_PATH":              "tool_data/transcriber/diplomatic/",
+  "POLYPHONIST_PATH":           "tool_data/transcriber/polyphonic/",
+  "ANALYSER_PATH":              "tool_data/analyser/",
+
+  // paths on DATA_PATH
+  "ENCODINGS_PATH":             "voice_separation/encodings/",
+  "MIDI_PATH":                  "voice_separation/MIDI/",
+  "ENCODINGS_PATH_JOSQUINTAB":  "tabmapper/josquin-int/in/tab/", // needed for tests only
+  "MIDI_PATH_JOSQUINTAB":       "tabmapper/josquin-int/in/MIDI/", // needed for tests only
+  "DATASETS_PATH":              "datasets/"
+}
