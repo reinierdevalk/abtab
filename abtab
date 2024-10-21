@@ -48,12 +48,13 @@ TOOLS_DESC=(
 file="-f|--file|*.tc *.tbp *.xml *.mei|||filename|Process only the given file; options|"
 help="-h|--help|||||Display this help message|"
 OPTS_WITHOUT_VAL=("-h" "--help")
+# NB The same opts and vals must be used in analysis.Analyser.main()
 ANALYSER_OPTS_VALS=(
 	"-a|--analysis|VC VR VRO|||analysis|Analysis; options|"
 	"$file" 
 	"$help"
 )
-# NB The same opts must be used in tabmapper.TabMapper.main()
+# NB The same opts and vals must be used in tabmapper.TabMapper.main()
 TABMAPPER_OPTS_VALS=(
 	"-o|--ornamentation|y n||y||Include ornamentation|"
 	"-s|--score|y n||n||Show as score|"
@@ -62,7 +63,7 @@ TABMAPPER_OPTS_VALS=(
 	"$file"
 	"$help"
 )
-# NB The same opts (w/o -d) must be used in diplomat.py (diplomatic) and 
+# NB The same opts and vals (w/o -d) must be used in diplomat.py (diplomatic) and 
 #    ui.UI.main() (polyphonic), where 
 #    - diplomatic has -u -k -m -s -t -y -f
 #    - polyphonic has -k -m
@@ -298,8 +299,14 @@ create_cli_args() {
 	local arg_options_used=("${!1}") # use indirect expansion to access array
 	local arg_values_used=("${!2}") # use indirect expansion to access array
 	local arg_ignore_opts=("${!3}") # use indirect expansion to access array
-	local arg_sep=$4
-	local arg_suff=$5
+	arg_sep=" "
+#	local arg_sep=$4
+	arg_suff=","
+	# Python case
+	if [[ $4 == "true" ]]; then
+		arg_suff=" "
+	fi
+#	local arg_suff=$5
 
 	args=""
 	for i in "${!arg_options_used[@]}"; do
@@ -446,8 +453,10 @@ done
 # 6. Call tool 
 if [ "$TOOL" == "tabmapper" ]; then
 	ignore_opts=("")
-	# Looks like '-o=y -t=b -d=y'
-	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" "=" " ")
+	# Looks like '-k1 v1,-k2 v2,-k3 v3'
+	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
+	echo JOEEEEEEE
+	echo $args_str
 	if [[ "$args_str" == "" ]]; then
 		java -cp "$class_path" tabmapper.TabMapper
 	else
@@ -511,8 +520,8 @@ if [ "$TOOL" == "transcriber" ]; then
 	if "$is_dipl"; then
 		# Build args_str; exclude option -d (not in transcriber.py's argparse)
 		ignore_opts=()
-		# Looks like '-d y -t n -f rore-anchor_che_col.xml'
-		args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" " " " ")
+		# Looks like '-k1 v1 -k2 v2 -k3 v3'
+		args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" true)
 #		echo $args_str
 		python $PYTHON_PATH"transcriber.py" $args_str $ROOT_PATH_ $LIB_PATH_ $class_path
 	# Polyphonic
@@ -536,7 +545,8 @@ if [ "$TOOL" == "transcriber" ]; then
 
 		# Build args_str, exclude options -s and -d (not in Java code)
 		ignore_opts=("-s" "-d")
-		args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" "=" "|")
+		args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
+#		args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" "=" "|")
 
 #		echo $args_str
 		ignore_opts=("-s" "-d" "-f")
@@ -565,11 +575,19 @@ if [ "$TOOL" == "transcriber" ]; then
 			done
 		fi
 
-		# Looks like '-k=0|-m=1'
+		# Looks like '-k1 v1,-k2 v2,-k3 v3'
 		# TODO fix
-		if [[ ! "$args_str" == *"-m=0" ]]; then
-			args_str+="|-m=0"
+#		echo $args_str
+		if ! _check_for_exact_str "-m" "${options_used[@]}"; then
+#		if [[ ! "$args_str" == *"-m 0" ]]; then
+			args_str+=",-m 0"
 		fi
+#		echo $args_str
+		if ! _check_for_exact_str "-t" "${options_used[@]}"; then
+#		if [[ ! "$args_str" == *"-t " ]]; then
+			args_str+=",-t y"
+		fi
+#		echo $args_str
 
 #		# Add provided options and values
 #		for opt in "${!TRANSCRIBER_OPTS_DEFAULTS[@]}"; do
@@ -596,6 +614,7 @@ if [ "$TOOL" == "transcriber" ]; then
 		verbose=""
 		datasetname=""
 		filename="$fname"
+		echo $args_str
 		java -cp "$class_path" "ui.UI" "$model_id" "$rootpath" "$verbose" "$datasetname" "$filename" "$args_str"
 	fi
 fi
