@@ -1,20 +1,19 @@
 {
-  // ROOT_PATH
-  "ROOT_PATH":                  "", // set in PathTools.getPaths() from config.cfg
+  // Paths set in PathTools.getPaths() from config.cfg
+  "ROOT_PATH":                  "", 
+  "CODE_PATH":                  "",
 
-  // paths on ROOT_PATH
-  "CODE_PATH":                  "", // set in PathTools.getPaths() from config.cfg
-  "DEPLOYMENT_DEV_PATH":        "data/",
-  "DATA_PATH":                  "data/annotated/",
-  "EXPERIMENTS_PATH":           "experiments/",
-  "MODELS_PATH":                "models/",
-  "TEMPLATES_PATH":             "templates/",
-  "TABMAPPER_PATH":             "tool_data/tabmapper/",
-  "DIPLOMAT_PATH":              "tool_data/transcriber/diplomatic/",
-  "POLYPHONIST_PATH":           "tool_data/transcriber/polyphonic/",
-  "ANALYSER_PATH":              "tool_data/analyser/",
+  // Paths on ROOT_PATH
+  "DATA_PATH":                  "data/annotated/", // only in PathTools to create five paths on it
+  "EXPERIMENTS_PATH":           "experiments/", // model-dev and toolbox case --> UI, HMMManager (?)
+  "MODELS_PATH":                "models/", // model-dev and toolbox case --> UI
+  "TEMPLATES_PATH":             "templates/", // model-dev and toolbox case --> UI, Editor, TabMapper 
+  "TABMAPPER_PATH":             "tool_data/tabmapper/", // toolbox case --> TabMapper
+  "DIPLOMAT_PATH":              "tool_data/transcriber/diplomatic/", // not used
+  "POLYPHONIST_PATH":           "tool_data/transcriber/polyphonic/", // toolbox case --> UI, Analyser
+  "ANALYSER_PATH":              "tool_data/analyser/", // toolbox case --> Analyser
 
-  // paths on DATA_PATH
+  // Paths on DATA_PATH
   "ENCODINGS_PATH":             "voice_separation/encodings/",
   "MIDI_PATH":                  "voice_separation/MIDI/",
   "ENCODINGS_PATH_JOSQUINTAB":  "tabmapper/josquin-int/in/tab/", // needed for tests only

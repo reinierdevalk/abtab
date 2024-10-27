@@ -24,6 +24,9 @@
 #     varname="my_var"
 #     echo "$varname"        # direct reference; output: "my_var"
 #     echo "${!varname}"     # indirect expansion; output: "Hello, World!""
+#
+# - get full path to <file>.<ext> in pwd with "$(pwd)""/<file>.<ext>"
+# - get parent of my_path with $(dirname "$my_path")"/"
 
 
 # 0. GLOBAL VARIABLES
@@ -54,6 +57,10 @@ ANALYSER_OPTS_VALS=(
 	"$file" 
 	"$help"
 )
+# NB The same opts and vals must be used in editor.Editor.main()
+CONVERTER_OPTS_VALS=(
+	"$help"
+)
 # NB The same opts and vals must be used in tabmapper.TabMapper.main()
 TABMAPPER_OPTS_VALS=(
 	"-o|--ornamentation|y n||y||Include ornamentation|"
@@ -81,8 +88,10 @@ TRANSCRIBER_OPTS_VALS=(
 
 # b. Set automatically
 TOOLBOX=$(basename "$0")
+DEV=false
 if [[ "$TOOLBOX" == 'abtab-dev' ]]; then
 	TOOLBOX='abtab'
+	DEV=true
 fi
 
 unset TOOL
@@ -136,6 +145,9 @@ set_global_vars() {
 	case "$arg_tool" in
 		analyser)
 			OPTS_VALS=("${ANALYSER_OPTS_VALS[@]}")
+			;;
+		converter)
+			OPTS_VALS=("${CONVERTER_OPTS_VALS[@]}")
 			;;
 		tabmapper)
 			OPTS_VALS=("${TABMAPPER_OPTS_VALS[@]}")
@@ -328,15 +340,17 @@ create_cli_args() {
 # 1. Set paths
 # Paths (unix-style) are read from config.cfg 
 # Dev case: paths set every time this script is called (below)
-if [[ "$(pwd)" == *"software/code/eclipse" ]]; then
-	source "config.cfg"
+if "$DEV"; then
+#if [[ "$(pwd)" == *"software/code/eclipse" ]]; then
+	source "config-dev.cfg"
+#	source "config.cfg"
 	# Remove any carriage returns ('\r')
 	ROOT_PATH_=$(echo -e "$ROOT_PATH" | tr -d '\r')
 	LIB_PATH_=$(echo -e "$LIB_PATH" | tr -d '\r')
 # Real-world case: paths added once during installation (in install.sh)
 else
-	ROOT_PATH_=""
-	LIB_PATH_=""
+	ROOT_PATH_="F:/research/computation/abtab/"
+	LIB_PATH_="C:/Users/Reinier/lib/abtab/"
 fi
 PYTHON_PATH="${LIB_PATH_}transcriber/py/"
 
@@ -451,16 +465,27 @@ done
 
 
 # 6. Call tool 
+if [ "$TOOL" == "analyser" ]; then
+	ignore_opts=("")
+	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
+	model_id="N-bwd-thesis-int-4vv"
+	java -cp "$class_path" "analysis.Analyser" "$DEV" $model_id $args_str   
+fi
+
+if [ "$TOOL" == "converter" ]; then
+	ignore_opts=("")
+	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
+	java -cp "$class_path" "tbp.editor.Editor" "$DEV"
+fi
+
 if [ "$TOOL" == "tabmapper" ]; then
 	ignore_opts=("")
 	# Looks like '-k1 v1,-k2 v2,-k3 v3'
 	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
-	echo JOEEEEEEE
-	echo $args_str
 	if [[ "$args_str" == "" ]]; then
-		java -cp "$class_path" tabmapper.TabMapper
+		java -cp "$class_path" tabmapper.TabMapper "$DEV"
 	else
-		java -cp "$class_path" tabmapper.TabMapper "$args_str"
+		java -cp "$class_path" tabmapper.TabMapper "$DEV" "$args_str"
 	fi
 fi
 
@@ -615,20 +640,6 @@ if [ "$TOOL" == "transcriber" ]; then
 		datasetname=""
 		filename="$fname"
 		echo $args_str
-		java -cp "$class_path" "ui.UI" "$model_id" "$rootpath" "$verbose" "$datasetname" "$filename" "$args_str"
+		java -cp "$class_path" "ui.UI" "$DEV" "$model_id" "$rootpath" "$verbose" "$datasetname" "$filename" "$args_str"
 	fi
-fi
-
-if [ "$TOOL" == "analyser" ]; then
-	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" "=" "|")
-#	echo "$args_str" 
-	model_id="N-bwd-thesis-int-4vv"
-	java -cp "$class_path" "analysis.Analyser" $args_str $model_id  
-fi
-
-if [ "$TOOL" == "converter" ]; then
-	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" "=" "|")
-#	echo "$args_str" 
-	model_id="N-bwd-thesis-int-4vv"
-	java -cp "$class_path" "tbp.editor.Editor"
 fi
