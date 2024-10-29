@@ -1,22 +1,31 @@
 {
-  // Paths set in PathTools.getPaths() from config.cfg
-  "ROOT_PATH":                  "", 
+  // Paths set from config.cfg
+  "ROOT_PATH":                  "",
   "CODE_PATH":                  "",
 
   // Paths on ROOT_PATH
-  "DATA_PATH":                  "data/annotated/", // only in PathTools to create five paths on it
-  "EXPERIMENTS_PATH":           "experiments/", // model-dev and toolbox case --> UI, HMMManager (?)
-  "MODELS_PATH":                "models/", // model-dev and toolbox case --> UI
-  "TEMPLATES_PATH":             "templates/", // model-dev and toolbox case --> UI, Editor, TabMapper 
-  "TABMAPPER_PATH":             "tool_data/tabmapper/", // toolbox case --> TabMapper
-  "DIPLOMAT_PATH":              "tool_data/transcriber/diplomatic/", // not used
-  "POLYPHONIST_PATH":           "tool_data/transcriber/polyphonic/", // toolbox case --> UI, Analyser
-  "ANALYSER_PATH":              "tool_data/analyser/", // toolbox case --> Analyser
+  // model-dev case 
+  "ENCODINGS_PATH":             "data/annotated/voice_separation/encodings/", // (Dataset)
+  "MIDI_PATH":                  "data/annotated/voice_separation/MIDI/", // (Dataset)
+  "ENCODINGS_PATH_JOSQUINTAB":  "data/annotated/tabmapper/josquin-int/in/tab/", // (tests only)
+  "MIDI_PATH_JOSQUINTAB":       "data/annotated/tabmapper/josquin-int/in/MIDI/", // (tests only)
+  "DATASETS_PATH":              "datasets/", // (Runner)
+  "EXPERIMENTS_PATH":           "experiments/", // (UI)
+  // model-dev and toolbox case
+  "MODELS_PATH":                "models/", // (UI), (UI)
+  "TEMPLATES_PATH":             "templates/", // (UI), (Editor, TabMapper, UI)  
+  // toolbox case
+  "ANALYSER_PATH":              "tool_data/analyser/", // (Analyser)
+  "CONVERTER_PATH":             "tool_data/converter/", // (Editor)
+  "TABMAPPER_PATH":             "tool_data/tabmapper/", // (TabMapper)
+  "DIPLOMAT_PATH":              "tool_data/transcriber/diplomatic/", // (not used)
+  "POLYPHONIST_PATH":           "tool_data/transcriber/polyphonic/", // (Analyser, Dataset, UI)
 
-  // Paths on DATA_PATH
-  "ENCODINGS_PATH":             "voice_separation/encodings/",
-  "MIDI_PATH":                  "voice_separation/MIDI/",
-  "ENCODINGS_PATH_JOSQUINTAB":  "tabmapper/josquin-int/in/tab/", // needed for tests only
-  "MIDI_PATH_JOSQUINTAB":       "tabmapper/josquin-int/in/MIDI/", // needed for tests only
-  "DATASETS_PATH":              "datasets/"
+  // Paths on CODE_PATH
+  // model-dev and toolbox case
+  "UTILS_PYTHON_PATH":          "utils/py/", // (UI), (TabMapper, UI) 
+  "VOICE_SEP_PYTHON_PATH":      "voice_separation/py/", // (TrainingManager, TestManager), (TestManager)
+  "VOICE_SEP_MATLAB_PATH":      "voice_separation/m/", // (TestManager), (TestManager)
+  // toolbox case
+  "ANALYSIS_PYTHON_PATH":       "analysis/py/" // (Analyser)  
 }
