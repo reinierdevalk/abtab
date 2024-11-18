@@ -27,6 +27,7 @@
 #
 # - get full path to <file>.<ext> in pwd with "$(pwd)""/<file>.<ext>"
 # - get parent of my_path with $(dirname "$my_path")"/"
+# - print list complete list with echo "${my_list[@]}"
 
 
 # 0. GLOBAL VARIABLES
@@ -48,32 +49,29 @@ TOOLS_DESC=(
 # [7] additional help text
 # NB Identical short opts can have different long opts; 
 #    identical long opts always have the same short opt
-file="-f|--file|*.tc *.tbp *.xml *.mei|||filename|Process only the given file; options|"
-help="-h|--help|||||Display this help message|"
+format="-r|--format|y n||y||Process tablature format|"
+file="-f|--file|*.tc *.tbp *.xml *.mei||n/a|file|Process only the given file; options|"
+help="-h|--help|||n/a||Display this help message|"
 OPTS_WITHOUT_VAL=("-h" "--help")
-# NB The same opts and vals must be used in analysis.Analyser.main()
 ANALYSER_OPTS_VALS=(
-	"-a|--analysis|VC VR VRO|||analysis|Analysis; options|"
+	"-a|--analysis|VC VR VRO||n/a|analysis|Analysis; options|"
 	"$file" 
 	"$help"
 )
-# NB The same opts and vals must be used in editor.Editor.main()
 CONVERTER_OPTS_VALS=(
 	"$help"
 )
-# NB The same opts and vals must be used in tabmapper.TabMapper.main()
 TABMAPPER_OPTS_VALS=(
 	"-o|--ornamentation|y n||y||Include ornamentation|"
 	"-s|--score|y n||n||Show as score|"
 	"-t|--tablature|t b|top bottom|b||Placement of the tablature; options|"
 	"-d|--duration|y n||n||Complete note durations|"
+	"$format"
 	"$file"
 	"$help"
 )
-# NB The same opts and vals (w/o -d) must be used in diplomat.py (diplomatic) and 
-#    ui.UI.main() (polyphonic), where 
-#    - diplomatic has -u -k -m -s -t -y -f
-#    - polyphonic has -k -m
+# NB The same opts and vals (w/o -d) must be used in diplomat.py, where 
+#    diplomat.py has -u -k -m -s -t -y -f
 TRANSCRIBER_OPTS_VALS=(
 	"-u|--tuning|F F- G G- A A-||G|tuning|Tuning; options|"
 	"-k|--key|-5 -4 -3 -2 -1 0 1 2 3 4 5||0|key|Key; options|"
@@ -82,6 +80,9 @@ TRANSCRIBER_OPTS_VALS=(
 	"-t|--tablature|y n||y||Include tablature|"
 	"-y|--type|FLT ILT SLT GLT||FLT|type|Tablature type; options|"
 	"-d|--diplomatic|y n||n||Diplomatic transcription|"
+	"-o|--model|N-bwd-thesis-int-4vv N-fwd-thesis-int-4vv N-bwd-thesis-int-3vv||N-bwd-thesis-int-4vv|model|Trained model; options|"
+	"-v|--verbose|y n||n||Verbose|"
+	"$format"
 	"$file"
 	"$help"
 )
@@ -95,9 +96,10 @@ if [[ "$TOOLBOX" == 'abtab-dev' ]]; then
 fi
 
 unset TOOL
+unset OPTS_VALS
 unset OPTS
 unset OPTS_LONG
-unset OPTS_VALS
+unset VALS_DEFAULT
 
 
 # 1. FUNCTIONS
@@ -160,6 +162,7 @@ set_global_vars() {
 	# Create options arrays
 	OPTS=($(_get_column 0 "${OPTS_VALS[@]}"))
 	OPTS_LONG=($(_get_column 1 "${OPTS_VALS[@]}"))
+	VALS_DEFAULT=($(_get_column 4 "${OPTS_VALS[@]}"))
 }
 
 
@@ -192,56 +195,57 @@ show_help() {
 			help_text="${row_array[6]}"
 			add_help_text="${row_array[7]}"
 			
-			# Form of the string to output (parts between {curly brackets} are optional):
-			# short_opt, long_opt <choice_text> \t help_text{options_text} {default_text}{. add_help_text}
-			# - choice_text: only two values (a); more than two values (b) 
-			#   (a) "<short_val1|short_val2>"
-			#   (b) "<catch_all>"
-			# - options_text: only two values (but not 'y/n') (a); more than two values (b)
-			#   (a) "; options long_val1 (short_val1) or long_val2 (short_val2)"
-			#       e.g., 
-			#       "; options major (0) or minor (1)"
-			#   (b) "; options [short_val1, ..., short_valn]"
-			#       e.g.
-			#       "; options [-5, ..., 5]"
-			# - default_text
-			#   "(default: short_val)"   
-			#
-			# Determine choice_text
-			IFS=' ' read -r -a vals_arr <<< "$vals"
-			num_vals="${#vals_arr[@]}"
-			if [[ "$num_vals" -eq 2 ]]; then
-				choice_text="<$(echo "$vals" | tr ' ' '|')>"
-			else
-				if [[ "$short_opt" == "-h" ]]; then
-					choice_text=""
-				else 
-					choice_text="<$vals_catch_all>"
+			if [[ ! ("$short_opt" == "-r" && "$TOOL" == "tabmapper") ]]; then
+				# Form of the string to output (parts between {curly brackets} are optional):
+				# short_opt, long_opt <choice_text> \t help_text{options_text} {default_text}{. add_help_text}
+				# - choice_text: only two values (a); more than two values (b) 
+				#   (a) "<short_val1|short_val2>"
+				#   (b) "<catch_all>"
+				# - options_text: only two values (but not 'y/n') (a); more than two values (b)
+				#   (a) "; options long_val1 (short_val1) or long_val2 (short_val2)"
+				#       e.g., 
+				#       "; options major (0) or minor (1)"
+				#   (b) "; options [short_val1, ..., short_valn]"
+				#       e.g.
+				#       "; options [-5, ..., 5]"
+				# - default_text
+				#   "(default: short_val)"   
+				#
+				# Determine choice_text
+				IFS=' ' read -r -a vals_arr <<< "$vals"
+				num_vals="${#vals_arr[@]}"
+				if [[ "$num_vals" -eq 2 ]]; then
+					choice_text="<$(echo "$vals" | tr ' ' '|')>"
+				else
+					if [[ "$short_opt" == "-h" ]]; then
+						choice_text=""
+					else 
+						choice_text="<$vals_catch_all>"
+					fi
 				fi
-				
-			fi
-			# Determine options_text
-			options_text=""
-			if [[ "$help_text" == *"options" ]]; then # help_text ends with 'options'
-				if [[ "$num_vals" -eq 2 && !( "$vals" == "y n" || "$vals" == "n y") ]]; then
-					IFS=' ' read -r -a long_vals_arr <<< "$long_vals"
-					options_text=" ${long_vals_arr[0]} (${vals_arr[0]}) or ${long_vals_arr[1]} (${vals_arr[1]})"
-				else 
-					options_text=" [$(echo "$vals" | sed 's/ /, /g')]"
+				# Determine options_text
+				options_text=""
+				if [[ "$help_text" == *"options" ]]; then # help_text ends with 'options'
+					if [[ "$num_vals" -eq 2 && !( "$vals" == "y n" || "$vals" == "n y") ]]; then
+						IFS=' ' read -r -a long_vals_arr <<< "$long_vals"
+						options_text=" ${long_vals_arr[0]} (${vals_arr[0]}) or ${long_vals_arr[1]} (${vals_arr[1]})"
+					else 
+						options_text=" [$(echo "$vals" | sed 's/ /, /g')]"
+					fi
 				fi
-			fi
-			# Determine default_text
-			default_text=""
-			if [[ ! "$default" == "" ]]; then
-				default_text=" (default: $default)"
-			fi
-#			# Prepend add_help_text with period and space
-#			if [[ ! "$add_help_text" == "" ]]; then
-#				add_help_text=". $add_help_text"
-#			fi  
-			help_text="$help_text""$options_text""$default_text" #"$add_help_text"
+				# Determine default_text
+				default_text=""
+				if [[ -n "$default" && "$default" != "n/a" ]]; then
+					default_text=" (default: $default)"
+				fi
+#				# Prepend add_help_text with period and space
+#				if [[ ! "$add_help_text" == "" ]]; then
+#					add_help_text=". $add_help_text"
+#				fi  
+				help_text="$help_text""$options_text""$default_text" #"$add_help_text"
 
-			printf "%-30s %-20s\n" "  $short_opt, $long_opt $choice_text" "$help_text"
+				printf "%-30s %-20s\n" "  $short_opt, $long_opt $choice_text" "$help_text"
+			fi
 		done
     fi
 }
@@ -336,7 +340,7 @@ create_cli_args() {
 	echo $args
 }
 
-
+# 2. SCRIPT CODE
 # 1. Set paths
 # Paths (unix-style) are read from config.cfg 
 # Dev case: paths set every time this script is called (below)
@@ -455,6 +459,7 @@ while true; do
 				fi
 			fi
 			# All OK? Add to lists
+			short_opt="${option_details[0]}"
 			options_used+=("$short_opt")
 			values_used+=("$2")
 			args_used+=("$short_opt"" ""$2")
@@ -464,7 +469,11 @@ while true; do
 done
 
 
-# 6. Call tool 
+# 6. Call tool
+# Join array elements into a string with space as delimiter
+opts_str="${OPTS[*]}"
+vals_default_str="${VALS_DEFAULT[*]}"
+
 if [ "$TOOL" == "analyser" ]; then
 	ignore_opts=("")
 	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
@@ -482,11 +491,12 @@ if [ "$TOOL" == "tabmapper" ]; then
 	ignore_opts=("")
 	# Looks like '-k1 v1,-k2 v2,-k3 v3'
 	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
-	if [[ "$args_str" == "" ]]; then
-		java -cp "$class_path" tabmapper.TabMapper "$DEV"
-	else
-		java -cp "$class_path" tabmapper.TabMapper "$DEV" "$args_str"
-	fi
+
+#	if [[ "$args_str" == "" ]]; then
+#		java -cp "$class_path" tabmapper.TabMapper "$DEV" "$opts_str" "$vals_default_str"
+#	else
+	java -cp "$class_path" tabmapper.TabMapper "$DEV" "$opts_str" "$vals_default_str" "$args_str"
+#	fi
 fi
 
 if [ "$TOOL" == "transcriber" ]; then
@@ -507,7 +517,7 @@ if [ "$TOOL" == "transcriber" ]; then
 		fi			
 	done
 	# Remove diplomatic option + value from lists 
-	if [[ ! $ind -eq -1 ]]; then
+	if [[ ! $ind_to_remove -eq -1 ]]; then
 		unset 'options_used[ind_to_remove]'
 		options_used=("${options_used[@]}") # reindex
 		unset 'values_used[ind_to_remove]'
@@ -552,24 +562,25 @@ if [ "$TOOL" == "transcriber" ]; then
 	# Polyphonic
 	# opts: k m 
 	else
-		# Remove -f from *_used lists (passed as its own arg)
-		new_options_used=()
-		new_values_used=()
-		for i in "${!options_used[@]}"; do
-			o="${options_used[$i]}"
-			v="${values_used[$i]}"
-    		if [[ "$o" != "-f" ]]; then
-        		new_options_used+=("$o")
-        		new_values_used+=("$v")
-    		fi
-		done
-		options_used=("${new_options_used[@]}")
-		values_used=("${new_values_used[@]}")
+#		# Remove -f from *_used lists (passed as its own arg)
+#		new_options_used=()
+#		new_values_used=()
+#		for i in "${!options_used[@]}"; do
+#			o="${options_used[$i]}"
+#			v="${values_used[$i]}"
+#   		if [[ "$o" != "-f" ]]; then
+#        		new_options_used+=("$o")
+#        		new_values_used+=("$v")
+#    		fi
+#		done
+#		options_used=("${new_options_used[@]}")
+#		values_used=("${new_values_used[@]}")
 #		echo ${options_used[@]}
 #		echo ${values_used[@]}
 
-		# Build args_str, exclude options -s and -d (not in Java code)
-		ignore_opts=("-s" "-d")
+		# Build args_str, exclude option -d (not in Java code)
+		ignore_opts=("-d")
+#		ignore_opts=("-s" "-d")
 		args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
 #		args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" "=" "|")
 
@@ -601,17 +612,21 @@ if [ "$TOOL" == "transcriber" ]; then
 		fi
 
 		# Looks like '-k1 v1,-k2 v2,-k3 v3'
-		# TODO fix
+		# TODO fix: add defaults to args_str
 #		echo $args_str
-		if ! _check_for_exact_str "-m" "${options_used[@]}"; then
+#		if ! _check_for_exact_str "-m" "${options_used[@]}"; then
 #		if [[ ! "$args_str" == *"-m 0" ]]; then
-			args_str+=",-m 0"
-		fi
+#			# If args_str is empty
+#			if ! [ -z "$args_str" ]; then
+#				args_str+=","
+#			fi
+#			args_str+="-m 0"
+#		fi
 #		echo $args_str
-		if ! _check_for_exact_str "-t" "${options_used[@]}"; then
+#		if ! _check_for_exact_str "-t" "${options_used[@]}"; then
 #		if [[ ! "$args_str" == *"-t " ]]; then
-			args_str+=",-t y"
-		fi
+#			args_str+=",-t y"
+#		fi
 #		echo $args_str
 
 #		# Add provided options and values
@@ -629,17 +644,17 @@ if [ "$TOOL" == "transcriber" ]; then
 #		args_str=$(create_cli_args "$options_used[@]" "$values_used[@]" "java")
 #		echo $args_str
 #		# "-u=A|-k=-2|-m=0|-t=y|-y=ILT"
+
 		
-		# TODO give model as arg
-		model_id="N-bwd-thesis-int-4vv"
+#		model_id="N-bwd-thesis-int-4vv"
 #		model_id="N-fwd-thesis-int-4vv"
 #		model_id="D-bwd-thesis-int-4vv"
 #		model_id='D-bwd-byrd-int-4vv'
-		rootpath="$ROOT_PATH_"
-		verbose=""
-		datasetname=""
-		filename="$fname"
-		echo $args_str
-		java -cp "$class_path" "ui.UI" "$DEV" "$model_id" "$rootpath" "$verbose" "$datasetname" "$filename" "$args_str"
+#		rootpath="$ROOT_PATH_"
+#		verbose=""
+#		datasetname=""
+#		filename="$fname"
+
+		java -cp "$class_path" "ui.UI" "$DEV" "$opts_str" "$vals_default_str" "$args_str"
 	fi
 fi
