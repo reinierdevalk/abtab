@@ -27,7 +27,7 @@
 #
 # - get full path to <file>.<ext> in pwd with "$(pwd)""/<file>.<ext>"
 # - get parent of my_path with $(dirname "$my_path")"/"
-# - print list complete list with echo "${my_list[@]}"
+# - print complete list with echo "${my_list[@]}"
 
 
 # 0. GLOBAL VARIABLES
@@ -38,7 +38,7 @@ TOOLS_DESC=(
 	"tabmapper|Map"
 	"transcriber|Transcribe"
 )
-# Each row in an OPTS_VALS array contains seven comma-separated elements, i.e., at index
+# Each row in an OPTS_VALS array contains the following comma-separated elements
 # [0] short opt
 # [1] long opt
 # [2] values
@@ -53,14 +53,17 @@ format="-r|--format|y n||y||Process tablature format|"
 file="-f|--file|*.tc *.tbp *.xml *.mei||n/a|file|Process only the given file; options|"
 help="-h|--help|||n/a||Display this help message|"
 OPTS_WITHOUT_VAL=("-h" "--help")
+# Must also be class fields in Analyser Java class (OPT = "<val>")
 ANALYSER_OPTS_VALS=(
 	"-a|--analysis|VC VR VRO||n/a|analysis|Analysis; options|"
 	"$file" 
 	"$help"
 )
+# Must also be class fields in Editor Java class (OPT = "<val>")
 CONVERTER_OPTS_VALS=(
 	"$help"
 )
+# Must also be class fields in TabMapper Java class (OPT = "<val>")
 TABMAPPER_OPTS_VALS=(
 	"-o|--ornamentation|y n||y||Include ornamentation|"
 	"-s|--score|y n||n||Show as score|"
@@ -70,19 +73,19 @@ TABMAPPER_OPTS_VALS=(
 	"$file"
 	"$help"
 )
-# NB The same opts and vals (w/o -d) must be used in diplomat.py, where 
-#    diplomat.py has -u -k -m -s -t -y -f
+# Must also be class fields in ModelManager Java class (<OPT> = "<val>")
+# Must also be parser args in transcriber.py
 TRANSCRIBER_OPTS_VALS=(
 	"-u|--tuning|F F- G G- A A-||G|tuning|Tuning; options|"
 	"-k|--key|-5 -4 -3 -2 -1 0 1 2 3 4 5||0|key|Key; options|"
 	"-m|--mode|0 1|major minor|0||Mode; options|"
-	"-s|--staff|s d|single double|s||Staff; options|"
+	"-s|--staff|s d|single double|d||Staff; options|"
 	"-t|--tablature|y n||y||Include tablature|"
 	"-y|--type|FLT ILT SLT GLT||FLT|type|Tablature type; options|"
-	"-d|--diplomatic|y n||n||Diplomatic transcription|"
-	"-o|--model|N-bwd-thesis-int-4vv N-fwd-thesis-int-4vv N-bwd-thesis-int-3vv||N-bwd-thesis-int-4vv|model|Trained model; options|"
-	"-v|--verbose|y n||n||Verbose|"
-	"$format"
+	"-l|--style|p d|polyphonic diplomatic|p||Transcription style; options|"
+	"-o|--model|N-bwd-thesis-int-4vv N-fwd-thesis-int-4vv N-bwd-thesis-int-3vv||N-bwd-thesis-int-4vv|model|* Trained model; options|"
+	"-v|--verbose|y n||n||* Verbose|"
+	"${format/Process/* Process}" # insert asterisk + space
 	"$file"
 	"$help"
 )
@@ -247,6 +250,9 @@ show_help() {
 				printf "%-30s %-20s\n" "  $short_opt, $long_opt $choice_text" "$help_text"
 			fi
 		done
+		if [[ "$TOOL" ==  "transcriber" ]]; then
+			echo "* Applies only if transcription style is polyphonic"
+		fi
     fi
 }
 
@@ -312,17 +318,20 @@ get_option_details() {
 
 
 create_cli_args() {
+	# Converts the CLI opts (o) and vals (v) into a string of one of 
+	# the following formats 
+	# Python case: "-o1 v1 -o2 v2 -o3 v3"
+	# Java case:   "-o1 v1,-o2 v2,-o3 v3"
+
 	local arg_options_used=("${!1}") # use indirect expansion to access array
 	local arg_values_used=("${!2}") # use indirect expansion to access array
-	local arg_ignore_opts=("${!3}") # use indirect expansion to access array
-	arg_sep=" "
-#	local arg_sep=$4
+	local arg_ignore_opts=("${!3}") # use indirect expansion to access array	
 	arg_suff=","
-	# Python case
+	# Python case: suffix is space
 	if [[ $4 == "true" ]]; then
 		arg_suff=" "
 	fi
-#	local arg_suff=$5
+	arg_sep=" "
 
 	args=""
 	for i in "${!arg_options_used[@]}"; do
@@ -330,7 +339,7 @@ create_cli_args() {
 		v="${arg_values_used[$i]}"
 		if ! _check_for_exact_str "$o" "${arg_ignore_opts[@]}"; then
 			args+="$o$arg_sep$v"
-			# If not last element in $arg_options_used 
+			# If not last element in $arg_options_used: add suffix 
 			if [[ $i -lt $((${#arg_options_used[@]} - 1)) ]]; then
 				args+="$arg_suff"
 			fi
@@ -340,24 +349,22 @@ create_cli_args() {
 	echo $args
 }
 
+
 # 2. SCRIPT CODE
 # 1. Set paths
 # Paths (unix-style) are read from config.cfg 
 # Dev case: paths set every time this script is called (below)
 if "$DEV"; then
-#if [[ "$(pwd)" == *"software/code/eclipse" ]]; then
 	source "config-dev.cfg"
-#	source "config.cfg"
 	# Remove any carriage returns ('\r')
 	ROOT_PATH_=$(echo -e "$ROOT_PATH" | tr -d '\r')
 	LIB_PATH_=$(echo -e "$LIB_PATH" | tr -d '\r')
 # Real-world case: paths added once during installation (in install.sh)
 else
-	ROOT_PATH_="F:/research/computation/abtab/"
-	LIB_PATH_="C:/Users/Reinier/lib/abtab/"
+	ROOT_PATH_="rp_placeholder"
+	LIB_PATH_="lp_placeholder"
 fi
 PYTHON_PATH="${LIB_PATH_}transcriber/py/"
-
 # Create the class path
 # NB Instead of creating the class path every time this script is
 # called, it can also be created once, in install.sh. However, the
@@ -370,7 +377,6 @@ if [[ ! (-n "$WINDIR" || "$os_type" == "CYGWIN"* || "$os_type" == "MINGW"* || \
     is_win=false
 fi
 class_path=$($LIB_PATH_/cp.sh $LIB_PATH_ $is_win)
-
 
 # 2. Check first argument provided, which must be -h/--help or a valid tool
 # No args provided or -h/--help
@@ -387,10 +393,8 @@ else
 	shift # make the next arg $1
 fi
 
-
 # 3. Set global vars
 set_global_vars "$TOOL"
-
 
 # 4. Parse options. This is a three-step process:
 # (1) `getopt` processes the input args ($@), ensuring they conform to the
@@ -410,7 +414,6 @@ if [[ $? -ne 0 ]]; then # if the exit status of the last command (`getopt`) is n
     exit 1
 fi
 eval set -- "$PARSED"
-
 
 # 5. List input options and values by parsing $PARSED; in the process, validate 
 #    input values (`getopt` has no built-in functionality to do the latter)
@@ -468,7 +471,6 @@ while true; do
     esac
 done
 
-
 # 6. Call tool
 # Join array elements into a string with space as delimiter
 opts_str="${OPTS[*]}"
@@ -489,172 +491,19 @@ fi
 
 if [ "$TOOL" == "tabmapper" ]; then
 	ignore_opts=("")
-	# Looks like '-k1 v1,-k2 v2,-k3 v3'
 	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
-
-#	if [[ "$args_str" == "" ]]; then
-#		java -cp "$class_path" tabmapper.TabMapper "$DEV" "$opts_str" "$vals_default_str"
-#	else
 	java -cp "$class_path" tabmapper.TabMapper "$DEV" "$opts_str" "$vals_default_str" "$args_str"
-#	fi
 fi
 
 if [ "$TOOL" == "transcriber" ]; then
-#	echo "${options_used[@]}"
-#	echo "${values_used[@]}"
-#	echo "${args_used[@]}"
-
-	# Determine type (diplomatic or polyphonic) and any file name
-	is_dipl=false
-	fname=""
-	ind_to_remove=-1
-	for i in "${!options_used[@]}"; do
-		if [[ "${options_used[$i]}" == "-d" && "${values_used[$i]}" == "y" ]]; then
-			is_dipl=true
-			ind_to_remove=$i
-		elif [[ "${options_used[$i]}" == "-f" ]]; then
-			fname="${values_used[$i]}"
-		fi			
-	done
-	# Remove diplomatic option + value from lists 
-	if [[ ! $ind_to_remove -eq -1 ]]; then
-		unset 'options_used[ind_to_remove]'
-		options_used=("${options_used[@]}") # reindex
-		unset 'values_used[ind_to_remove]'
-		values_used=("${values_used[@]}") # reindex
-	fi
-
-#	# Set is_dipl
-#	_check_for_exact_str "-d y" "${args_used[@]}" && is_dipl=true || is_dipl=false
-#
-#	# Remove -d/--diplomatic/-d y from lists
-#	for i in "${!options_used[@]}"; do
-#		if [[ "${options_used[$i]}" == "-f" ]]; then
-#			fname="${values_used[$i]}"
-#			break
-#		fi			
-#	done	
-#
-#	# Get file name (if applicable)
-#	fname=""
-#	if _check_for_exact_str "-f" "${options_used[@]}"; then
-#		f_option=$(printf '%s\n' "${args_used[@]}" | grep '^[-]f ') # get the string starting with '-f' 
-#		IFS=' ' read -r opt value <<< "$f_option"
-#		fname="$value"
-##		for i in "${!options_used[@]}"; do
-##			if [[ "${options_used[$i]}" == "-f" ]]; then
-##				fname="${values_used[$i]}"
-##				break
-##			fi			
-##		done
-#	fi
-
+	ignore_opts=("-l")
 	# Diplomatic
-	# opts: u k m s t y f
-	# TODO -s has -s as default, not -d. Separate dipl and poly somehow
-	if "$is_dipl"; then
-		# Build args_str; exclude option -d (not in transcriber.py's argparse)
-		ignore_opts=()
-		# Looks like '-k1 v1 -k2 v2 -k3 v3'
+	if _check_for_exact_str "-l d" "${args_used[@]}"; then
 		args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" true)
-#		echo $args_str
-		python $PYTHON_PATH"transcriber.py" $args_str $ROOT_PATH_ $LIB_PATH_ $class_path
+		python $PYTHON_PATH"transcriber.py" $args_str "$DEV" $ROOT_PATH_ $LIB_PATH_ $class_path
 	# Polyphonic
-	# opts: k m 
 	else
-#		# Remove -f from *_used lists (passed as its own arg)
-#		new_options_used=()
-#		new_values_used=()
-#		for i in "${!options_used[@]}"; do
-#			o="${options_used[$i]}"
-#			v="${values_used[$i]}"
-#   		if [[ "$o" != "-f" ]]; then
-#        		new_options_used+=("$o")
-#        		new_values_used+=("$v")
-#    		fi
-#		done
-#		options_used=("${new_options_used[@]}")
-#		values_used=("${new_values_used[@]}")
-#		echo ${options_used[@]}
-#		echo ${values_used[@]}
-
-		# Build args_str, exclude option -d (not in Java code)
-		ignore_opts=("-d")
-#		ignore_opts=("-s" "-d")
 		args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
-#		args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" "=" "|")
-
-#		echo $args_str
-		ignore_opts=("-s" "-d" "-f")
-		# Add default values for options not used
-		i=0
-		do_this=false
-		if "$do_this"; then
-			for opt in "${!TRANSCRIBER_OPTS_DEFAULTS[@]}"; do
-#				opt="${TRANSCRIBER_OPTS_DEFAULTS[$i]}"
-#    			echo "$opt: ${TRANSCRIBER_OPTS_DEFAULTS[$opt]}"
-    			# If opt is not in options_used and also not in ignore_opts: add opt + default val
-				if ! _check_for_exact_str "$opt" "${options_used[@]}" && ! _check_for_exact_str "$opt" "${ignore_opts[@]}"; then
-#    			if [[ ! " ${options_used[@]} " =~ " $opt " ]] && [[ ! " ${ignore_opts[@]} " =~ " $opt " ]]; then 
-    				# First opt: prepend '|'
-    				if [[ i -eq 0 ]] && [[ $args_str != "" ]]; then
-    					args_str+="|"
-					fi
-					# Add opt + val
-					args_str+="$opt=${TRANSCRIBER_OPTS_DEFAULTS[$opt]}"
-					# Not last opt: add '|'
-    				if [[ $i -lt $((${#TRANSCRIBER_OPTS_DEFAULTS[@]} - 1)) ]]; then
-						args_str+="|"
-    				fi
-    			fi
-    			((i++))
-			done
-		fi
-
-		# Looks like '-k1 v1,-k2 v2,-k3 v3'
-		# TODO fix: add defaults to args_str
-#		echo $args_str
-#		if ! _check_for_exact_str "-m" "${options_used[@]}"; then
-#		if [[ ! "$args_str" == *"-m 0" ]]; then
-#			# If args_str is empty
-#			if ! [ -z "$args_str" ]; then
-#				args_str+=","
-#			fi
-#			args_str+="-m 0"
-#		fi
-#		echo $args_str
-#		if ! _check_for_exact_str "-t" "${options_used[@]}"; then
-#		if [[ ! "$args_str" == *"-t " ]]; then
-#			args_str+=",-t y"
-#		fi
-#		echo $args_str
-
-#		# Add provided options and values
-#		for opt in "${!TRANSCRIBER_OPTS_DEFAULTS[@]}"; do
-
-#		done
-#		for opt in "${!TRANSCRIBER_OPTS_DEFAULTS[@]}"; do
-#    		# If provided, add provided value 
-#    		if [[ " ${options_used[@]} " =~ $opt ]]; then
-#				args_str+=$opt    			
-#    		# Else: add default value
-#    		echo "$opt: ${TRANSCRIBER_OPTS_DEFAULTS[$opt]}"
-#		done
-#
-#		args_str=$(create_cli_args "$options_used[@]" "$values_used[@]" "java")
-#		echo $args_str
-#		# "-u=A|-k=-2|-m=0|-t=y|-y=ILT"
-
-		
-#		model_id="N-bwd-thesis-int-4vv"
-#		model_id="N-fwd-thesis-int-4vv"
-#		model_id="D-bwd-thesis-int-4vv"
-#		model_id='D-bwd-byrd-int-4vv'
-#		rootpath="$ROOT_PATH_"
-#		verbose=""
-#		datasetname=""
-#		filename="$fname"
-
 		java -cp "$class_path" "ui.UI" "$DEV" "$opts_str" "$vals_default_str" "$args_str"
 	fi
 fi
