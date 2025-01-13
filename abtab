@@ -77,6 +77,8 @@ TABMAPPER_OPTS_VALS=(
 	"$file"
 	"$help"
 )
+# custom, dlaute: irrelevant are -y, -o, -v // user-chosen is -f
+# custom, plaute: irrelevant is -y // user-chosen are -k, -m, -o, -v, -f 
 TRANSCRIBER_OPTS_VALS=(
 	"-u|--tuning|F F- G G- A A- i||i|tuning|Tuning; options|"
 #	"-u|--tuning|F F- G G- A A- i||i (as in input file) if provided; else G|tuning|Tuning; options|"
@@ -89,7 +91,7 @@ TRANSCRIBER_OPTS_VALS=(
 	"-l|--style|p d|polyphonic diplomatic|p||Transcription style; options|"
 	"-o|--model|N-bwd-thesis-int-4vv N-fwd-thesis-int-4vv N-bwd-thesis-int-3vv||N-bwd-thesis-int-4vv|model|* Trained model; options|"
 	"-v|--verbose|y n||n||* Verbose|"
-	"-c|--custom|ELP ELD user||n/a|custom|Use customisation (pre-defined set of options); options|"
+	"-c|--custom|dlaute plaute user||n/a|custom|Use customisation (pre-defined set of options); options|"
 #	"${format/Process/* Process}" # insert asterisk + space
 	"$file"
 	"$help"
@@ -432,12 +434,20 @@ populate_opts_and_vals_lists() {
 				if [[ $short_opt == "-c" ]]; then
 					# Parse custom args
 					local customisation="$2"
-					local parsed_args_custom=($(parse_options "${!customisation}")) # indirect expansion evaluates the arg
-																					# as "$ELP", "$ELD", ... from config.cfg
+					local parsed_args_custom=($(parse_options "${!customisation}")) # indirect expansion evaluates the arg to
+																					# parse_options() as "$<CUSTOM> from config.cfg
 					# Populate options_used and values_used	with the parsed custom args
 					populate_opts_and_vals_lists "${parsed_args_custom[@]}"
+					echo PARSED
+					echo "${parsed_args[@]}"
+					echo "${parsed_args_custom[@]}"
 				# Non-customisation case
 				else
+					# If this method is called within the customisation-if and options_used already
+					# contains short_opt: overwrite its value
+
+					# If this method is not called within the customisation-f and options_used
+					# already contains short_opt: do not add it 
 					options_used+=("$short_opt")
 					values_used+=("$2")
 				fi
@@ -446,6 +456,8 @@ populate_opts_and_vals_lists() {
 				;;
 		esac
 	done
+	echo "${options_used[@]}"
+	echo "${values_used[@]}"
 }
 
 
@@ -538,9 +550,108 @@ check_first_arg "$@"
 set_global_vars "$TOOL"
 
 # 4. Parse args
+
+
+expand_args() {
+	
+	parsed_args_str="$@" # str
+	parsed_args=("$@") # arr
+	
+	echo FUKKKKKKKK
+	echo "${parsed_args[@]}"	
+	# Split into optional and positional args
+	delimiter=" -- "	
+	optional="${parsed_args_str%%$delimiter*}" # everything before ' -- '
+	optional+=" --"
+	optional=($optional) # arr
+	positional="${parsed_args_str#*$delimiter}" # everything after ' -- '
+	echo "->"${optional[@]}"<-"
+	echo "->"$positional"<-"
+	if _array_contains "-c" "${parsed_args[@]}" || _array_contains "--custom" "${parsed_args[@]}"; then
+		# Determine customisation
+		customisation=''
+		for i in "${!parsed_args[@]}"; do
+			if [[ "${parsed_args[i]}" == "-c" || "${parsed_args[i]}" == "--custom" ]]; then
+				customisation="${parsed_args[i+1]}"
+				break
+			fi
+		done
+
+		# Get customisation args and parse them
+		cst="${!customisation}" # indirect expansion evaluates to "$<CUSTOM> from config.cfg
+		echo CUS
+		echo $cst
+#		parsed_args_custom_str=$(parse_options "$cst") # str
+		parsed_args_custom=($(parse_options "$cst")) # arr
+		parsed_args_custom_str="${parsed_args_custom[@]}"" " # add space after ' --'
+		echo "${parsed_args_custom[@]}"
+
+#		parsed_args_custom=("${parsed_args_custom_str[@]}") # arr
+		# Split into optional and positional args
+		delimiter=" --" 
+		optional_custom="${parsed_args_custom_str%%$delimiter*}" # everything before ' --'
+		positional_custom="${parsed_args_custom_str#*$delimiter}" # everything after ' --'
+		echo ZZZZZZZZ
+		echo "$parsed_args_custom_str""<-"
+		echo "->"$optional_custom"<-"
+		echo "->"$positional_custom"<-"
+
+		# Merge: make new string and 
+		# 1. go through elements of $@
+		#    - if -c: don't add
+		#    - if in vals of customisation: don't add
+		#    - else: add
+		# 2. append vals of cus
+		expanded=''
+		echo PAKK
+		echo $parsed_args_custom
+		for i in "${!optional[@]}"; do
+			echo $i
+			curr="${optional[i]}"
+			echo "curr ->""$curr""<-"
+			next="${optional[i+1]}"
+			echo "next ->""$next""<-"
+#			echo "${parsed_args_custom[@]}"
+			# If curr is an option or a flag (i.e., starts with a dash) and not a value
+			if [[ "$curr" == -* ]]; then
+				echo KUUUUUUUUUUTTTTT
+				# Skip if cur is -c or --custom:
+				if [[ $curr == "-c" || $curr == "--custom" ]]; then
+					continue
+				# Skip if curr is in parsed_args_custom
+				elif _array_contains "$curr" "${parsed_args_custom[@]}"; then
+					echo yes
+					continue
+				# Else, add
+				else
+					expanded+="$curr ${optional[i+1]} "
+				fi
+			elif [[ "$curr" == " --" ]]; then
+				break
+			fi
+
+
+
+
+		done
+
+		echo RRRRRRRRR
+		echo $expanded
+		echo "->"$expanded"$parsed_args_custom_str""$positional""<-"
+
+		
+fi
+}
+
+
 # NB $@ is *not* updated inside parse_options() and retains its initial
 #    value (all args passed to the script via the terminal)
 parsed_args=($(parse_options "$@"))
+
+expand_args "${parsed_args[@]}" # "${parsed_args[@]}"
+
+# Populate options_used and values_used	with the parsed custom args
+populate_opts_and_vals_lists "${parsed_args_custom[@]}"
 
 # 5. Populate options_used and values_used with the parsed args
 options_used=()
