@@ -80,8 +80,8 @@ TABMAPPER_OPTS_VALS=(
 # custom, dlaute: irrelevant are -y, -o, -v // user-chosen is -f
 # custom, plaute: irrelevant is -y // user-chosen are -k, -m, -o, -v, -f 
 TRANSCRIBER_OPTS_VALS=(
-	"-u|--tuning|F F- G G- A A- i||i|tuning|Tuning; options|"
-#	"-u|--tuning|F F- G G- A A- i||i (as in input file) if provided; else G|tuning|Tuning; options|"
+	"-u|--tuning|F F6Eb G G6F A A6G i||i|tuning|Tuning; options|"
+#	"-u|--tuning|F F6Eb G G6F A A6G i||i (as in input file) if provided; else G|tuning|Tuning; options|"
 	"-k|--key|-5 -4 -3 -2 -1 0 1 2 3 4 5||0|key|Key; options|"
 	"-m|--mode|0 1|major minor|0||Mode; options|"
 	"-s|--staff|s d|single double|d||Staff; options|"
@@ -588,6 +588,8 @@ set_global_vars "$TOOL"
 #    value (all args passed to the script via the terminal)
 parsed_args=($(parse_options "$@"))
 parsed_args=($(expand_args "${parsed_args[@]}"))
+echo JOOOOOOOOOOOOOOOOOOO
+echo "${parsed_args[@]}"
 
 # 5. Populate options_used and values_used with the parsed args
 options_used=()
