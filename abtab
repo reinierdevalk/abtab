@@ -588,8 +588,6 @@ set_global_vars "$TOOL"
 #    value (all args passed to the script via the terminal)
 parsed_args=($(parse_options "$@"))
 parsed_args=($(expand_args "${parsed_args[@]}"))
-echo JOOOOOOOOOOOOOOOOOOO
-echo "${parsed_args[@]}"
 
 # 5. Populate options_used and values_used with the parsed args
 options_used=()
