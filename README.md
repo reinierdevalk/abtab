@@ -1,4 +1,9 @@
-1. Create, on a path of choice on your computer, a directory called `abtab`. The path up to and including this directory is the `<root_path>`, and it will hold the input files read and output files created by `abtab`.
+0. Create, on a path of choice on your computer, a directory called `abtab`. The path up to and including this directory is the `<root_path>`, and it will hold the input files read and output files created by `abtab`.
+
+1. Clone the abtab repository in `<root_path>` (note the dot at the end of the `clone` command!).
+    
+   $ cd <root_path>/ 
+   $ git clone https://github.com/reinierdevalk/abtab.git .
 
 2. Open `config.cfg` and
    - Replace the default value of the `ROOT_PATH` variable with the `<root_path>`.
@@ -17,11 +22,13 @@
 
       $ echo $PATH
 
-3. `cd` into the `<code_path>` directory
+SKIP -->
+3. `cd` into the `<code_path>` directory 
 
        $ cd <root_path>/<code_path>/
+<-- SKIP
 
-4. Run the installation script, `install.sh`:
+4. Run the installation script, `install.sh`, from the `<root_path>`:
 
        $ bash install.sh
 

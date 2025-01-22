@@ -2,6 +2,10 @@
 
 # Script that installs `abtab`. It must be called from the same
 # folder that folds config.cfg, cp.sh, cp.txt, abtab, and paths.json.
+#
+# NB: When editing this file, set the line endings to Unix: 
+#     View > Line endings > Unix
+
 
 config_file="config.cfg"
 cp_file="cp.sh"
@@ -63,11 +67,14 @@ exe_path="$EXE_PATH"
 config_paths=("$root_path" "$lib_path" "$exe_path")
 for path in "${config_paths[@]}"; do
     if [ ! -d "$path" ]; then
+        echo "    ... creating $path ..."
         mkdir -p "$path"
+    else 
+        echo "    ... creating $path -- path already exists ..."
     fi
 done
 
-# Set ROOT_PATH_ and LIB_PATH_ in executable
+# 3. Set ROOT_PATH_ and LIB_PATH_ in executable
 # NB This requires forward slashes in root_ and lib_path to be escaped
 rp_placeholder="rp_placeholder"
 lp_placeholder="lp_placeholder"
@@ -76,17 +83,110 @@ lib_path_esc=$(echo "$lib_path" | sed 's/\//\\\//g')
 sed -i "s/$rp_placeholder/$root_path_esc/g" "$abtab_file"
 sed -i "s/$lp_placeholder/$lib_path_esc/g" "$abtab_file"
 
-Also in dev case:
-root_path = F:/research/computation/abtab/
-root_path contains models/, templates/, and tool_data/ 
---> needs to be changed in paths.json, together with the four paths below TEMPLATES_PATH there
-contents of templates/ and models/ needs to be copied to abtab/ repo every time a push is made
+# 4. Add exe_path (as cygpath) to the end of ~/.bash_profile  
+# Create ~/.bash_profile if it doesn't exist
+# NB On Windows, it is in C:\cygwin64\home\<Name>
+bp_file="$HOME/.bash_profile" # ~/.bash_profile
+if [ ! -f "$bp_file" ]; then
+  touch "$bp_file"
+fi
+# Create exe_path_cyg without trailing slash; if it has not been added,
+# add to ~/.bash_profile and source ~/.bash_profile (apply the changes) 
+exe_path_cyg=$(cygpath -u "$exe_path")
+exe_path_cyg=$(echo "$exe_path_cyg" | sed 's:/*$::')
+to_add="PATH=\$PATH:$exe_path_cyg" # PATH=$PATH:/cygdrive/c/Users/Reinier/bin
+if ! grep -qxF "$to_add" "$bp_file"; then
+  echo "$to_add" >> "$bp_file" 
+  source "$bp_file"
+fi
 
-# Other paths needed on ROOT_PATHS
-# models/ and templates/, both with contents, need to be copied from git
-  "MODELS_PATH":                "models/",
-  "TEMPLATES_PATH":             "templates/",
-  "TABMAPPER_PATH":             "tool_data/tabmapper/",
-  "DIPLOMAT_PATH":              "tool_data/transcriber/diplomatic/",
-  "POLYPHONIST_PATH":           "tool_data/transcriber/polyphonic/",
-  "ANALYSER_PATH":              "tool_data/analyser/",
+# 5. Handle any existing version of abtab
+echo "... handling existing version of abtab ... "
+# a. Clear abtab/ folder on lib_path
+# Make sure that lib_path is set
+if [ -z "$lib_path" ]; then
+    echo "Error: lib_path is not set." >&2
+    exit 1
+fi
+# Make sure lib_path is a valid directory
+if [ ! -d "$lib_path" ]; then
+    echo "Error: lib_path '$lib_path' is not a valid directory." >&2
+    exit 1
+fi
+# Make sure that lib_path is not a dangerous or root directory
+if [ "$lib_path" = "/" ] || [ "$lib_path" = "/usr" ] || [ "$lib_path" = "/home" ]; then
+    echo "Error: lib_path '$lib_path' is a critical system path." >&2
+    exit 1
+fi
+# If lib_path is not empty: clear abtab/ folder
+if [ "$(find "$lib_path" -mindepth 1 -print -quit)" ]; then
+	echo "    ... clearing $lib_path ..."
+	rm -rf "$lib_path"/*
+else
+    echo "    ... clearing $lib_path -- path already clear ..."
+fi
+#if [ ! -z "$(ls -A "$lib_path")" ]; then
+#    rm -rf "$lib_path"/*
+#fi
+#if [ -d "$lib_path" ]; then
+#    rm -r "$lib_path" # remove the last dir (abtab/) on lib_path 
+#fi
+
+# b. Remove executable from exe_path
+# Make sure that exe_path and abtab_file are set
+if [ -z "$exe_path" ] || [ -z "$abtab_file" ]; then
+    echo "Error: exe_path or abtab_file is not set." >&2
+    exit 1
+fi
+# Make sure exe_path is a valid directory
+if [ ! -d "$exe_path" ]; then
+    echo "Error: exe_path '$exe_path' is not a valid directory." >&2
+    exit 1
+fi
+# Make sure that file_path is set
+file_path="$exe_path$abtab_file"
+if [ -z "$file_path" ]; then
+    echo "Error: file_path is not set." >&2
+    exit 1
+fi
+# Make sure that file_path starts with exe_path
+if [[ "$file_path" != "$exe_path"* ]]; then
+    echo "Error: file_path '$file_path' is outside the expected directory '$exe_path'." >&2
+    exit 1
+fi
+# If file_path exists: remove executable
+if [ -f "$file_path" ]; then
+    echo "    ... removing existing version of $abtab_file from $exe_path ..."
+    rm -f "$file_path" 
+else
+    echo "    ... removing existing version of $abtab_file from $exe_path -- no existing version found ..."
+fi
+
+# 6. Clone repos into pwd
+echo "... cloning repositories ... "
+# Extract parts before first slash; sort; get unique values
+repos=$(cut -d '/' -f 1 "cp.txt" | sort | uniq)
+echo $repos
+for repo in $repos; do
+    # Ignore elements starting with a dot
+    if [[ ! "$repo" =~ ^\. ]]; then
+        repo_url="https://github.com/reinierdevalk/$repo.git"
+        echo "    ... cloning $repo_url ..."
+        git clone "$repo_url"
+    fi
+done
+
+#Also in dev case:
+#root_path = F:/research/computation/abtab/
+#root_path contains models/, templates/, and tool_data/ 
+#--> needs to be changed in paths.json, together with the four paths below TEMPLATES_PATH there
+#contents of templates/ and models/ needs to be copied to abtab/ repo every time a push is made
+#
+## Other paths needed on ROOT_PATHS
+## models/ and templates/, both with contents, need to be copied from git
+#  "MODELS_PATH":                "models/",
+#  "TEMPLATES_PATH":             "templates/",
+#  "TABMAPPER_PATH":             "tool_data/tabmapper/",
+#  "DIPLOMAT_PATH":              "tool_data/transcriber/diplomatic/",
+#  "POLYPHONIST_PATH":           "tool_data/transcriber/polyphonic/",
+#  "ANALYSER_PATH":              "tool_data/analyser/",
