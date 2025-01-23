@@ -82,7 +82,7 @@ TABMAPPER_OPTS_VALS=(
 TRANSCRIBER_OPTS_VALS=(
 	"-u|--tuning|F F6Eb G G6F A A6G i||i|tuning|Tuning; options|"
 #	"-u|--tuning|F F6Eb G G6F A A6G i||i (as in input file) if provided; else G|tuning|Tuning; options|"
-	"-k|--key|-5 -4 -3 -2 -1 0 1 2 3 4 5||0|key|Key; options|"
+	"-k|--key|-5 -4 -3 -2 -1 0 1 2 3 4 5 i||i|key|Key; options|"
 	"-m|--mode|0 1|major minor|0||Mode; options|"
 	"-s|--staff|s d|single double|d||Staff; options|"
 	"-t|--tablature|y n||y||Include tablature|"
@@ -397,16 +397,16 @@ expand_args() {
 	# If there is a customisation  
 	if _array_contains "-c" "${optional[@]}" || _array_contains "--custom" "${optional[@]}"; then
 		# Determine customisation
-		local customisation=''
+		local CUSTOMISATION_=''
 		for i in "${!optional[@]}"; do
 			if [[ "${optional[i]}" == "-c" || "${optional[i]}" == "--custom" ]]; then
-				customisation="${optional[i+1]}"
+				CUSTOMISATION_="${optional[i+1]}"
 				break
 			fi
 		done
 
 		# Get custom args and parse them
-		local cst="${!customisation}" # indirect expansion evaluates to "$<custom> from config.cfg
+		local cst="${!CUSTOMISATION_}" # indirect expansion evaluates to "$<custom> from config.cfg
 		local parsed_args_custom=($(parse_options "$cst")) # arr
 		local parsed_args_custom_str="${parsed_args_custom[@]}" # str
 
@@ -551,18 +551,22 @@ create_cli_args() {
 
 # 2. SCRIPT CODE
 # 0. Source config.cfg
-source_filtered "config.cfg"
+#source_filtered "config.cfg"
 
 # 1. Set paths
 # Paths (unix-style) are read from config.cfg 
 # DEV case: paths set every time this script is called (below)
 if "$DEV"; then
+	# Source config.cfg
+	source_filtered "config.cfg"
 	ROOT_PATH_="$ROOT_PATH" # from config.cfg
 	LIB_PATH_="$LIB_PATH" # from config.cfg
 # Real-world case: paths added once during installation (in install.sh)
 else
-	ROOT_PATH_="rp_placeholder"
-	LIB_PATH_="lp_placeholder"
+	ROOT_PATH_="F:/research/computation/abtab/"
+	LIB_PATH_="C:/Users/Reinier/lib/abtab/"
+	# Source config.cfg 
+	source_filtered "$LIB_PATH_""config.cfg"
 fi
 PYTHON_PATH="${LIB_PATH_}transcriber/py/"
 # Create the class path

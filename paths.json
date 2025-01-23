@@ -1,3 +1,4 @@
+// This file itself must be on the CODE_PATH
 {
     "paths": {
         // Paths set from config.cfg
@@ -16,11 +17,11 @@
         "MODELS_PATH":                  "models/", // (UI), (UI)
         "TEMPLATES_PATH":               "templates/", // (UI), (Editor, TabMapper, UI)  
         // toolbox case
-        "ANALYSER_PATH":                "tool_data/analyser/", // (Analyser)
-        "CONVERTER_PATH":               "tool_data/converter/", // (Editor)
-        "TABMAPPER_PATH":               "tool_data/tabmapper/", // (TabMapper)
-        "DIPLOMAT_PATH":                "tool_data/transcriber/diplomatic/", // (not used)
-        "POLYPHONIST_PATH":             "tool_data/transcriber/polyphonic/", // (Analyser, Dataset, UI)
+        "ANALYSER_PATH":                "data/analyser/", // (Analyser)
+        "CONVERTER_PATH":               "data/converter/", // (Editor)
+        "TABMAPPER_PATH":               "data/tabmapper/", // (TabMapper)
+        "DIPLOMAT_PATH":                "data/transcriber/diplomatic/", // (transcriber.py)
+        "POLYPHONIST_PATH":             "data/transcriber/polyphonic/", // (Analyser, Dataset, UI)
         
         // Paths on CODE_PATH
         // model-dev and toolbox case

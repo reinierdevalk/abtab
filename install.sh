@@ -3,7 +3,7 @@
 # Script that installs `abtab`. It must be called from the same
 # folder that folds config.cfg, cp.sh, cp.txt, abtab, and paths.json.
 #
-# NB: When editing this file, set the line endings to Unix: 
+# NB: When editing this file with Sublime, set the line endings to Unix: 
 #     View > Line endings > Unix
 
 
@@ -49,7 +49,7 @@ handle_file() {
         exit 1
     fi
 }
-echo "Installation process started ..."
+echo "Installation started ..."
 
 # 1. Handle files
 echo "... handling files ..."
@@ -164,17 +164,60 @@ fi
 
 # 6. Clone repos into pwd
 echo "... cloning repositories ... "
+# a. Add repos that go on the class path
 # Extract parts before first slash; sort; get unique values
 repos=$(cut -d '/' -f 1 "cp.txt" | sort | uniq)
-echo $repos
+# b. Add repos that do not go on the class path
+repos+=("models" "templates")
 for repo in $repos; do
     # Ignore elements starting with a dot
     if [[ ! "$repo" =~ ^\. ]]; then
         repo_url="https://github.com/reinierdevalk/$repo.git"
-        echo "    ... cloning $repo_url ..."
-        git clone "$repo_url"
+        if [[ ! -d "$repo" ]]; then
+            echo "    ... cloning $repo_url ..."
+            git clone "$repo_url"
+        else
+            echo "    ... cloning $repo_url -- repository already exists ..."
+        fi
     fi
 done
+
+# 7. Create data dirs on root_path
+echo "... creating data directories ..."
+paths=(
+       "analyser/in/" "analyser/out/"
+       "converter/"
+       "tabmapper/in/tab/" "tabmapper/in/MIDI/" "tabmapper/out/"
+       "transcriber/diplomatic/in/" "transcriber/diplomatic/out/"
+       "transcriber/polyphonic/in/" "transcriber/polyphonic/out/"
+      )
+data_dir="data/"
+for dir_ in "${paths[@]}"; do
+    full_dir="$root_path""$data_dir""$dir_"
+    if [ ! -d "$full_dir" ]; then
+        echo "    ... creating $data_dir$dir_ ..."
+        mkdir -p "$full_dir"
+    else
+        echo "    ... creating $data_dir$dir_ -- directory already exists ..."
+    fi
+done
+
+# 8. Install abtab
+echo "... installing abtab ..."
+# Move executable to exe_path
+cp "$abtab_file" "$exe_path"
+# Move contents of pwd (excluding executable) to lib_path
+skip=("models" "templates" "data" "abtab")
+for item in *; do
+    # Move only files/folders that are not in skip
+    if [[ ! " ${skip[@]} " =~ " ${item} " ]]; then # the spaces around skip/item avoid partial match
+#    if [ "$item" != "models" ]; then
+        cp -r "$item" "$lib_path"
+    fi
+done
+##rsync -av --exclude="$abtab_file" ./ "$lib_path"
+
+echo "... installation complete!"
 
 #Also in dev case:
 #root_path = F:/research/computation/abtab/
