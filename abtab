@@ -564,7 +564,7 @@ if "$DEV"; then
 # Real-world case: paths added once during installation (in install.sh)
 else
 	ROOT_PATH_="rp_placeholder"
-	LIB_PATH_=lp_placeholder"
+	LIB_PATH_="lp_placeholder"
 	# Source config.cfg 
 	source_filtered "$LIB_PATH_""config.cfg"
 fi
