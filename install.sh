@@ -196,11 +196,13 @@ rm -f "$example_mid"
 # 7. Clone repos into pwd
 echo "... cloning repositories ... "
 # a. Add repos that go on the class path
-# Extract parts before first slash; sort; get unique values
-repos=$(cut -d '/' -f 1 "cp.txt" | sort | uniq)
+# Extract parts before first slash; sort; get unique values 
+mapfile -t repos < <(cut -d '/' -f 1 "cp.txt" | sort | uniq) # initialize repos as an array
+#repos=$(cut -d '/' -f 1 "cp.txt" | sort | uniq)
 # b. Add repos that do not go on the class path
-repos+=("models" "templates")
-for repo in $repos; do
+repos+=("models" "templates") # append items to the array
+for repo in "${repos[@]}"; do
+#for repo in $repos; do
     # Ignore elements starting with a dot
     if [[ ! "$repo" =~ ^\. ]]; then
         repo_url="https://github.com/reinierdevalk/$repo.git"
