@@ -563,8 +563,8 @@ if "$DEV"; then
 	LIB_PATH_="$LIB_PATH" # from config.cfg
 # Real-world case: paths added once during installation (in install.sh)
 else
-	ROOT_PATH_="F:/research/computation/abtab/"
-	LIB_PATH_="C:/Users/Reinier/lib/abtab/"
+	ROOT_PATH_=""
+	LIB_PATH_=""
 	# Source config.cfg 
 	source_filtered "$LIB_PATH_""config.cfg"
 fi

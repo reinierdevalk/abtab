@@ -10,6 +10,8 @@
 config_file="config.cfg"
 cp_file="cp.sh"
 abtab_file="abtab"
+example_tab="rore-anchor_che_col_1-10.tc"
+example_mid="rore-anchor_che_col_1-10.mid"
 
 remove_carriage_returns() {
     local file="$1"
@@ -57,7 +59,7 @@ handle_file "$config_file" false
 handle_file "$cp_file" true
 handle_file "$abtab_file" true
 
-# 2. Configure paths 
+# 2. Configure and create paths 
 # Source config.cfg (make PATHs available locally)
 echo "... configuring paths ... "
 source "$config_file"
@@ -162,7 +164,36 @@ else
     echo "    ... removing existing version of $abtab_file from $exe_path -- no existing version found ..."
 fi
 
-# 6. Clone repos into pwd
+# 6. Create data dirs on root_path
+echo "... creating data directories ..."
+paths=(
+       "analyser/in/" "analyser/out/"
+       "converter/"
+       "tabmapper/in/tab/" "tabmapper/in/MIDI/" "tabmapper/out/"
+       "transcriber/diplomatic/in/" "transcriber/diplomatic/out/"
+       "transcriber/polyphonic/in/" "transcriber/polyphonic/out/"
+      )
+data_dir="data/"
+for dir_ in "${paths[@]}"; do
+    full_dir="$root_path""$data_dir""$dir_"
+    if [ ! -d "$full_dir" ]; then
+        echo "    ... creating $data_dir$dir_ ..."
+        mkdir -p "$full_dir"
+    else
+        echo "    ... creating $data_dir$dir_ -- directory already exists ..."
+    fi
+done
+# Move example files
+cp "$example_tab" "$root_path""$data_dir""analyser/in/"
+cp "$example_tab" "$root_path""$data_dir""converter/"
+cp "$example_tab" "$root_path""$data_dir""tabmapper/in/tab/"
+cp "$example_mid" "$root_path""$data_dir""tabmapper/in/MIDI/"
+#cp "$example_tab" "$root_path""$data_dir""transcriber/diplomatic/in/" # TODO: currently accepts only .mei
+cp "$example_tab" "$root_path""$data_dir""transcriber/polyphonic/in/"
+rm -f "$example_tab"
+rm -f "$example_mid"
+
+# 7. Clone repos into pwd
 echo "... cloning repositories ... "
 # a. Add repos that go on the class path
 # Extract parts before first slash; sort; get unique values
@@ -182,26 +213,6 @@ for repo in $repos; do
     fi
 done
 
-# 7. Create data dirs on root_path
-echo "... creating data directories ..."
-paths=(
-       "analyser/in/" "analyser/out/"
-       "converter/"
-       "tabmapper/in/tab/" "tabmapper/in/MIDI/" "tabmapper/out/"
-       "transcriber/diplomatic/in/" "transcriber/diplomatic/out/"
-       "transcriber/polyphonic/in/" "transcriber/polyphonic/out/"
-      )
-data_dir="data/"
-for dir_ in "${paths[@]}"; do
-    full_dir="$root_path""$data_dir""$dir_"
-    if [ ! -d "$full_dir" ]; then
-        echo "    ... creating $data_dir$dir_ ..."
-        mkdir -p "$full_dir"
-    else
-        echo "    ... creating $data_dir$dir_ -- directory already exists ..."
-    fi
-done
-
 # 8. Install abtab
 echo "... installing abtab ..."
 # Move executable to exe_path
@@ -218,6 +229,27 @@ done
 ##rsync -av --exclude="$abtab_file" ./ "$lib_path"
 
 echo "... installation complete!"
+
+
+## 4. Create folders
+#echo "... creating folders ... "
+#tabmapper_path="$full_path""tabmapper/"
+#data_in="$tabmapper_path""data/in/"
+#data_in_tab="$tabmapper_path""data/in/tab/"
+#data_in_MIDI="$tabmapper_path""data/in/MIDI/"
+#data_out="$tabmapper_path""data/out/"
+#if [ ! -d "$data_in" ]; then
+#    mkdir -p "$data_in"
+#fi
+#if [ ! -d "$data_in_tab" ]; then
+#    mkdir -p "$data_in_tab"
+#fi
+#if [ ! -d "$data_in_MIDI" ]; then
+#    mkdir -p "$data_in_MIDI"
+#fi
+#if [ ! -d "$data_out" ]; then
+#    mkdir -p "$data_out"
+#fi
 
 #Also in dev case:
 #root_path = F:/research/computation/abtab/
