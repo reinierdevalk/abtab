@@ -7,11 +7,20 @@
 #     View > Line endings > Unix
 
 
-config_file="config.cfg"
-cp_file="cp.sh"
-abtab_file="abtab"
-example_tab="rore-anchor_che_col_1-10.tc"
-example_mid="rore-anchor_che_col_1-10.mid"
+config="config.cfg"
+cps="cp.sh"
+cpt="cp.txt"
+abtab="abtab"
+ex_tab="rore-anchor_che_col_1-10.tc"
+ex_mid="rore-anchor_che_col_1-10.mid"
+
+echo $config
+echo $cps
+echo $cpt
+echo $abtab
+echo $ex_tab
+echo $ex_mid
+
 
 remove_carriage_returns() {
     local file="$1"
@@ -55,14 +64,15 @@ echo "Installation started ..."
 
 # 1. Handle files
 echo "... handling files ..."
-handle_file "$config_file" false
-handle_file "$cp_file" true
-handle_file "$abtab_file" true
+handle_file "$config" false
+handle_file "$cps" true
+handle_file "$cpt" true
+handle_file "$abtab" true
 
 # 2. Configure and create paths 
 # Source config.cfg (make PATHs available locally)
 echo "... configuring paths ... "
-source "$config_file"
+source "$config"
 root_path="$ROOT_PATH"
 lib_path="$LIB_PATH"
 exe_path="$EXE_PATH"
@@ -82,10 +92,10 @@ rp_placeholder="rp_placeholder"
 lp_placeholder="lp_placeholder"
 root_path_esc=$(echo "$root_path" | sed 's/\//\\\//g')
 lib_path_esc=$(echo "$lib_path" | sed 's/\//\\\//g')
-sed -i "s/$rp_placeholder/$root_path_esc/g" "$abtab_file"
-sed -i "s/$lp_placeholder/$lib_path_esc/g" "$abtab_file"
+sed -i "s/$rp_placeholder/$root_path_esc/g" "$abtab"
+sed -i "s/$lp_placeholder/$lib_path_esc/g" "$abtab"
 
-# 4. Add exe_path (as cygpath) to the end of ~/.bash_profile  
+# 4. Add exe_path (as cygpath) to the end of ~/.bash_profile (i.e., add it to $PATH) 
 # Create ~/.bash_profile if it doesn't exist
 # NB On Windows, it is in C:\cygwin64\home\<Name>
 bp_file="$HOME/.bash_profile" # ~/.bash_profile
@@ -135,9 +145,9 @@ fi
 #fi
 
 # b. Remove executable from exe_path
-# Make sure that exe_path and abtab_file are set
-if [ -z "$exe_path" ] || [ -z "$abtab_file" ]; then
-    echo "Error: exe_path or abtab_file is not set." >&2
+# Make sure that exe_path and abtab are set
+if [ -z "$exe_path" ] || [ -z "$abtab" ]; then
+    echo "Error: exe_path or abtab is not set." >&2
     exit 1
 fi
 # Make sure exe_path is a valid directory
@@ -146,7 +156,7 @@ if [ ! -d "$exe_path" ]; then
     exit 1
 fi
 # Make sure that file_path is set
-file_path="$exe_path$abtab_file"
+file_path="$exe_path$abtab"
 if [ -z "$file_path" ]; then
     echo "Error: file_path is not set." >&2
     exit 1
@@ -158,10 +168,10 @@ if [[ "$file_path" != "$exe_path"* ]]; then
 fi
 # If file_path exists: remove executable
 if [ -f "$file_path" ]; then
-    echo "    ... removing existing version of $abtab_file from $exe_path ..."
+    echo "    ... removing existing version of $abtab from $exe_path ..."
     rm -f "$file_path" 
 else
-    echo "    ... removing existing version of $abtab_file from $exe_path -- no existing version found ..."
+    echo "    ... removing existing version of $abtab from $exe_path -- no existing version found ..."
 fi
 
 # 6. Create data dirs on root_path
@@ -184,41 +194,36 @@ for dir_ in "${paths[@]}"; do
     fi
 done
 # Move example files
-cp "$example_tab" "$root_path""$data_dir""analyser/in/"
-cp "$example_tab" "$root_path""$data_dir""converter/"
-cp "$example_tab" "$root_path""$data_dir""tabmapper/in/tab/"
-cp "$example_mid" "$root_path""$data_dir""tabmapper/in/MIDI/"
-#cp "$example_tab" "$root_path""$data_dir""transcriber/diplomatic/in/" # TODO: currently accepts only .mei
-cp "$example_tab" "$root_path""$data_dir""transcriber/polyphonic/in/"
-rm -f "$example_tab"
-rm -f "$example_mid"
+cp "$ex_tab" "$root_path""$data_dir""analyser/in/"
+cp "$ex_tab" "$root_path""$data_dir""converter/"
+cp "$ex_tab" "$root_path""$data_dir""tabmapper/in/tab/"
+cp "$ex_mid" "$root_path""$data_dir""tabmapper/in/MIDI/"
+#cp "$ex_tab" "$root_path""$data_dir""transcriber/diplomatic/in/" # TODO: currently accepts only .mei
+cp "$ex_tab" "$root_path""$data_dir""transcriber/polyphonic/in/"
+rm -f "$ex_tab"
+rm -f "$ex_mid"
 
 # 7. Clone repos into pwd
 echo "... cloning repositories ... "
-# a. Add repos that go on the class path
-# Extract parts before first slash; sort; get unique values 
-mapfile -t repos < <(cut -d '/' -f 1 "cp.txt" | sort | uniq) # initialize repos as an array
-#repos=$(cut -d '/' -f 1 "cp.txt" | sort | uniq)
-# b. Add repos that do not go on the class path
-repos+=("models" "templates") # append items to the array
-for repo in "${repos[@]}"; do
-#for repo in $repos; do
-    # Ignore elements starting with a dot
-    if [[ ! "$repo" =~ ^\. ]]; then
-        repo_url="https://github.com/reinierdevalk/$repo.git"
-        if [[ ! -d "$repo" ]]; then
-            echo "    ... cloning $repo_url ..."
-            git clone "$repo_url"
-        else
-            echo "    ... cloning $repo_url -- repository already exists ..."
-        fi
+# a. Add repos that go on the class path (listed in cpt)
+# Extract parts before first slash | exclude items starting with a dot | sort | get unique values 
+repos=$(cut -d '/' -f 1 "$cpt" | grep -v '^\.' | sort | uniq)
+# b. Add repos that do not go on the class path (listed in config)
+repos="${repos} ${add_repos}" # add_repos is from config
+for repo in $repos; do
+    repo_url="https://github.com/reinierdevalk/$repo.git"
+    if [[ ! -d "$repo" ]]; then
+        echo "    ... cloning $repo_url ..."
+        git clone "$repo_url"
+    else
+        echo "    ... cloning $repo_url -- repository already exists ..."
     fi
 done
 
 # 8. Install abtab
 echo "... installing abtab ..."
 # Move executable to exe_path
-cp "$abtab_file" "$exe_path"
+cp "$abtab" "$exe_path"
 # Move contents of pwd (excluding executable) to lib_path
 skip=("models" "templates" "data" "abtab")
 for item in *; do
@@ -228,7 +233,6 @@ for item in *; do
         cp -r "$item" "$lib_path"
     fi
 done
-##rsync -av --exclude="$abtab_file" ./ "$lib_path"
 
 echo "... installation complete!"
 
