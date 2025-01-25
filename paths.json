@@ -35,7 +35,7 @@
         "BEAM_SCRIPT":                  "beam.py",
         "SCIKIT_SCRIPT":                "model_scikit.py",
         "TENSORFLOW_SCRIPT":            "model_tensorflow.py",
-        "MEI_TEMPLATE":                 "template-MEI.xml",
+        "MEI_TEMPLATE":                 "template-MEI.mei",
         "MODEL_PARAMETERS":             "params.json"
     }
 }
