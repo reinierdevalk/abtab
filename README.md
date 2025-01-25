@@ -48,7 +48,7 @@ Furthermore, in order to be able to run `abtab`, you must have [Java](https://ww
        - Non-code repositories, as specified in `config.cfg`.
    - Installs `abtab`: moves all code to `<lib_path>`, and the executable to `<exe_path>`.
 
-   When the installation process is finished, `<root_path>` contains
+   When the installation process has finished, `<root_path>` contains
    - The `data/` directory. Contains, for each tool, the directories from which the input files are read (`in/`) and to which the output files are stored (`out/`). Apart from the example files moved into them during the installation process, these directories are empty.  
    - The `models/` directory. Contains the trained machine learning models called by the `transcriber` tool.
    - The `templates/` directory. Contains a high-level template of an MEI file, whose `<header>` can be adapted at will. 
