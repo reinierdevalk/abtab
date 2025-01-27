@@ -151,6 +151,7 @@ _array_contains() {
 
 _show_help() {
 	local arg_tool="$1"
+	local max_line_len=80
 
 	if [ "$arg_tool" == "all" ]; then
 		local tools=($(_get_column 0 "${TOOLS_DESC[@]}"))
@@ -164,9 +165,24 @@ _show_help() {
     	echo
     	echo "Use '$TOOLBOX [tool] -h' to see options for each tool"
 	else
-    	echo "Usage: $TOOLBOX $TOOL [options]"
-		echo
-    	echo "Options for $TOOL:"
+		echo "Usage:"
+		if [[ "$TOOL" == "converter" ]]; then
+			echo "  $TOOLBOX $TOOL [options] [<source> <destination>]"
+			echo
+			local argument="  <source>"
+			local help_text="* Source file (optional; must always be provided together with <destination>)"
+			echo "Arguments:"
+			_print_help_cols "$argument" "$help_text" $max_line_len
+			argument="  <destination>"
+			help_text="* Destination file (optional; must always be provided together with <source>)"
+			_print_help_cols "$argument" "$help_text" $max_line_len
+			echo "* If no files are provided, the tab+Editor, which facilitates editing and viewing of the source file, is opened"
+			echo
+		else
+			echo "  $TOOLBOX $TOOL [options]"
+			echo
+		fi
+    	echo "Options:"		
 		for row in "${OPTS_VALS[@]}"; do # str
 			IFS='|' read -r -a row_array <<< "$row" # array
 			local short_opt="${row_array[0]}"
@@ -229,32 +245,43 @@ _show_help() {
 #					add_help_text=". $add_help_text"
 #				fi
 
-				# Combine
+				# Combine and print
 				local options="  $short_opt, $long_opt $choice_text"
 				local help_text="$help_text""$options_text""$default_text" #"$add_help_text"
-				max_help_len=75
-				# If help_text requires multiple lines 
-				if [[ ${#help_text} -gt $max_help_len ]]; then
-					# Use fold to wrap the help text
-					local wrapped_help=$(echo "$help_text" | fold -s -w $max_help_len)
-
-					# Print $options with the first line of help text
-					printf "%-30s %-20s\n" "$options" "$(echo "$wrapped_help" | head -n 1)"
-
-					# Print the remaining lines of the wrapped help text, aligned to start at column 31
-					echo "$wrapped_help" | tail -n +2 | while IFS= read -r line; do
-						printf "%-30s %-20s\n" "" "$line"
-					done
-				# If not
-				else
-					printf "%-30s %-20s\n" "$options" "$help_text"
-				fi
+				_print_help_cols "$options" "$help_text" "$max_line_len"
 			fi
 		done
-		if [[ "$TOOL" ==  "transcriber" ]]; then
+		if [[ "$TOOL" == "transcriber" ]]; then
 			echo "* Applies only if transcription style is polyphonic"
 		fi
     fi
+}
+
+
+_print_help_cols() {
+	# Prints the left and right column of the help item; breaks the right  
+	# column into multiple lines if its length exceeds the give max length.
+
+	local left_col="$1"
+	local right_col="$2"
+	local max_line_len="$3"
+
+	# If right_col requires multiple lines 
+	if [[ ${#right_col} -gt $max_line_len ]]; then
+		# Use fold to wrap the text
+		local wrapped=$(echo "$right_col" | fold -s -w $max_line_len)
+
+		# Print $left_col with the first line of right_col
+		printf "%-30s %-20s\n" "$left_col" "$(echo "$wrapped" | head -n 1)"
+
+		# Print the remaining lines of right_col, aligned to start at column 31
+		echo "$wrapped" | tail -n +2 | while IFS= read -r line; do
+			printf "%-30s %-20s\n" "" "$line"
+		done
+	# If not
+	else
+		printf "%-30s %-20s\n" "$left_col" "$right_col"
+	fi
 }
 
 
@@ -610,8 +637,11 @@ if [ "$TOOL" == "analyser" ]; then
 	java -cp "$class_path" analysis.Analyser "$DEV" $model_id $args_str
 elif [ "$TOOL" == "converter" ]; then
 	ignore_opts=("")
-	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
-	java -cp "$class_path" tbp.editor.Editor "$DEV"
+#	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
+	shift # $1 = 'converter' 
+	source_file="$1"
+	dest_file="$2"
+	java -cp "$class_path" tbp.editor.Editor "$DEV" "$source_file" "$dest_file"   
 elif [ "$TOOL" == "tabmapper" ]; then
 	ignore_opts=("")
 	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
