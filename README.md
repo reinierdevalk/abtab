@@ -79,3 +79,15 @@ Use `File` > `Save` (or `File` > `Save as`) to save the file in the tab+ format;
 Alternatively, if both a source and a destination file are provided when `converter` is called, the editor is not opened, and the file in the source format is converted directly into the file in the destination format -- without any editing or viewing options.
 
     $ abtab converter source.<ext> destination.<ext>
+
+## `analyser`
+
+[TODO]
+
+## `tabmapper`
+
+[TODO]
+
+## `transcriber`
+
+[TODO]
