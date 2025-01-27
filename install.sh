@@ -1,25 +1,11 @@
 #!/bin/bash
 
 # Script that installs `abtab`. It must be called from the same
-# folder that folds config.cfg, cp.sh, cp.txt, abtab, and paths.json.
+# folder that folds config.cfg, classpath.sh, repositories.txt, 
+# abtab, and paths.json.
 #
 # NB: When editing this file with Sublime, set the line endings to Unix: 
 #     View > Line endings > Unix
-
-
-config="config.cfg"
-cps="cp.sh"
-cpt="cp.txt"
-abtab="abtab"
-ex_tab="rore-anchor_che_col_1-10.tc"
-ex_mid="rore-anchor_che_col_1-10.mid"
-
-echo $config
-echo $cps
-echo $cpt
-echo $abtab
-echo $ex_tab
-echo $ex_mid
 
 
 remove_carriage_returns() {
@@ -60,17 +46,24 @@ handle_file() {
         exit 1
     fi
 }
+
+
+config="config.cfg"
+repositories="repositories.txt"
+abtab="abtab"
+ex_tab="rore-anchor_che_col_1-10.tc"
+ex_mid="rore-anchor_che_col_1-10.mid"
+
 echo "Installation started ..."
 
 # 1. Handle files
 echo "... handling files ..."
 handle_file "$config" false
-handle_file "$cps" true
-handle_file "$cpt" true
+handle_file "$repositories" true
 handle_file "$abtab" true
 
 # 2. Configure and create paths 
-# Source config.cfg (make PATHs available locally)
+# Source config (make PATHs available locally)
 echo "... configuring paths ... "
 source "$config"
 root_path="$ROOT_PATH"
@@ -137,13 +130,6 @@ if [ "$(find "$lib_path" -mindepth 1 -print -quit)" ]; then
 else
     echo "    ... clearing $lib_path -- path already clear ..."
 fi
-#if [ ! -z "$(ls -A "$lib_path")" ]; then
-#    rm -rf "$lib_path"/*
-#fi
-#if [ -d "$lib_path" ]; then
-#    rm -r "$lib_path" # remove the last dir (abtab/) on lib_path 
-#fi
-
 # b. Remove executable from exe_path
 # Make sure that exe_path and abtab are set
 if [ -z "$exe_path" ] || [ -z "$abtab" ]; then
@@ -193,7 +179,7 @@ for dir_ in "${paths[@]}"; do
         echo "    ... creating $data_dir$dir_ -- directory already exists ..."
     fi
 done
-# Move example files
+# Copy example files; then delete them
 cp "$ex_tab" "$root_path""$data_dir""analyser/in/"
 cp "$ex_tab" "$root_path""$data_dir""converter/"
 cp "$ex_tab" "$root_path""$data_dir""tabmapper/in/tab/"
@@ -205,11 +191,30 @@ rm -f "$ex_mid"
 
 # 7. Clone repos into pwd
 echo "... cloning repositories ... "
-# a. Add repos that go on the class path (listed in cpt)
-# Extract parts before first slash | exclude items starting with a dot | sort | get unique values 
-repos=$(cut -d '/' -f 1 "$cpt" | grep -v '^\.' | sort | uniq)
-# b. Add repos that do not go on the class path (listed in config)
-repos="${repos} ${add_repos}" # add_repos is from config
+# Collect contents of repositories in repos
+repos=""
+is_blank=false
+while IFS= read -r line || [[ -n $line ]]; do
+    # Trim leading and trailing whitespace
+    trimmed_line=$(echo "$line" | xargs)
+
+    # Skip emtpy line (which divides cp- and non-cp repos)
+    if [[ -z "$trimmed_line" ]]; then
+        continue
+    fi
+
+    # If the trimmed line does not start with a dot: add the 
+    # part before the first slash
+    if [[ ! $trimmed_line == .* ]]; then
+        [[ -n "$repos" ]] && repos+=" " # if str is non-empty, add space
+        repos+="${trimmed_line%%/*}"
+    fi
+done < "$repositories"
+## a. Add repos that go on the class path (listed in repos)
+## Extract parts before first slash | exclude items starting with a dot | sort | get unique values 
+#repos=$(cut -d '/' -f 1 "$repos" | grep -v '^\.' | sort | uniq)
+## b. Add repos that do not go on the class path (listed in config)
+#repos="${repos} ${add_repos}" # add_repos is from config
 for repo in $repos; do
     repo_url="https://github.com/reinierdevalk/$repo.git"
     if [[ ! -d "$repo" ]]; then

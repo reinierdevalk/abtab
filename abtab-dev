@@ -406,7 +406,7 @@ expand_args() {
 		done
 
 		# Get custom args and parse them
-		local cst="${!CUSTOMISATION_}" # indirect expansion evaluates to "$<custom> from config.cfg
+		local cst="${!CUSTOMISATION_}" # indirect expansion evaluates to "$<custom> from config
 		local parsed_args_custom=($(parse_options "$cst")) # arr
 		local parsed_args_custom_str="${parsed_args_custom[@]}" # str
 
@@ -550,23 +550,23 @@ create_cli_args() {
 
 
 # 2. SCRIPT CODE
-# 0. Source config.cfg
-#source_filtered "config.cfg"
+config="config.cfg"
+classpath="classpath.sh"
 
 # 1. Set paths
-# Paths (unix-style) are read from config.cfg 
+# Paths (unix-style) are read from config 
 # DEV case: paths set every time this script is called (below)
 if "$DEV"; then
-	# Source config.cfg
-	source_filtered "config.cfg"
-	ROOT_PATH_="$ROOT_PATH" # from config.cfg
-	LIB_PATH_="$LIB_PATH" # from config.cfg
+	# Source config
+	source_filtered "$config"
+	ROOT_PATH_="$ROOT_PATH" # from config
+	LIB_PATH_="$LIB_PATH" # from config
 # Real-world case: paths added once during installation (in install.sh)
 else
-	ROOT_PATH_=""
-	LIB_PATH_=""
-	# Source config.cfg 
-	source_filtered "$LIB_PATH_""config.cfg"
+	ROOT_PATH_="rp_placeholder"
+	LIB_PATH_="lp_placeholder"
+	# Source config 
+	source_filtered "$LIB_PATH_""$config"
 fi
 PYTHON_PATH="${LIB_PATH_}transcriber/py/"
 # Create the class path
@@ -579,7 +579,7 @@ is_win=true
 if [[ ! (-n "$WINDIR" || "$os_type" == "CYGWIN"* || "$os_type" == "MINGW"* || "$os_type" == "MSYS"*) ]]; then
     is_win=false
 fi
-class_path=$($LIB_PATH_/cp.sh $LIB_PATH_ $is_win)
+class_path=$($LIB_PATH_/$classpath $LIB_PATH_ $is_win)
 
 # 2. Check first argument provided, which must be -h/--help or a valid tool
 check_first_arg "$@"

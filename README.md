@@ -43,9 +43,9 @@ Furthermore, in order to be able to run `abtab`, you must have [Java](https://ww
        ```
    - Handles any previously installed version of `abtab`: removes any old executable from `<exe_path>`, and clears `<lib_path>`.
    - Creates, in `<root_path>`, the `data/` directory structure, and moves the example `.tc` and `.mid` files into the `data/<tool>/in/` subdirectories.
-   - Clones the required repositories from `https://github.com/reinierdevalk/` into `<root_path>`. Thse include
-       - Code repositories, as listed in `cp.txt`.
-       - Non-code repositories, as specified in `config.cfg`.
+   - Clones the required repositories from `https://github.com/reinierdevalk/` into `<root_path>`. These include
+       - Code repositories, as listed in `repositories.txt` (before the empty line).
+       - Non-code repositories, as listed in `repositories.txt` (after the empty line).
    - Installs `abtab`: moves all code to `<lib_path>`, and the executable to `<exe_path>`.
 
    When the installation process has finished, `<root_path>` contains
@@ -53,11 +53,29 @@ Furthermore, in order to be able to run `abtab`, you must have [Java](https://ww
    - The `models/` directory. Contains the trained machine learning models called by the `transcriber` tool.
    - The `templates/` directory. Contains a high-level template of an MEI file, whose `<header>` can be adapted at will. 
 
-6. Run `abtab`. This can be done from any directory on your computer. Use the help (`-h` or `--help`) option to get started.
+6. 6. Run `abtab`. This can be done from any directory on your computer. Use the help (`-h` or `--help`) option to get started; this lists all the currently available tools in the toolbox.
     ``` 
     $ abtab -h 
     $ abtab --help 
    ```
 
-    You can use the provided example files to experiment. 
-    [ADD EXAMPLES]
+# Example usage
+You can use the provided example files to experiment with the various tools. 
+    
+## `converter`
+The `converter` tool opens a simple editor, the `tab+Editor`, originally written to edit and view files in `abtab`'s native encoding format, tab+. It allows you to
+  - Open a file in one of four different tablature encoding formats: tab+ (`.tbp`); TabCode (`.tc`); MEI (`.mei`); and ASCII (`.tab`). 
+  - View and adapt the file contents. 
+  - Save the file in one of the four encoding formats.
+ 
+`converter` is called as follows.
+
+    $ abtab converter
+
+ Use `File` > `Open` to open a file in the tab+ format, and `File` > `Import` to import a file in one of the other formats. The file contents are shown in the `Encoding` window and can be edited at will there, and viewed in the `Tablature` window by clicking the `View` button. Note that the file contents -- also those of imported files -- are always shown in the tab+ format.  
+
+Use `File` > `Save` (or `File` > `Save as`) to save the file in the tab+ format; use `File` > `Export` to save it in one of the other formats. By default, files are loaded from and saved to the `data/converter/` directory -- but the source and destination directories are selectable.
+
+Alternatively, if both a source and a destination file are provided when `converter` is called, the editor is not opened, and the file in the source format is converted directly into the file in the destination format -- without any editing or viewing options.
+
+    $ abtab converter source.<ext> destination.<ext>

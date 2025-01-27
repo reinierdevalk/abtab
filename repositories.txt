@@ -8,3 +8,6 @@ tabmapper/
 transcriber/
 utils/
 voice_separation/
+
+models/
+templates/
