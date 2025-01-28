@@ -57,7 +57,7 @@ TOOLS_DESC=(
 # NB2 opts-vals pairs must also be class fields in CLInterface Java class (<OPT> = "<val>")
 #     and parser args in transcriber.py
 format="-r|--format|y n||y||Process tablature format|"
-file="-f|--file|*.tc *.tbp *.xml *.mei||n/a|file|Process only the given file; options|"
+file="-f|--file|*.mei *.tab *.tbp *.tc *.xml||n/a|file|Process only the given file; options|"
 help="-h|--help|||n/a||Display this help message|"
 OPTS_WITHOUT_VAL=("-h" "--help")
 ANALYSER_OPTS_VALS=(
@@ -96,6 +96,14 @@ TRANSCRIBER_OPTS_VALS=(
 	"$file"
 	"$help"
 )
+# Each row in an ARGS array contains the following comma-separated elements
+# [0] arg
+# [1] help text
+CONVERTER_ARGS=(
+	"<source>|Source file (optional; must always be provided together with <destination>). If not \
+provided, an editor, additionally facilitating editing and viewing of the source file, is opened"
+	"<destination>|Destination file (optional; must always be provided together with <source>)"
+)
 
 # b. Set automatically
 TOOLBOX=$(basename "$0")
@@ -110,6 +118,7 @@ unset OPTS_VALS
 unset OPTS
 unset OPTS_LONG
 unset VALS_DEFAULT
+unset ARGS
 
 
 # 1. FUNCTIONS
@@ -156,7 +165,8 @@ _show_help() {
 	if [ "$arg_tool" == "all" ]; then
 		local tools=($(_get_column 0 "${TOOLS_DESC[@]}"))
 		local descs=($(_get_column 1 "${TOOLS_DESC[@]}"))
-		echo "Usage: $TOOLBOX [tool] [options]"
+		echo "Usage:"
+    	echo "  $TOOLBOX [tool] [options] <arguments>"
     	echo
     	echo "Tools:"
 		for i in "${!TOOLS_DESC[@]}"; do
@@ -169,14 +179,13 @@ _show_help() {
 		if [[ "$TOOL" == "converter" ]]; then
 			echo "  $TOOLBOX $TOOL [options] [<source> <destination>]"
 			echo
-			local argument="  <source>"
-			local help_text="* Source file (optional; must always be provided together with <destination>)"
 			echo "Arguments:"
-			_print_help_cols "$argument" "$help_text" $max_line_len
-			argument="  <destination>"
-			help_text="* Destination file (optional; must always be provided together with <source>)"
-			_print_help_cols "$argument" "$help_text" $max_line_len
-			echo "* If no files are provided, the tab+Editor, which facilitates editing and viewing of the source file, is opened"
+			for row in "${ARGS[@]}"; do # str
+				IFS='|' read -r -a row_array <<< "$row" # array
+				local arg="  ${row_array[0]}"
+				local help_text="${row_array[1]}"
+				_print_help_cols "  ${row_array[0]}" "${row_array[1]}" $max_line_len
+			done
 			echo
 		else
 			echo "  $TOOLBOX $TOOL [options]"
@@ -326,6 +335,7 @@ set_global_vars() {
 			;;
 		converter)
 			OPTS_VALS=("${CONVERTER_OPTS_VALS[@]}")
+			ARGS=("${CONVERTER_ARGS[@]}")
 			;;
 		tabmapper)
 			OPTS_VALS=("${TABMAPPER_OPTS_VALS[@]}")
