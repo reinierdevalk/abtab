@@ -56,8 +56,8 @@ TOOLS_DESC=(
 #     identical long opts always have the same short opt
 # NB2 opts-vals pairs must also be class fields in CLInterface Java class (<OPT> = "<val>")
 #     and parser args in transcriber.py
-format="-r|--format|y n||y||Process tablature format|"
-file="-f|--file|*.mei *.tab *.tbp *.tc *.xml||n/a|file|Process only the given file; options|"
+format="-r|--format|t n|tablature non-tablature|t||Input format; options|Only needed if -f is not provided"
+file="-f|--file|*.mei *.tab *.tbp *.tc *.xml||n/a|file|Process only the given file; options|If not provided, all files in the input directory are processed"
 help="-h|--help|||n/a||Display this help message|"
 OPTS_WITHOUT_VAL=("-h" "--help")
 ANALYSER_OPTS_VALS=(
@@ -73,8 +73,8 @@ TABMAPPER_OPTS_VALS=(
 	"-s|--score|y n||n||Show as score|"
 	"-t|--tablature|t b|top bottom|b||Placement of the tablature; options|"
 	"-d|--duration|y n||n||Complete note durations|"
-#	"$format"
 	"$file"
+	"$format"
 	"$help"
 )
 # custom, dlaute: irrelevant are -y, -o, -v // user-chosen is -f
@@ -89,11 +89,13 @@ TRANSCRIBER_OPTS_VALS=(
 	"-y|--type|FLT ILT SLT GLT i||i|type|Tablature type; options|"
 #	"-y|--type|FLT ILT SLT GLT i||i (as in input file) if provided; else FLT|type|Tablature type; options|"
 	"-l|--style|p d|polyphonic diplomatic|p||Transcription style; options|"
-	"-o|--model|N-bwd-thesis-int-4vv N-fwd-thesis-int-4vv N-bwd-thesis-int-3vv||N-bwd-thesis-int-4vv|model|* Trained model; options|"
+	"-o|--model|N-bwd-thesis-int-4vv N-fwd-thesis-int-4vv N-bwd-thesis-int-3vv||N-bwd-thesis-int-4vv|model|\
+* Trained model; options|"
 	"-v|--verbose|y n||n||* Verbose|"
-	"-c|--custom|dlaute plaute user||n/a|custom|Use customisation (pre-defined set of options); options|"
-#	"${format/Process/* Process}" # insert asterisk + space
+	"-c|--custom|dlaute plaute user||n/a|custom|Use customisation (pre-defined set of options); options|\
+Overwrites provided options where needed"
 	"$file"
+	"${format/Process/* Process}" # insert asterisk + space
 	"$help"
 )
 # Each row in an ARGS array contains the following comma-separated elements
@@ -249,14 +251,14 @@ _show_help() {
 				if [[ -n "$default" && "$default" != "n/a" ]]; then
 					default_text=" (default: $default)"
 				fi
-#				# Prepend add_help_text with period and space
-#				if [[ ! "$add_help_text" == "" ]]; then
-#					add_help_text=". $add_help_text"
-#				fi
+				# Prepend add_help_text with period and space
+				if [[ ! "$add_help_text" == "" ]]; then
+					add_help_text=". $add_help_text"
+				fi
 
 				# Combine and print
 				local options="  $short_opt, $long_opt $choice_text"
-				local help_text="$help_text""$options_text""$default_text" #"$add_help_text"
+				local help_text="$help_text""$options_text""$default_text""$add_help_text"
 				_print_help_cols "$options" "$help_text" "$max_line_len"
 			fi
 		done
