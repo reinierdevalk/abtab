@@ -228,14 +228,14 @@ done
 # 8. Install abtab
 echo "... installing abtab ..."
 # Move executable to exe_path
-cp "$abtab" "$exe_path"
-# Move contents of pwd (excluding executable) to lib_path
-skip=("models" "templates" "data" "abtab")
+cp "$abtab" "$exe_path" && rm "$abtab" # NB use cp && rm; mv gives permissions error
+# Move contents of pwd to lib_path
+skip=("models" "templates" "data")
 for item in *; do
     # Move only files/folders that are not in skip
     if [[ ! " ${skip[@]} " =~ " ${item} " ]]; then # the spaces around skip/item avoid partial match
 #    if [ "$item" != "models" ]; then
-        cp -r "$item" "$lib_path"
+        cp -r "$item" "$lib_path" && rm -rf "$item" # NB use cp && rm; mv gives permissions error
     fi
 done
 
