@@ -59,6 +59,7 @@ TOOLS_DESC=(
 format="-r|--format|t n|tablature non-tablature|t||Input format; options|Only needed if -f is not provided"
 file="-f|--file|*.mei *.tab *.tbp *.tc *.xml||n/a|file|Process only the given file; options|If not provided, all files in the input directory are processed"
 help="-h|--help|||n/a||Display this help message|"
+tablature="-t|--tablature|y n||y||Include tablature|"
 OPTS_WITHOUT_VAL=("-h" "--help")
 ANALYSER_OPTS_VALS=(
 	"-a|--analysis|VC VR VRO||n/a|analysis|Analysis; options|"
@@ -66,15 +67,17 @@ ANALYSER_OPTS_VALS=(
 	"$help"
 )
 CONVERTER_OPTS_VALS=(
+	"$tablature" # NB always default value; not shown in help
 	"$help"
 )
 TABMAPPER_OPTS_VALS=(
 	"-o|--ornamentation|y n||y||Include ornamentation|"
 	"-s|--score|y n||n||Show as score|"
-	"-t|--tablature|t b|top bottom|b||Placement of the tablature; options|"
+	"-t|--tablature|y n||y||Include tablature|"
+	"-p|--placement|t b|top bottom|b||Placement of the tablature; options|"
 	"-d|--duration|y n||n||Complete note durations|"
 	"$file"
-	"$format"
+	"$format" # NB always default value; not shown in help
 	"$help"
 )
 # custom, dlaute: irrelevant are -y, -o, -v // user-chosen is -f
@@ -85,7 +88,7 @@ TRANSCRIBER_OPTS_VALS=(
 	"-k|--key|-5 -4 -3 -2 -1 0 1 2 3 4 5 i||i|key|Key; options|"
 	"-m|--mode|0 1|major minor|0||Mode; options|"
 	"-s|--staff|s d|single double|d||Staff; options|"
-	"-t|--tablature|y n||y||Include tablature|"
+	"$tablature"
 	"-y|--type|FLT ILT SLT GLT i||i|type|Tablature type; options|"
 #	"-y|--type|FLT ILT SLT GLT i||i (as in input file) if provided; else FLT|type|Tablature type; options|"
 	"-l|--style|p d|polyphonic diplomatic|p||Transcription style; options|"
@@ -204,8 +207,16 @@ _show_help() {
 			local vals_catch_all="${row_array[5]}"
 			local help_text="${row_array[6]}"
 			local add_help_text="${row_array[7]}"
-			
-			if [[ ! ("$short_opt" == "-r" && "$TOOL" == "tabmapper") ]]; then
+
+			# Skip options where they can only have their default value
+			skip=false
+			if [[ ("$short_opt" == "-r" && "$TOOL" == "tabmapper") ]]; then
+				skip=true
+			elif [[ ("$short_opt" == "-t" && "$TOOL" == "converter") ]]; then
+				skip=true
+			fi
+
+			if [[ $skip == false ]]; then
 				# Form of the string to output (parts between {curly brackets} are optional):
 				# short_opt, long_opt <choice_text> \t help_text{options_text} {default_text}{. add_help_text}
 				# - choice_text: only two values (a); more than two values (b) 
@@ -356,8 +367,8 @@ set_global_vars() {
 
 parse_options() {
 	# Populate opts_str and opts_long_str
-	opts_str="$(_make_options_str "${OPTS[@]}")"
-	opts_long_str="$(_make_options_str "${OPTS_LONG[@]}")"
+	local opts_str="$(_make_options_str "${OPTS[@]}")"
+	local opts_long_str="$(_make_options_str "${OPTS_LONG[@]}")"
 
 	# Positional arguments are the inputs passed to a script or function
 	# Positional parameters ($1, $2, ...) are how the script or function accesses those arguments
@@ -639,25 +650,31 @@ populate_opts_and_vals_lists "${parsed_args[@]}"
 
 # 6. Call tool
 # Join array elements into a string with space as delimiter
-all_opts_str="${OPTS[*]}"
-all_default_vals_str="${VALS_DEFAULT[*]}"
+opts_java="${OPTS[*]}"
+default_vals_java="${VALS_DEFAULT[*]}"
 
+# NB The arguments to the Java classes must be in a fixed sequence
+# [0] DEV
+# [1] opts_java
+# [2] default_vals_java
+# [3] user_opts_vals_java
+# [4]-[n] arguments TODO one string? 
 if [ "$TOOL" == "analyser" ]; then
 	ignore_opts=("")
-	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
+	user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
 	model_id="N-bwd-thesis-int-4vv"
-	java -cp "$class_path" analysis.Analyser "$DEV" $model_id $args_str
+	java -cp "$class_path" analysis.Analyser "$DEV" $model_id $user_opts_vals_java
 elif [ "$TOOL" == "converter" ]; then
 	ignore_opts=("")
-#	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
+	user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
 	shift # $1 = 'converter' 
 	source_file="$1"
 	dest_file="$2"
-	java -cp "$class_path" tbp.editor.Editor "$DEV" "$source_file" "$dest_file"   
+	java -cp "$class_path" tbp.editor.Editor "$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java" "$source_file" "$dest_file"   
 elif [ "$TOOL" == "tabmapper" ]; then
 	ignore_opts=("")
-	args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
-	java -cp "$class_path" tabmapper.TabMapper "$DEV" "$all_opts_str" "$all_default_vals_str" "$args_str"
+	user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
+	java -cp "$class_path" tabmapper.TabMapper "$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java"
 elif [ "$TOOL" == "transcriber" ]; then
 	ignore_opts=("-l")
 	is_diplomatic=false
@@ -670,11 +687,11 @@ elif [ "$TOOL" == "transcriber" ]; then
 
 	# Diplomatic
 	if [[ $is_diplomatic == true ]]; then
-		args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" true)
-		python $PYTHON_PATH"transcriber.py" $args_str "$DEV" $ROOT_PATH_ $LIB_PATH_ $class_path
+		user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" true)
+		python $PYTHON_PATH"transcriber.py" $user_opts_vals_java "$DEV" $ROOT_PATH_ $LIB_PATH_ $class_path
 	# Polyphonic
 	else
-		args_str=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
-		java -cp "$class_path" ui.UI "$DEV" "$all_opts_str" "$all_default_vals_str" "$args_str"
+		user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
+		java -cp "$class_path" ui.UI "$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java"
 	fi
 fi
