@@ -56,10 +56,16 @@ TOOLS_DESC=(
 #     identical long opts always have the same short opt
 # NB2 opts-vals pairs must also be class fields in CLInterface Java class (<OPT> = "<val>")
 #     and parser args in transcriber.py
-format="-r|--format|t n|tablature non-tablature|t||Input format; options|Only needed if -f is not provided"
-file="-f|--file|*.mei *.tab *.tbp *.tc *.xml||n/a|file|Process only the given file; options|If not provided, all files in the input directory are processed"
+format="-a|--all|t n|tablature non-tablature|t||Process all files in the given format; options|"
+file="-f|--file|*.mei *.tab *.tbp *.tc *.xml||n/a|file|Process only the given file; options|"
 help="-h|--help|||n/a||Display this help message|"
 tablature="-t|--tablature|y n||y||Include tablature|"
+placement="-p|--placement|t b|top bottom|b||Tablature placement; options|"
+score="-s|--score|y n||n||Show as score|"
+staff="-s|--staff|s d v|single double vocal|d|staff|Staff; options|"
+#staff="-s|--staff|s d|single double|d||Staff; options|"
+type="-y|--type|FLT ILT SLT GLT i||i|type|Tablature type; options|"
+tuning="-u|--tuning|F F6Eb G G6F A A6G i||i|tuning|Tuning; options|"
 OPTS_WITHOUT_VAL=("-h" "--help")
 ANALYSER_OPTS_VALS=(
 	"-a|--analysis|VC VR VRO||n/a|analysis|Analysis; options|"
@@ -67,38 +73,51 @@ ANALYSER_OPTS_VALS=(
 	"$help"
 )
 CONVERTER_OPTS_VALS=(
+	# Not relevant: staff, placement
+	"$tuning" # NB always default value; not shown in help
 	"$tablature" # NB always default value; not shown in help
+	"$type" # NB always default value; not shown in help
 	"$help"
 )
 TABMAPPER_OPTS_VALS=(
+	# Content
 	"-o|--ornamentation|y n||y||Include ornamentation|"
-	"-s|--score|y n||n||Show as score|"
-	"-t|--tablature|y n||y||Include tablature|"
-	"-p|--placement|t b|top bottom|b||Placement of the tablature; options|"
 	"-d|--duration|y n||n||Complete note durations|"
+	# Layout
+	"$tuning" # NB always default value; not shown in help
+	"$staff"
+	"$tablature"
+	"$type"
+	"$placement"
+	# Input
 	"$file"
 	"$format" # NB always default value; not shown in help
+	#
 	"$help"
 )
-# custom, dlaute: irrelevant are -y, -o, -v // user-chosen is -f
-# custom, plaute: irrelevant is -y // user-chosen are -k, -m, -o, -v, -f 
+# custom, dlaute: irrelevant are -y, -p, -o, -v, -r // user-chosen is -f
+# custom, plaute: irrelevant is -y, -p, -r // user-chosen are -k, -m, -o, -v, -f 
 TRANSCRIBER_OPTS_VALS=(
-	"-u|--tuning|F F6Eb G G6F A A6G i||i|tuning|Tuning; options|"
-#	"-u|--tuning|F F6Eb G G6F A A6G i||i (as in input file) if provided; else G|tuning|Tuning; options|"
-	"-k|--key|-5 -4 -3 -2 -1 0 1 2 3 4 5 i||i|key|Key; options|"
+	# Content
+	"-k|--key|-5 -4 -3 -2 -1 0 1 2 3 4 5 i||i|key|Key; options|Overwrites automatically calculated key"
 	"-m|--mode|0 1|major minor|0||Mode; options|"
-	"-s|--staff|s d|single double|d||Staff; options|"
-	"$tablature"
-	"-y|--type|FLT ILT SLT GLT i||i|type|Tablature type; options|"
-#	"-y|--type|FLT ILT SLT GLT i||i (as in input file) if provided; else FLT|type|Tablature type; options|"
 	"-l|--style|p d|polyphonic diplomatic|p||Transcription style; options|"
+	# Layout
+	"$tuning"
+	"$staff"
+	"$tablature"
+	"$type"
+	"$placement"	
+	# Other
+	"-c|--custom|dlaute plaute user||n/a|custom|Use customisation (pre-defined set of options); options|\
+Overwrites provided options where needed"
 	"-o|--model|N-bwd-thesis-int-4vv N-fwd-thesis-int-4vv N-bwd-thesis-int-3vv||N-bwd-thesis-int-4vv|model|\
 * Trained model; options|"
 	"-v|--verbose|y n||n||* Verbose|"
-	"-c|--custom|dlaute plaute user||n/a|custom|Use customisation (pre-defined set of options); options|\
-Overwrites provided options where needed"
+	# Input
 	"$file"
 	"${format/Process/* Process}" # insert asterisk + space
+	#
 	"$help"
 )
 # Each row in an ARGS array contains the following comma-separated elements
@@ -209,20 +228,31 @@ _show_help() {
 			local add_help_text="${row_array[7]}"
 
 			# Skip options where they can only have their default value
+			# TODO make tuples list
 			skip=false
 			if [[ ("$short_opt" == "-r" && "$TOOL" == "tabmapper") ]]; then
 				skip=true
 			elif [[ ("$short_opt" == "-t" && "$TOOL" == "converter") ]]; then
+				skip=true
+			elif [[ ("$short_opt" == "-u" && "$TOOL" == "converter") ]]; then
+				skip=true
+			elif [[ ("$short_opt" == "-y" && "$TOOL" == "converter") ]]; then
+				skip=true	
+			elif [[ ("$short_opt" == "-u" && "$TOOL" == "tabmapper") ]]; then
 				skip=true
 			fi
 
 			if [[ $skip == false ]]; then
 				# Form of the string to output (parts between {curly brackets} are optional):
 				# short_opt, long_opt <choice_text> \t help_text{options_text} {default_text}{. add_help_text}
-				# - choice_text: only two values (a); more than two values (b) 
-				#   (a) "<short_val1|short_val2>"
-				#   (b) "<catch_all>"
-				# - options_text: only two values (but not 'y/n') (a); more than two values (b)
+				# - choice_text
+				#   (a) only two values
+				#       "<short_val1|short_val2>"
+				#   (b) more than two values
+				#       "<catch-all>"
+				#
+				# OLD -->	
+				# - options_text: (a) only two values (but not 'y/n'); (b) more than two values
 				#   (a) "; options long_val1 (short_val1) or long_val2 (short_val2)"
 				#       e.g., 
 				#       "; options major (0) or minor (1)"
@@ -231,6 +261,7 @@ _show_help() {
 				#       "; options [-5, ..., 5]"
 				# - default_text
 				#   "(default: short_val)"   
+				# <-- OLD
 				#
 				# Determine choice_text
 				IFS=' ' read -r -a vals_arr <<< "$vals"
@@ -247,14 +278,58 @@ _show_help() {
 				fi
 
 				# Determine options_text
+				# - options_text
+				#    (a) catch-all and long vals
+				#        "; options long_val1 (short_val1) or long_val2 (short_val2)"
+				#		 "; options long_val1 (short_val1), long_val2 (short_val2), ..., or long_valn (short_valn)"   
+				#    (b) catch-all and no long vals
+				#        "; options [short_val1, ..., short_valn]" 
+				#    (c) no catch-all and long vals
+				#        see (a) 
+				#    (d) no catch-all and no long vals
+				#        n/a
+				#    (e) yes/no
+				#        ""
 				local options_text=""
 				if [[ "$help_text" == *"options" ]]; then # help_text ends with 'options'
-					if [[ "$num_vals" -eq 2 && !( "$vals" == "y n" || "$vals" == "n y") ]]; then
+					# (a) or (c)
+					if [[ (-n "$vals_catch_all" && -n "$long_vals") || (-z "$vals_catch_all" && -n "$long_vals") ]]; then
+#						echo "$short_opt (a) or (c)"
 						IFS=' ' read -r -a long_vals_arr <<< "$long_vals"
-						options_text=" ${long_vals_arr[0]} (${vals_arr[0]}) or ${long_vals_arr[1]} (${vals_arr[1]})"
-					else 
+						if (( num_vals == 2 )); then
+							options_text+=" ${long_vals_arr[0]} (${vals_arr[0]}) or ${long_vals_arr[1]} (${vals_arr[1]})"
+						else
+							options_text=" "
+							for ((i = 0; i < num_vals; i++)); do								
+								if (( i > 0 )); then
+									if (( i == num_vals - 1 )); then
+										options_text+=", or "
+									else
+										options_text+=", "
+									fi
+								fi
+        						options_text+="${long_vals_arr[i]} (${vals_arr[i]})"
+							done
+						fi
+#						echo "$options_text"
+					# (b)
+					elif [[ -n "$vals_catch_all" && -z "$long_vals" ]]; then
+#						echo "$short_opt (b)"
 						options_text=" [$(echo "$vals" | sed 's/ /, /g')]"
+#						echo "$options_text"
+					# (d)
+					elif [[ -z "$vals_catch_all" && -z "$long_vals" ]]; then
+#						echo "$short_opt (d)"
+						:
+					elif [[ "$vals" == "y n" || "$vals" == "n y" ]]; then
+						: 
 					fi
+#					if [[ "$num_vals" -eq 2 && !( "$vals" == "y n" || "$vals" == "n y") ]]; then
+#						IFS=' ' read -r -a long_vals_arr <<< "$long_vals"
+#						options_text=" ${long_vals_arr[0]} (${vals_arr[0]}) or ${long_vals_arr[1]} (${vals_arr[1]})"
+#					else 
+#						options_text=" [$(echo "$vals" | sed 's/ /, /g')]"
+#					fi
 				fi
 
 				# Determine default_text
