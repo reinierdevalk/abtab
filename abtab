@@ -721,7 +721,8 @@ elif [ "$TOOL" == "converter" ]; then
 	shift # $1 = 'converter' 
 	source_file="$1"
 	dest_file="$2"
-	java -cp "$class_path" tbp.editor.Editor "$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java" "$source_file" "$dest_file"   
+	store="true"
+	java -cp "$class_path" tbp.editor.Editor "$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java" "$store" "$source_file" "$dest_file"
 elif [ "$TOOL" == "tabmapper" ]; then
 	ignore_opts=("")
 	user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
@@ -738,11 +739,19 @@ elif [ "$TOOL" == "transcriber" ]; then
 
 	# Diplomatic
 	if [[ $is_diplomatic == true ]]; then
+		# NON-FILE SAVING APPROACH
+		# 1. transcribe input file(s) to MEI and give content as arg to transcriber (for processing)
+		#    - do not load file in  
+		# 2. transcribe input file(s) to tbp and give content as arg to transcriber (for key calculation)
+		#
+		# if multiple files, this is handled inside diplomat.py
 		user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" true)
 		python $PYTHON_PATH"transcriber.py" $user_opts_vals_java "$DEV" $ROOT_PATH_ $LIB_PATH_ $class_path
 	# Polyphonic
 	else
 		user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
+		# any format given, converted into tbp inside java (convertToTbp())
+		# if multiple files, this is handled inside ui.UI (by making a Dataset)
 		java -cp "$class_path" ui.UI "$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java"
 	fi
 fi
