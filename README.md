@@ -27,7 +27,7 @@ If your formatted Python and Java path are not among the paths listed, you must 
 
 If the file does not appear in the items listed, you must create it.
 
-    $ touch .bash_profile
+    $ touch ~/.bash_profile
 
 Add the correctly formatted paths to `.bash_profile` by opening the latter with your editor of choice, and then adding the following lines to it (replacing `<formatted_python_path>` and `<formatted_java_path>`with your actual paths).
 
