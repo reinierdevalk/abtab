@@ -105,39 +105,6 @@ else
 #    sed -i "" "s|$lp_placeholder|$lib_path_esc|g" "$abtab"
 fi
 
-# Check if .bash_profile exists. If not, create it in the $HOME dir
-# - $HOME is a Unix thing; you can get it with
-#   $ echo $HOME
-#   or as follows
-#   $ cd ~/
-#   $ pwd
-# - on Cygwin, the result is /home/<Username>/. You can cd into $HOME using the shorthand or the full path 
-#   $ cd ~/
-#   $ cd /home/<Username>/  
-# - to get the cygwin-style version of $HOME, C:/cygwin64/home/<Username>/, which you can manually go into, do 
-#   $ cd ~/
-#   $ cygpath -w "$(pwd)"  
-# - on MacOs, $HOME is ...
-#
-bp_file="$HOME/.bash_profile" # ~/.bash_profile = /home/Reinier/.bash_profile
-if [ ! -f "$bp_file" ]; then
-	touch "$bp_file"
-	# Create exe_path_nts
-	if $IS_WIN; then
-		# Convert Windows-style path (C:/...) into Unix-style path (/cygdrive/c/...)
-		exe_path_nts=$(cygpath -u "$exe_path") # /cygdrive/c/Users/Reinier/bin/
-    else
-		exe_path_nts=$exe_path
-	fi
-	# Remove trailing slash and add path to PATH 
-	exe_path_nts=$(echo "$exe_path_nts" | sed 's:/*$::')
-	path_add="PATH=\$PATH:$exe_path_nts" # PATH=$PATH:<exe_path_nts>
-	# Add line; update path; add empty line
-	echo "$path_add" >> "$bp_file"
-	echo 'PATH=$PATH' >> "$bp_file"
-	echo >> "$bp_file"
-fi
-
 
 
 # 4. Add exe_path (as cygpath) to the end of ~/.bash_profile (i.e., add it to $PATH) 
@@ -145,7 +112,7 @@ fi
 # NB On Windows using Cygwin, it is in C:/cygwin64/home/<Name>/
 bp_file="$HOME/.bash_profile" # ~/.bash_profile
 if [ ! -f "$bp_file" ]; then
-	touch "$bp_file"
+  touch "$bp_file"
 fi
 # Create exe_path_cyg without trailing slash; if it has not been added,
 # add to ~/.bash_profile and source ~/.bash_profile (apply the changes) 
@@ -156,7 +123,7 @@ exe_path_cyg=$exe_path
 exe_path_cyg=$(echo "$exe_path_cyg" | sed 's:/*$::') # remove trailing slash
 to_add="PATH=\$PATH:$exe_path_cyg" # PATH=$PATH:/cygdrive/c/Users/Reinier/bin
 if ! grep -qxF "$to_add" "$bp_file"; then
-  echo "$to_add" >> "$bp_file"
+  echo "$to_add" >> "$bp_file" 
   source "$bp_file"
 fi
 
@@ -285,7 +252,7 @@ echo "... installing abtab ..."
 # Move executable to exe_path
 cp "$abtab" "$exe_path" && rm "$abtab" # NB use cp ... && rm ...; mv gives permissions error
 # Move contents of pwd to lib_path
-skip=("models" "templates" "data")
+skip=("models" "templates" "data" "bin" "lib")
 for item in *; do
     # Move only files/folders that are not in skip
     if [[ ! " ${skip[@]} " =~ " ${item} " ]]; then # the spaces around skip/item avoid partial match

@@ -36,6 +36,15 @@
 
 
 # 0. GLOBAL VARIABLES
+# Check OS: Windows or Linux-like
+IS_WIN=false
+if [[ -n "$WINDIR" || "$os_type" == "CYGWIN"* || "$os_type" == "MINGW"* || "$os_type" == "MSYS"* ]]; then
+    IS_WIN=true
+fi
+
+config="config.cfg"
+classpath="classpath.sh"
+
 # a. Set manually
 TOOLS_DESC=(
 	"analyser|Analyse" 
@@ -651,9 +660,6 @@ create_cli_args() {
 
 
 # 2. SCRIPT CODE
-config="config.cfg"
-classpath="classpath.sh"
-
 # 1. Set paths
 # Paths (unix-style) are read from config 
 # DEV case: paths set every time this script is called (below)
@@ -675,12 +681,12 @@ PYTHON_PATH="${LIB_PATH_}transcriber/py/"
 # called, it can also be created once, in install.sh. However, the
 # former is more flexible as it enables addition of code to the 
 # class path after installation (and it is very fast anyway (< 0.5s)).
-# Check OS: Windows or Linux-like
-is_win=true
-if [[ ! (-n "$WINDIR" || "$os_type" == "CYGWIN"* || "$os_type" == "MINGW"* || "$os_type" == "MSYS"*) ]]; then
-    is_win=false
-fi
-class_path=$($LIB_PATH_/$classpath $LIB_PATH_ $is_win)
+## Check OS: Windows or Linux-like
+#is_win=true
+#if [[ ! (-n "$WINDIR" || "$os_type" == "CYGWIN"* || "$os_type" == "MINGW"* || "$os_type" == "MSYS"*) ]]; then
+#    is_win=false
+#fi
+class_path=$($LIB_PATH_/$classpath $LIB_PATH_ $IS_WIN)
 
 # 2. Check first argument provided, which must be -h/--help or a valid tool
 check_first_arg "$@"
