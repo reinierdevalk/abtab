@@ -3,12 +3,51 @@
 AbsoLutely Tabulous (`abtab`) is a toolbox for computational processing and analysis of music in lute tablature, written in Java, Python, and Bash. A prototype is currently being developed within the [E-LAUTE]() project. `abtab` is extensible and multi-modular, builds on existing tools and research, and is designed as a portable command-line tool that runs on Windows and Unix-based operating systems. For more information, see [this poster](https://drive.google.com/file/d/14hKBHfRaqwZnS9KqpreFySfvTffAQ5PI/view?usp=sharing), which was presented at the 2nd International Conference on Computational and Cognitive Musicology (CCCM), Utrecht, the Netherlands, 17-18 October 2024.
 
 # Dependencies
-Currently, `abtab` has only been tested on a Windows machine, using [Cygwin](https://www.cygwin.com/), a free Unix-like environment and command-line interface (CLI) for Windows. It is recommended to install this CLI, or a similar Unix-emulating CLI such as the ones provided by [Git](https://git-scm.com/) or [Git for Windows](https://gitforwindows.org/).
+Currently, `abtab` has only been tested on a Windows machine, using [Cygwin](https://www.cygwin.com/), a free Unix-like environment and command-line interface (CLI) for Windows. If you are using Windows, it is recommended to install this CLI, or a similar Unix-emulating CLI such as the ones provided by [Git](https://git-scm.com/) or [Git for Windows](https://gitforwindows.org/).
 
 Furthermore, in order to be able to run `abtab`, you must have [Java](https://www.java.com/) and [Python](https://www.python.org/downloads/) installed on your computer. The current version of `abtab` uses Python `3.12.0`; for Java, any version >= `11.0.1` will do. You can check which version you have installed as follows.
 
     $ python --version
     $ java -version 
+
+## Adding the Python and Java path to the system `PATH` (Windows only)
+
+If Python and Java are installed on your system, you must make sure that they are available in your Unix-emulating CLI -- i.e., that the Python path and Java path are on the system `PATH`. The Python path is usually something like `C:/Users/<Username>/AppData/Local/Programs/Python/Python<version>/` or `C:/Python<version>/`, while the Java path is usually something like `C:/Program Files/Java/jdk-<version>/bin/` (64-bit systems) or `C:/Program Files (x86)/Java/jdk-<version>/bin/` (32-bit systems). You can check the exact paths on your own machine.
+
+Note that these paths must be adapted to the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
+
+You can check which paths are on the system `PATH` as follows.
+    ```
+    $ echo $PATH 
+    ```
+
+If your formatted Python and Java path are not among the paths listed, you must add them to the system `PATH`. You do this by adding them to `.bash_profile`. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
+    ```
+    $ cd ~/
+    $ ls -a
+    ```
+
+    If the file does not appear in the items listed, you must create it.
+    ```
+    $ touch .bash_profile
+    ```
+
+    Add the correctly formatted paths to `.bash_profile` by opening the latter with your editor of choice, and then adding the following lines to it (replacing `<formatted_python_path>` and `<formatted_java_path>`with your actual paths).
+    ```
+    export PATH="$PATH:<formatted_python_path>"
+    export PATH="$PATH:<formatted_java_path>"
+    ```
+
+    e.g., 
+    ```
+    export PATH="$PATH:/c/cygdrive/<Username>/AppData/Local/Programs/Python/Python<version>/"
+    export PATH="$PATH:/c/cygdrive/Program Files/Java/jdk-<version>/bin/"
+    ```
+
+    Finally, `source` `.bash_profile` to apply the changes. Alternatively, you can simply close and reopen the CLI terminal. (Sometimes, both actions are needed.)
+    ```
+    $ source ~/.bash_profile
+    ```
 
 # Installation
 
@@ -31,40 +70,11 @@ Furthermore, in order to be able to run `abtab`, you must have [Java](https://ww
     
     If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installer.
 
-    ## Using a custom `<exe_path>` 
-    If you specify an `<exe_path>` that, unlike the recommended locations above, is not part of the system `PATH` by default, you must add the full path to `.bash_profile`.
-
-    You can check which paths are part of the system `PATH` as follows.
-    ```
-    $ echo $PATH 
-    ```
-
-    NB: On Windows, depending on your CLI, the recommended `<exe_path>` `C:/Users/<Username>/bin/` might look slightly different in the paths listed. When using Cygwin, for example, it looks like `/cygdrive/c/Users/<Username>/bin`; when using Git for Windows, it looks like `/c/Users/<Username>/bin`.
-
-    `.bash_profile` is usually placed in your `HOME` directory (`~/`); you can check this as follows.
-    ```
-    $ cd ~/
-    $ ls -a
-    ```
-
-    If the file does not appear in the items listed, create it.
-    ```
-    $ touch .bash_profile
-    ```
-
-    Add `<exe_path>` to `.bash_profile` by opening the latter with your editor of choice, and then adding the following line to it (replacing `<exe_path>` with your actual path).
-    ```
-    export PATH="$PATH:<exe_path>"
-    ```
-
-    Finally, source `.bash_profile` to apply the changes. (Alternatively, you can simply close and reopen the CLI terminal.)
-    ```
-    $ source ~/.bash_profile
-    ``` 
+    If the specified `<exe_path>` is not on the system `PATH`, you must add it. The procedure for doing this is exactly the same as the one for adding the Python and Java path (as described above under `Adding the Python and Java path to the system `PATH``).  
 
 4. Run the installer, `install.sh`, from `<root_path>`.
     ```
-    $ bash install.sh
+    $ ./install.sh
     ```
    The installer 
    - Checks whether `lib_path` and `exe_path` exist, and creates them if they do not.

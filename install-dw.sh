@@ -105,29 +105,48 @@ else
 #    sed -i "" "s|$lp_placeholder|$lib_path_esc|g" "$abtab"
 fi
 
+## 4. If there is no ~/.bash_profile file, create it and add exe_path (added to
+##    $PATH) to the end of it 
+#bp_file="$HOME/.bash_profile" # ~/.bash_profile = /home/Reinier/.bash_profile
+#if [ ! -f "$bp_file" ]; then
+#   touch "$bp_file"
+#   # Create exe_path_nts
+#   if $IS_WIN; then
+#       # Convert Windows-style path (C:/...) into Unix-style path (/cygdrive/c/...)
+#       exe_path_nts=$(cygpath -u "$exe_path") # /cygdrive/c/Users/Reinier/bin/
+#   else
+#       exe_path_nts=$exe_path
+#   fi
+#   # Remove trailing slash and add path to PATH 
+#   exe_path_nts=$(echo "$exe_path_nts" | sed 's:/*$::')
+#   path_add="PATH=\$PATH:$exe_path_nts" # PATH=$PATH:<exe_path_nts>
+#   # Add line; add empty line
+#    echo "$path_add" >> "$bp_file"
+#    echo >> "$bp_file"
+#    source "$bp_file"
+#fi
 
+## 4. (OLD) Add exe_path (as cygpath) to the end of ~/.bash_profile (i.e., add it to $PATH) 
+## Create ~/.bash_profile if it doesn't exist
+## NB On Windows using Cygwin, it is in C:/cygwin64/home/<Name>/
+#bp_file="$HOME/.bash_profile" # ~/.bash_profile
+#if [ ! -f "$bp_file" ]; then
+#   touch "$bp_file"
+#fi
+## Create exe_path_cyg without trailing slash; if it has not been added,
+## add to ~/.bash_profile and source ~/.bash_profile (apply the changes) 
+## rdv
+#exe_path_cyg=$(cygpath -u "$exe_path")
+## dw
+#exe_path_cyg=$exe_path
+#exe_path_cyg=$(echo "$exe_path_cyg" | sed 's:/*$::') # remove trailing slash
+#to_add="PATH=\$PATH:$exe_path_cyg" # PATH=$PATH:/cygdrive/c/Users/Reinier/bin
+#if ! grep -qxF "$to_add" "$bp_file"; then
+#    echo "$to_add" >> "$bp_file"
+#    source "$bp_file"
+#fi
 
-# 4. Add exe_path (as cygpath) to the end of ~/.bash_profile (i.e., add it to $PATH) 
-# Create ~/.bash_profile if it doesn't exist
-# NB On Windows using Cygwin, it is in C:/cygwin64/home/<Name>/
-bp_file="$HOME/.bash_profile" # ~/.bash_profile
-if [ ! -f "$bp_file" ]; then
-  touch "$bp_file"
-fi
-# Create exe_path_cyg without trailing slash; if it has not been added,
-# add to ~/.bash_profile and source ~/.bash_profile (apply the changes) 
-# rdv
-exe_path_cyg=$(cygpath -u "$exe_path")
-# dw
-exe_path_cyg=$exe_path
-exe_path_cyg=$(echo "$exe_path_cyg" | sed 's:/*$::') # remove trailing slash
-to_add="PATH=\$PATH:$exe_path_cyg" # PATH=$PATH:/cygdrive/c/Users/Reinier/bin
-if ! grep -qxF "$to_add" "$bp_file"; then
-  echo "$to_add" >> "$bp_file" 
-  source "$bp_file"
-fi
-
-# 5. Handle any existing version of abtab
+# 4. Handle any existing version of abtab
 echo "... handling existing version of abtab ... "
 # a. Clear abtab/ folder on lib_path
 # Make sure that lib_path is set
@@ -256,7 +275,6 @@ skip=("models" "templates" "data" "bin" "lib")
 for item in *; do
     # Move only files/folders that are not in skip
     if [[ ! " ${skip[@]} " =~ " ${item} " ]]; then # the spaces around skip/item avoid partial match
-#    if [ "$item" != "models" ]; then
         cp -r "$item" "$lib_path" && rm -rf "$item" # NB use cp && rm; mv gives permissions error
     fi
 done
