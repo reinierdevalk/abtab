@@ -64,7 +64,7 @@ Finally, `source` `.bash_profile` to apply the changes. Alternatively, you can s
     
     If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installer.
 
-    If the specified `<exe_path>` is not on the system `PATH`, you must add it. The procedure for doing this is exactly the same as the one for adding the Python and Java path (as described above under `Adding the Python and Java path to the system `PATH``).  
+    If the specified `<exe_path>` is not on the system `PATH`, you must add it. The procedure for doing this is exactly the same as the one for adding the Python and Java path (as described above under `Adding the Python and Java path to the system PATH`).  
 
 4. Run the installer, `install.sh`, from `<root_path>`.
     ```
