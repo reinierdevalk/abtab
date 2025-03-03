@@ -270,7 +270,7 @@ done
 echo "... installing abtab ..."
 # Move executable to exe_path
 cp "$abtab" "$exe_path" && rm "$abtab" # NB use cp ... && rm ...; mv gives permissions error
-# Move contents of pwd into lib_path
+# Move code contents of pwd into lib_path
 skip=("models" "templates" "data")
 # If lib_path and exe_path are on root_path (i.e., if lib/abtab/ and bin/ are in pwd), do not 
 # move them into lib_path

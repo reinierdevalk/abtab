@@ -71,10 +71,6 @@ Finally, `source` `.bash_profile` to apply the changes. Alternatively, you can s
    The installer 
    - Checks whether `lib_path` and `exe_path` exist, and creates them if they do not.
    - Sets `root_path` and `lib_path` in the executable.
-   - Adds `<exe_path>` to the `$PATH` variable if it is not on it yet. You can check which paths are on the `$PATH` variable as follows.
-       ```
-       $ echo $PATH
-       ```
    - Handles any previously installed version of `abtab`: removes any old executable from `<exe_path>`, and clears `<lib_path>`.
    - Creates, in `<root_path>`, the `data/` directory structure, and moves the example `.tc` and `.mid` files into the `data/<tool>/in/` subdirectories.
    - Clones the required repositories from `https://github.com/reinierdevalk/` into `<root_path>`. These include
