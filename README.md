@@ -31,6 +31,7 @@ Furthermore, in order to be able to run `abtab`, you must have [Java](https://ww
     
     If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installer.
 
+    ## Using a custom `<exe_path>` 
     If you specify an `<exe_path>` that, unlike the recommended locations above, is not part of the system `PATH` by default, you must add the full path to `.bash_profile`.
 
     You can check which paths are part of the system `PATH` as follows.
@@ -58,7 +59,7 @@ Furthermore, in order to be able to run `abtab`, you must have [Java](https://ww
 
     Finally, source `.bash_profile` to apply the changes. (Alternatively, you can simply close and reopen the CLI terminal.)
     ```
-    source ~/.bash_profile
+    $ source ~/.bash_profile
     ``` 
 
 4. Run the installer, `install.sh`, from `<root_path>`.
