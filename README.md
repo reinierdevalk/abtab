@@ -14,13 +14,11 @@ Furthermore, in order to be able to run `abtab`, you must have [Java](https://ww
 
 If Python and Java are installed on your system, you must make sure that they are available in your Unix-emulating CLI -- i.e., that the Python path and Java path are on the system `PATH`. The Python path is usually something like `C:/Users/<Username>/AppData/Local/Programs/Python/Python<version>/` or `C:/Python<version>/`, while the Java path is usually something like `C:/Program Files/Java/jdk-<version>/bin/` (64-bit systems) or `C:/Program Files (x86)/Java/jdk-<version>/bin/` (32-bit systems). You can check the exact paths on your own machine.
 
-Note that these paths must be adapted to the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
-
 You can check which paths are on the system `PATH` as follows.
 
     $ echo $PATH 
 
-If your formatted Python and Java path are not among the paths listed, you must add them to the system `PATH`. You do this by adding them to `.bash_profile`. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
+Note that the paths listed have been adapted to the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`. If your Python and Java path are not among the paths listed, you must add them to the system `PATH`. You do this by adding them to `.bash_profile`. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
 
     $ cd ~/
     $ ls -a
@@ -29,7 +27,7 @@ If the file does not appear in the items listed, you must create it.
 
     $ touch ~/.bash_profile
 
-Add the correctly formatted paths to `.bash_profile` by opening the latter with your editor of choice, and then adding the following lines to it (replacing `<formatted_python_path>` and `<formatted_java_path>`with your actual paths).
+Add the (aptly formatted) paths to `.bash_profile` by opening the latter with your editor of choice, and then adding the following lines to it (replacing `<formatted_python_path>` and `<formatted_java_path>`with your actual paths).
 
     export PATH="$PATH:<formatted_python_path>"
     export PATH="$PATH:<formatted_java_path>"
