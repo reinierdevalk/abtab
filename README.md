@@ -17,37 +17,31 @@ If Python and Java are installed on your system, you must make sure that they ar
 Note that these paths must be adapted to the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
 
 You can check which paths are on the system `PATH` as follows.
-    ```
+
     $ echo $PATH 
-    ```
 
 If your formatted Python and Java path are not among the paths listed, you must add them to the system `PATH`. You do this by adding them to `.bash_profile`. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
-    ```
+
     $ cd ~/
     $ ls -a
-    ```
 
-    If the file does not appear in the items listed, you must create it.
-    ```
+If the file does not appear in the items listed, you must create it.
+
     $ touch .bash_profile
-    ```
 
-    Add the correctly formatted paths to `.bash_profile` by opening the latter with your editor of choice, and then adding the following lines to it (replacing `<formatted_python_path>` and `<formatted_java_path>`with your actual paths).
-    ```
+Add the correctly formatted paths to `.bash_profile` by opening the latter with your editor of choice, and then adding the following lines to it (replacing `<formatted_python_path>` and `<formatted_java_path>`with your actual paths).
+
     export PATH="$PATH:<formatted_python_path>"
     export PATH="$PATH:<formatted_java_path>"
-    ```
 
-    e.g., 
-    ```
+e.g., 
+
     export PATH="$PATH:/c/cygdrive/<Username>/AppData/Local/Programs/Python/Python<version>/"
     export PATH="$PATH:/c/cygdrive/Program Files/Java/jdk-<version>/bin/"
-    ```
 
-    Finally, `source` `.bash_profile` to apply the changes. Alternatively, you can simply close and reopen the CLI terminal. (Sometimes, both actions are needed.)
-    ```
+Finally, `source` `.bash_profile` to apply the changes. Alternatively, you can simply close and reopen the CLI terminal. (Sometimes, both actions are needed.)
+
     $ source ~/.bash_profile
-    ```
 
 # Installation
 
