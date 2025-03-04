@@ -25,6 +25,7 @@ or, for Java
 
 If the command returns a valid path, the software is installed on your system, but its installation path is not on the system `PATH`. If it returns an error (e.g., `command not found`) or something else, the software is not installed on your system.
 
+#### Note for Windows users
 On Windows, note that the path returned has been adapted to the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
 
 ### If the software is installed on your system
@@ -84,8 +85,8 @@ Go to the [Python](https://www.python.org/downloads/) or [Java](https://www.java
     ```
     $ echo $PATH
     ```
-    
-    The procedure for adding `<exe_path>` to the system `PATH` is exactly the same as the one for adding the Python and Java installation path, as described [above](#if-the-software-is-installed-on-your-system). On Windows, note that `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands.
+
+    The procedure for adding `<exe_path>` to the system `PATH` is exactly the same as the one for adding the Python and Java installation path, as described [above](#if-the-software-is-installed-on-your-system). On Windows, note that `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see [here](#note-for-windows-users)).
 
 4. Run the installer, `install.sh`, from `<root_path>`.
     ```
