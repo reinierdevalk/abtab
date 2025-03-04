@@ -28,7 +28,7 @@ If the command returns a valid path, the software is installed on your system, b
 On Windows, note that the path returned has been adapted to the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
 
 ### If the software is installed on your system
-If the software is installed on your system, you must make sure that it is available in your Unix-emulating CLI -- i.e., that its installation path (obtained using the `which` command, as shown above) is on the system `PATH`. You do this by adding the installation path to the `.bash_profile` file. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
+If the software is installed on your system, you must make sure that it is available in your CLI -- i.e., that its installation path (obtained using the `which` command, as shown above) is on the system `PATH`. You do this by adding the installation path to the `.bash_profile` file. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
 
     $ cd ~/
     $ ls -a
@@ -37,7 +37,7 @@ If the file does not appear in the items listed, you must create it.
 
     $ touch ~/.bash_profile
 
-Then, add the aptly formatted installation path (i.e., as returned by the `which` command) to `.bash_profile` by opening the latter with your editor of choice, and then adding the following line to it (replacing `<formatted_path>` with your actual installation path).
+Then, add the installation path (exactly as returned by the `which` command) to `.bash_profile` by opening the latter with your editor of choice, and then adding the following line to it (replacing `<formatted_path>` with your actual installation path).
 
     export PATH="$PATH:<formatted_path>"
 
@@ -49,11 +49,11 @@ or, for Java
 
     export PATH="$PATH:/c/cygdrive/Program Files/Java/jdk-<version>/bin/"
 
-Finally, `source` `.bash_profile` to apply the changes. Alternatively, you can simply close and reopen the CLI terminal. (Sometimes, both actions are needed.)
+Finally, save and `source` `.bash_profile` to apply the changes. Alternatively, you can simply close and reopen the CLI terminal. (Sometimes, both actions are needed.)
 
     $ source ~/.bash_profile
 
-You can check which paths are on the system `PATH` as follows.
+You can always check which paths are on the system `PATH` as follows.
 
     $ echo $PATH
 
@@ -84,7 +84,7 @@ Go to the [Python](https://www.python.org/downloads/) or [Java](https://www.java
 
     $ echo $PATH
 
-    The procedure for adding `<exe_path>` to the system `PATH` is exactly the same as the one for adding the Python and Java installation path, as described [above](#if-the-software-is-installed-on-your-system). On Windows, note that `<exe_path>` must be adapted to the Unix-style format that the CLI understands.
+    The procedure for adding `<exe_path>` to the system `PATH` is exactly the same as the one for adding the Python and Java installation path, as described [above](#if-the-software-is-installed-on-your-system). On Windows, note that `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands.
 
 4. Run the installer, `install.sh`, from `<root_path>`.
     ```
