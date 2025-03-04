@@ -7,6 +7,10 @@
 # NB: When editing this file with Sublime, set the line endings to Unix: 
 #     View > Line endings > Unix
 
+# Ensure the script has executable permission
+if [ ! -x "$0" ]; then
+    chmod +x "$0"
+fi
 
 # Check OS: Windows or Linux-like
 IS_WIN=false

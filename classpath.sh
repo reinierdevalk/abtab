@@ -3,6 +3,11 @@
 # Script that constructs the classpath from repositories.txt. This
 # script is called by abtab every time it is run.
 
+# Ensure the script has executable permission
+if [ ! -x "$0" ]; then
+    chmod +x "$0"
+fi
+
 lib_path=$1
 is_win=$2
 repositories="repositories.txt"
