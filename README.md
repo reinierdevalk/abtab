@@ -11,7 +11,7 @@ To verify whether Python (or Java) is installed on your system and its installat
 
     $ python --version
 
-or, for Java
+or for Java
 
     $ java -version
 
@@ -19,7 +19,7 @@ If the command returns a version, you are all set: the software is installed on 
 
     $ which python
 
-or, for Java
+or for Java
 
     $ which java
 
@@ -42,11 +42,11 @@ Then, add the installation path (exactly as returned by the `which` command) to 
 
     export PATH="$PATH:<formatted_path>"
 
-e.g., for Python 
+E.g., for Python 
 
     export PATH="$PATH:/c/cygdrive/<Username>/AppData/Local/Programs/Python/Python<version>/"
 
-or, for Java
+or for Java
 
     export PATH="$PATH:/c/cygdrive/Program Files/Java/jdk-<version>/bin/"
 
