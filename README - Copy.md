@@ -1,13 +1,15 @@
 # Introduction
+
 AbsoLutely Tabulous (`abtab`) is a toolbox for computational processing and analysis of music in lute tablature, written in Java, Python, and Bash. A prototype is currently being developed within the [E-LAUTE]() project. `abtab` is extensible and multi-modular, builds on existing tools and research, and is designed as a portable command-line tool that runs on Windows and Unix-based operating systems. For more information, see [this poster](https://drive.google.com/file/d/14hKBHfRaqwZnS9KqpreFySfvTffAQ5PI/view?usp=sharing), which was presented at the 2nd International Conference on Computational and Cognitive Musicology (CCCM), Utrecht, the Netherlands, 17-18 October 2024.
 
 # Dependencies
 `abtab` has been tested on MacOS and Windows, in the latter case using [Cygwin](https://www.cygwin.com/), a free Unix-like environment and command-line interface (CLI) for Windows. If you are using Windows, it is recommended to install this CLI, or a similar Unix-emulating CLI such as the ones provided by [Git](https://git-scm.com/) or [Git for Windows](https://gitforwindows.org/). The remainder of this `README` assumes the usage of such a CLI.
 
-In order to be able to run `abtab`, you must have Python and Java installed on your system. The current version of `abtab` uses Python `3.12.0`; for Java, any version >= `11.0.1` will do.
+In order to be able to run `abtab`, you must have [Java](https://www.java.com/) and [Python](https://www.python.org/downloads/) installed on your computer. The current version of `abtab` uses Python `3.12.0`; for Java, any version >= `11.0.1` will do.
 
 ## Verifying Python and Java installation
-To verify whether Python (or Java) is installed on your system and its installation path on the system `PATH`, run
+
+To verify whether Python and Java are installed and their paths on your system `PATH`, run
 
     $ python --version
 
@@ -15,7 +17,7 @@ or, for Java
 
     $ java -version
 
-If the command returns a version, you are all set: the software is installed on your system and its installation path is on the system `PATH`. If it returns an error (e.g., `command not found`) or something else, run
+If the command returns a version, you are all set: the software is installed on your system and its path is on the system `PATH`. If it returns an error (e.g., `command not found`) or something else, run
 
     $ which python
 
@@ -23,12 +25,19 @@ or, for Java
 
     $ which java
 
-If the command returns a valid path, the software is installed on your system, but its installation path is not on the system `PATH`. If it returns an error (e.g., `command not found`) or something else, the software is not installed on your system.
+If the command returns a valid path, the software is installed on your system, but its path is not on the `PATH`. If it returns an error (e.g., `command not found`) or something else, the software is not installed on your system.
 
-On Windows, note that the path returned has been adapted to the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
+### If the software is installed
 
-### If the software is installed on your system
-If the software is installed on your system, you must make sure that it is available in your Unix-emulating CLI -- i.e., that its installation path (obtained using the `which` command, as shown above) is on the system `PATH`. You do this by adding the installation path to the `.bash_profile` file. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
+### If the software is not installed 
+
+If the software is installed on your system, you must make sure that it is available in your Unix-emulating CLI -- i.e., that its path is on the system `PATH`. As explained above, this path can be obtained using the `which` command. exact path can  be found using the which  The Python path is usually something like `C:/Users/<Username>/AppData/Local/Programs/Python/Python<version>/` or `C:/Python<version>/`, while the Java path is usually something like `C:/Program Files/Java/jdk-<version>/bin/` (64-bit systems) or `C:/Program Files (x86)/Java/jdk-<version>/bin/` (32-bit systems). You can check the exact paths on your own machine.
+
+You can check which paths are on the system `PATH` as follows.
+
+    $ echo $PATH 
+
+Note that the paths listed have been adapted to the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`. If your Python and Java path are not among the paths listed, you must add them to the system `PATH`. You do this by adding them to `.bash_profile`. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
 
     $ cd ~/
     $ ls -a
@@ -37,30 +46,22 @@ If the file does not appear in the items listed, you must create it.
 
     $ touch ~/.bash_profile
 
-Then, add the aptly formatted installation path (i.e., as returned by the `which` command) to `.bash_profile` by opening the latter with your editor of choice, and then adding the following line to it (replacing `<formatted_path>` with your actual installation path).
+Add the (aptly formatted) paths to `.bash_profile` by opening the latter with your editor of choice, and then adding the following lines to it (replacing `<formatted_python_path>` and `<formatted_java_path>`with your actual paths).
 
-    export PATH="$PATH:<formatted_path>"
+    export PATH="$PATH:<formatted_python_path>"
+    export PATH="$PATH:<formatted_java_path>"
 
-e.g., for Python 
+e.g., 
 
     export PATH="$PATH:/c/cygdrive/<Username>/AppData/Local/Programs/Python/Python<version>/"
-
-or, for Java
-
     export PATH="$PATH:/c/cygdrive/Program Files/Java/jdk-<version>/bin/"
 
 Finally, `source` `.bash_profile` to apply the changes. Alternatively, you can simply close and reopen the CLI terminal. (Sometimes, both actions are needed.)
 
     $ source ~/.bash_profile
 
-You can check which paths are on the system `PATH` as follows.
-
-    $ echo $PATH 
-
-### If the software is not installed on your system
-Go to the [Python](https://www.python.org/downloads/) or [Java](https://www.java.com/) website to download (the latest version of) the software, and install it following the installation instructions. Once the software is installed on your system, repeat the steps listed [above](#if-the-software-is-installed-on-your-system).  
-
 # Installation
+
 1. Create, on a path of choice on your computer, a directory called `abtab/`. The path up to and including this directory is referred to as `<root_path>`, and the directory itself is where you will be working from.
 
 2. `cd` into `<root_path>` and clone the `abtab` GitHub repository into it (note the dot at the end of the `clone` command!).
