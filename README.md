@@ -81,9 +81,10 @@ Go to the [Python](https://www.python.org/downloads/) or [Java](https://www.java
     If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installer.
 
     If `<exe_path>` is not on the system `PATH`, you must add it. You can check which paths are on the system `PATH` as follows.
-
+    ```
     $ echo $PATH
-
+    ```
+    
     The procedure for adding `<exe_path>` to the system `PATH` is exactly the same as the one for adding the Python and Java installation path, as described [above](#if-the-software-is-installed-on-your-system). On Windows, note that `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands.
 
 4. Run the installer, `install.sh`, from `<root_path>`.
