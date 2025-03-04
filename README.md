@@ -55,7 +55,7 @@ Finally, `source` `.bash_profile` to apply the changes. Alternatively, you can s
 
 You can check which paths are on the system `PATH` as follows.
 
-    $ echo $PATH 
+    $ echo $PATH
 
 ### If the software is not installed on your system
 Go to the [Python](https://www.python.org/downloads/) or [Java](https://www.java.com/) website to download (the latest version of) the software, and install it following the installation instructions. Once the software is installed on your system, repeat the steps listed [above](#if-the-software-is-installed-on-your-system).  
@@ -80,7 +80,11 @@ Go to the [Python](https://www.python.org/downloads/) or [Java](https://www.java
     
     If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installer.
 
-    If the specified `<exe_path>` is not on the system `PATH`, you must add it. The procedure for doing this is exactly the same as the one for adding the Python and Java path (as described above under `Adding the Python and Java path to the system PATH`).  
+    If `<exe_path>` is not on the system `PATH`, you must add it. You can check which paths are on the system `PATH` as follows.
+
+    $ echo $PATH
+
+    The procedure for adding `<exe_path>` to the system `PATH` is exactly the same as the one for adding the Python and Java installation path, as described [above](#if-the-software-is-installed-on-your-system). On Windows, note that `<exe_path>` must be adapted to the Unix-style format that the CLI understands.
 
 4. Run the installer, `install.sh`, from `<root_path>`.
     ```
