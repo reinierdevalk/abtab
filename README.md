@@ -54,7 +54,7 @@ Finally, save and `source` `.bash_profile` to apply the changes. Alternatively, 
 
     $ source ~/.bash_profile
 
-If the `source` command results in one or more errors similar to `-bash: $'\r': command not found`, retry after running
+If the `source` command results in one or more errors similar to `-bash: $'\r': command not found`, Windows CRLF (`\r\n`) line endings must be replaced by Unix LF (`\n`) line endings. Retry after running
 
     $ sed -i 's/\r//' ~/.bash_profile
 
