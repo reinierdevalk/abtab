@@ -42,6 +42,12 @@ if [[ -n "$WINDIR" || "$os_type" == "CYGWIN"* || "$os_type" == "MINGW"* || "$os_
     IS_WIN=true
 fi
 
+# Check if a version of Python2 is installed; if so, overrule
+PYTHON="python"
+if command -v python2 &>/dev/null; then
+	PYTHON="python3"
+fi
+
 config="config.cfg"
 classpath="classpath.sh"
 
@@ -752,7 +758,7 @@ elif [ "$TOOL" == "transcriber" ]; then
 		#
 		# if multiple files, this is handled inside diplomat.py
 		user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" true)
-		python $PYTHON_PATH"transcriber.py" $user_opts_vals_java "$DEV" $ROOT_PATH_ $LIB_PATH_ $class_path
+		$PYTHON $PYTHON_PATH"transcriber.py" $user_opts_vals_java "$DEV" $ROOT_PATH_ $LIB_PATH_ $class_path
 	# Polyphonic
 	else
 		user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)

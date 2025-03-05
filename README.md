@@ -2,7 +2,7 @@
 AbsoLutely Tabulous (`abtab`) is a toolbox for computational processing and analysis of music in lute tablature, written in Java, Python, and Bash. A prototype is currently being developed within the [E-LAUTE]() project. `abtab` is extensible and multi-modular, builds on existing tools and research, and is designed as a portable command-line tool that runs on Windows and Unix-based operating systems. For more information, see [this poster](https://drive.google.com/file/d/14hKBHfRaqwZnS9KqpreFySfvTffAQ5PI/view?usp=sharing), which was presented at the 2nd International Conference on Computational and Cognitive Musicology (CCCM), Utrecht, the Netherlands, 17-18 October 2024.
 
 # Dependencies
-`abtab` is being developed for MacOS and Windows, in the latter case using [Cygwin](https://www.cygwin.com/), a free Unix-like environment and command-line interface (CLI) for Windows. If you are using Windows, it is recommended to install this CLI, or a similar Unix-emulating CLI such as the ones provided by [Git](https://git-scm.com/) or [Git for Windows](https://gitforwindows.org/). The remainder of this `README` assumes the usage of such a CLI.
+`abtab` is being developed for macOS and Windows, in the latter case using [Cygwin](https://www.cygwin.com/), a free Unix-like environment and command-line interface (CLI) for Windows. If you are using Windows, it is recommended to install this CLI, or a similar Unix-emulating CLI such as the ones provided by [Git](https://git-scm.com/) or [Git for Windows](https://gitforwindows.org/). The remainder of this `README` assumes the usage of such a CLI.
 
 In order to be able to run `abtab`, you must have Python and Java installed on your system. The current version of `abtab` uses Python `3.12.0`; for Java, any version >= `11.0.1` will do.
 
@@ -15,7 +15,7 @@ or, for Java,
 
     $ java -version
 
-If the command returns a version, you are all set: the software is installed on your system and its installation path is on the system `PATH`. If it returns an error (e.g., `command not found`) or something else, run
+If the command returns a version, you are all set: the software is installed on your system and its installation path is on the system `PATH`. If it returns an error (e.g., `command not found`) or something else than a version, run
 
     $ which python
 
@@ -23,13 +23,16 @@ or, for Java,
 
     $ which java
 
-If the command returns a valid path, the software is installed on your system, but its installation path is not on the system `PATH`. If it returns an error (e.g., `command not found`) or something else, the software is not installed on your system.
+If the command returns a valid path, the software is installed on your system, but its installation path is not on the system `PATH`. If it returns an error (e.g., `command not found`) or something else than a valid path, the software is not installed on your system.
 
-#### Note for Windows users
+### Note for Mac users
+On older version of macOS, the default installed version of Python is Python2. If the `version` command returns some version of Python2,  you must use `python3 --version` and `which python3`, respectively.
+
+### Note for Windows users
 On Windows, note that the path returned has been adapted to the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
 
-### If the software is installed on your system
-If the software is installed on your system, you must make sure that it is available in your CLI -- i.e., that its installation path (obtained using the `which` command, as shown above) is on the system `PATH`. You do this by adding the installation path to the `.bash_profile` file. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
+### If the software is installed on your system and it meets the minimum version requirement
+If the software is installed on your system and it meets the minimum version requirement, you must make sure that it is available in your CLI -- i.e., that its installation path (obtained using the `which` command, as shown above) is on the system `PATH`. You do this by adding the installation path to the `.bash_profile` file. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
 
     $ cd ~/
     $ ls -a
@@ -63,7 +66,14 @@ You can always check which paths are on the system `PATH` as follows.
     $ echo $PATH
 
 ### If the software is not installed on your system
-Go to the [Python](https://www.python.org/downloads/) or [Java](https://www.java.com/) website to download (the latest version of) the software, and install it following the installation instructions. Once the software is installed on your system, repeat the steps listed [above](#if-the-software-is-installed-on-your-system).  
+For manual installation, go to the [Python](https://www.python.org/) or [Java](https://www.java.com/) website to download the installer and follow the installation instructions. Alternatively, on macOS you can use a package manager such as [Homebrew](https://brew.sh/), [MacPorts](https://www.macports.org/), or [Anaconda](https://www.anaconda.com/)'s `conda` for installation, while on Windows, you can use [Chocolatey]() or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/). It is recommended to install the latest stable version of the software.
+
+Once the software is installed, repeat the steps listed [above](#if-the-software-is-installed-on-your-system) to ensure that it is available in your CLI.
+
+### If the software is installed on your system and it does not meet the minimum version requirement
+If the software is already installed on your system and you only need to update it to a newer version, it is easiest and most efficient to use a package manager to do so -- but it can be done manually as well.
+
+Once the software is updated, repeat the steps listed [above](#if-the-software-is-installed-on-your-system) to ensure that the updated version is available in your CLI.
 
 # Installation
 1. Create, on a path of choice on your computer, a directory called `abtab/`. The path up to and including this directory is referred to as `<root_path>`, and the directory itself is where you will be working from.
