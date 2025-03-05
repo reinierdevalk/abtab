@@ -26,12 +26,12 @@ or, for Java,
 If the command returns a valid path, the software is installed on your system, but its installation path is not on the system `PATH`. If it returns an error (e.g., `command not found`) or something else than a valid path, the software is not installed on your system.
 
 ### Note for Mac users
-On older version of macOS, the default installed version of Python is Python2. If the `version` command returns some version of Python2,  you must use `python3 --version` and `which python3`, respectively.
+On older versions of macOS, the default installed version of Python is Python2. If the `version` command returns some version of Python2,  you must use `python3 --version` and `which python3`, respectively.
 
 ### Note for Windows users
 On Windows, note that the path returned has been adapted to the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
 
-### If the software is installed on your system and it meets the minimum version requirement
+### If the software is installed on your system (and it meets the minimum version requirement)
 If the software is installed on your system and it meets the minimum version requirement, you must make sure that it is available in your CLI -- i.e., that its installation path (obtained using the `which` command, as shown above) is on the system `PATH`. You do this by adding the installation path to the `.bash_profile` file. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
 
     $ cd ~/
@@ -66,12 +66,12 @@ You can always check which paths are on the system `PATH` as follows.
     $ echo $PATH
 
 ### If the software is not installed on your system
-For manual installation, go to the [Python](https://www.python.org/) or [Java](https://www.java.com/) website to download the installer and follow the installation instructions. Alternatively, on macOS you can use a package manager such as [Homebrew](https://brew.sh/), [MacPorts](https://www.macports.org/), or [Anaconda](https://www.anaconda.com/)'s `conda` for installation, while on Windows, you can use [Chocolatey]() or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/). It is recommended to install the latest stable version of the software.
+For manual installation, go to the [Python](https://www.python.org/) or [Java](https://www.java.com/) website to download the installer, and follow the installation instructions. Alternatively, you can use a package manager such as [Homebrew](https://brew.sh/), [MacPorts](https://www.macports.org/), or [Anaconda](https://www.anaconda.com/)'s `conda` (macOS), or [Chocolatey]() or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/) (Windows) for installation. It is recommended to install the latest stable version of the software.
 
 Once the software is installed, repeat the steps listed [above](#if-the-software-is-installed-on-your-system) to ensure that it is available in your CLI.
 
 ### If the software is installed on your system and it does not meet the minimum version requirement
-If the software is already installed on your system and you only need to update it to a newer version, it is easiest and most efficient to use a package manager to do so -- but it can be done manually as well.
+If the software is already installed on your system and you only need to update it to a newer version, it is easiest and most efficient to use a package manager -- but it can be done manually as well.
 
 Once the software is updated, repeat the steps listed [above](#if-the-software-is-installed-on-your-system) to ensure that the updated version is available in your CLI.
 
