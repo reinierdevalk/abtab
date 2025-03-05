@@ -15,7 +15,7 @@ or, for Java,
 
     $ java -version
 
-If the command returns a version, you are all set: the software is installed on your system and its installation path is on the system `PATH`. If it returns an error (e.g., `command not found`) or something else than a version, run
+If the command returns a version, you are all set: the software is installed on your system and its installation path is on the system `PATH`. If it returns an error or something else than a version, run
 
     $ which python
 
@@ -23,15 +23,28 @@ or, for Java,
 
     $ which java
 
-If the command returns a valid path, the software is installed on your system, but its installation path is not on the system `PATH`. If it returns an error (e.g., `command not found`) or something else than a valid path, the software is not installed on your system.
+If the command returns a valid path, the software is installed on your system, but its installation path is not on the system `PATH`. In this case, proceed directly [here](#if-the-software-is-installed-on-your-system). If it returns an error or something else than a valid path, the software is not installed on your system. In this case, proceed [here](#if-the-software-is-not-installed-on-your-system) first.
 
 ### Note for Mac users
-On older versions of macOS, the default installed version of Python is Python2. If the `version` command returns some version of Python2,  you must use `python3 --version` and `which python3`, respectively.
+On older versions of macOS, the default installed version of Python is Python2. If the `version` command returns some version of Python2, you must use `python3 --version` and `which python3`, respectively.
 
 ### Note for Windows users
 On Windows, note that the path returned has been adapted to the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
 
-### If the software is installed on your system (and it meets the minimum version requirement)
+## If the software is not installed on your system
+For manual installation, go to the [Python](https://www.python.org/) or [Java](https://www.java.com/) website to download the installer, and follow the installation instructions.
+
+Alternatively, you can use a package manager such as [Homebrew](https://brew.sh/), [MacPorts](https://www.macports.org/), or [Anaconda](https://www.anaconda.com/)'s `conda` (macOS), or [Chocolatey]() or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/) (Windows) for installation.
+
+It is recommended to install the latest stable version of the software. Once the software is installed, proceed [here](#if-the-software-is-installed-on-your-system).
+
+## If the software is installed on your system
+### If the software does not meet the minimum version requirement
+If the software is installed on your system but it needs to be updated to meet the minimum version requirement, it is easiest and most efficient to do this using a package manager, as described [below](#if-the-software-is-not-installed-on-your-system). However, it can be done manually as well.
+
+It is recommended to update to the latest stable version of the software. Once the software is updated, proceed [here](#if-the-software-meets-the-minimum-version-requirement).
+
+### If the software meets the minimum version requirement
 If the software is installed on your system and it meets the minimum version requirement, you must make sure that it is available in your CLI -- i.e., that its installation path (obtained using the `which` command, as shown above) is on the system `PATH`. You do this by adding the installation path to the `.bash_profile` file. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
 
     $ cd ~/
@@ -45,13 +58,13 @@ Then, add the installation path (exactly as returned by the `which` command) to 
 
     export PATH="$PATH:<formatted_path>"
 
-E.g., for Python 
+E.g., for Python (on Windows)
 
     export PATH="$PATH:/c/cygdrive/<Username>/AppData/Local/Programs/Python/Python<version>/"
 
-or, for Java,
+or, for Java (on macOS),
 
-    export PATH="$PATH:/c/cygdrive/Program Files/Java/jdk-<version>/bin/"
+    export PATH="$PATH:/usr/bin/java/"
 
 Finally, save and `source` `.bash_profile` to apply the changes. Alternatively, you can simply close and reopen the CLI terminal. (Sometimes, both actions are needed.)
 
@@ -64,16 +77,6 @@ If the `source` command results in one or more errors similar to `-bash: $'\r': 
 You can always check which paths are on the system `PATH` as follows.
 
     $ echo $PATH
-
-### If the software is not installed on your system
-For manual installation, go to the [Python](https://www.python.org/) or [Java](https://www.java.com/) website to download the installer, and follow the installation instructions. Alternatively, you can use a package manager such as [Homebrew](https://brew.sh/), [MacPorts](https://www.macports.org/), or [Anaconda](https://www.anaconda.com/)'s `conda` (macOS), or [Chocolatey]() or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/) (Windows) for installation. It is recommended to install the latest stable version of the software.
-
-Once the software is installed, repeat the steps listed [above](#if-the-software-is-installed-on-your-system) to ensure that it is available in your CLI.
-
-### If the software is installed on your system and it does not meet the minimum version requirement
-If the software is already installed on your system and you only need to update it to a newer version, it is easiest and most efficient to use a package manager -- but it can be done manually as well.
-
-Once the software is updated, repeat the steps listed [above](#if-the-software-is-installed-on-your-system) to ensure that the updated version is available in your CLI.
 
 # Installation
 1. Create, on a path of choice on your computer, a directory called `abtab/`. The path up to and including this directory is referred to as `<root_path>`, and the directory itself is where you will be working from.
