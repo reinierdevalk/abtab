@@ -54,7 +54,7 @@ If the file does not appear in the items listed, you must create it.
 
     $ touch ~/.bash_profile
 
-Then, add the installation path (exactly as returned by the `which` command) to `.bash_profile` by opening the latter with your editor of choice, and then adding the following line to it (replacing `<formatted_path>` with your actual installation path).
+Then, add the installation path (formatted exactly as returned by the `which` command) to `.bash_profile` by opening the latter with your editor of choice, and then adding the following line to it (replacing `<formatted_path>` with your actual installation path).
 
     export PATH="$PATH:<formatted_path>"
 
