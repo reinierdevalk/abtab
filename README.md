@@ -29,7 +29,7 @@ or (Windows)
 
     java version "x.y.z" ...
 
-If the output is a version that meets the mimimum required version, you can skip the remainder of this section and proceed [here](#installation); if it is a version that does not meet the mimimum required version, you must update the software as described [here](#2.-installing-or-updating-python-and-java) and proceed from there.
+If the output is a version that meets the mimimum required version, you can skip the remainder of this section and proceed [here](#installation); if it is a version that does not meet the mimimum required version, you must update the software as described [here](#2-installing-or-updating-python-and-java) and proceed from there.
 
 If the output is an error or something else than a version, (a) the software is installed but its installation path is not on the system `PATH`, or (b) the software is not installed. In the former case, you need to locate the installation path and add it to the system `PATH` as described [here](#3.-adding-the-installation-paths-to-the-system-PATH) and proceed from there; in the latter case, you need to install the software as described [here](#2.-installing-or-updating-python-and-java) and proceed from there.
 
