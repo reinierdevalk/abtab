@@ -1,51 +1,73 @@
 # Introduction
-AbsoLutely Tabulous (`abtab`) is a toolbox for computational processing and analysis of music in lute tablature, written in Java, Python, and Bash. A prototype is currently being developed within the [E-LAUTE]() project. `abtab` is extensible and multi-modular, builds on existing tools and research, and is designed as a portable command-line tool that runs on Windows and Unix-based operating systems. For more information, see [this poster](https://drive.google.com/file/d/14hKBHfRaqwZnS9KqpreFySfvTffAQ5PI/view?usp=sharing), which was presented at the 2nd International Conference on Computational and Cognitive Musicology (CCCM), Utrecht, the Netherlands, 17-18 October 2024.
+AbsoLutely Tabulous (`abtab`) is a toolbox for computational processing and analysis of music in lute tablature, written in Python, Java, and Bash. A prototype is currently being developed within the [E-LAUTE](https://e-laute.info/) project. `abtab` is extensible and multi-modular, builds on existing tools and research, and is designed as a portable command-line tool that runs on Windows and Unix-based (currently, macOS) operating systems. For more information, see [this poster](https://drive.google.com/file/d/14hKBHfRaqwZnS9KqpreFySfvTffAQ5PI/view?usp=sharing), which was presented at the 2nd International Conference on Computational and Cognitive Musicology (CCCM), Utrecht, the Netherlands, 17-18 October 2024.
 
 # Dependencies
-`abtab` is being developed for macOS and Windows, in the latter case using [Cygwin](https://www.cygwin.com/), a free Unix-like environment and command-line interface (CLI) for Windows. If you are using Windows, it is recommended to install this CLI, or a similar Unix-emulating CLI such as the ones provided by [Git](https://git-scm.com/) or [Git for Windows](https://gitforwindows.org/). The remainder of this `README` assumes the usage of such a CLI.
+## Command-line interface
+If you are using Windows, it is strongly recommended to install a Unix-like environment and command-line interface (CLI) such as [Cygwin](https://www.cygwin.com/), [Git Bash](https://gitforwindows.org/), or [MSYS2](https://www.msys2.org/). The remainder of this `README` assumes the usage of such a CLI (Cygwin).
 
-In order to be able to run `abtab`, you must have Python and Java installed on your system. The current version of `abtab` uses Python `3.12.0`; for Java, any version >= `11.0.1` will do.
+## Python and Java
+The current version of `abtab` requires Python 3.12.0 or higher and Java 11.0.1 or higher. Follow the instructions below to verify the installation and update or install if necessary.
 
-## Verifying Python and Java installation
-To verify whether Python (or Java) is installed on your system and its installation path on the system `PATH`, run
+### Verifying Python and Java installation
+To verify whether Python and Java are installed and meet the minimum required version, run
 
     $ python --version
 
-or, for Java,
+and, for Java,
 
     $ java -version
 
-If the command returns a version, you are all set: the software is installed on your system and its installation path is on the system `PATH`. If it returns an error or something else than a version, run
+If the software is installed correctly, you should see output similar to
 
-    $ which python
+    Python x.y.z
 
-or, for Java,
+and, for Java (macOS),
 
-    $ which java
+    openjdk version "x.y.z" ...
 
-If the command returns a valid path, the software is installed on your system, but its installation path is not on the system `PATH`. In this case, proceed directly [here](#if-the-software-is-installed-on-your-system). If it returns an error or something else than a valid path, the software is not installed on your system. In this case, proceed [here](#if-the-software-is-not-installed-on-your-system) first.
+or (Windows)
 
-### Note for Mac users
-On older versions of macOS, the default installed version of Python is Python2. If the `version` command returns some version of Python2, you must use `python3 --version` and `which python3`, respectively.
+    java version "x.y.z" ...
 
-### Note for Windows users
-On Windows, note that the path returned has been adapted to the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
+If the output is a version that meets the mimimum required version, you can skip the remainder of this section and proceed [here](#installation); if it is a version that does not meet the mimimum required version, you must update the software as described [here](#installing-or-updating-python-and-java).
 
-## If the software is not installed on your system
-For manual installation, go to the [Python](https://www.python.org/) or [Java](https://www.java.com/) website to download the installer, and follow the installation instructions.
+If the output is an error or something else than a version, (a) the software is installed but its installation path is not on the system `PATH`, or (b) the software is not installed. In the former case, you need to locate the installation path and add it to the system `PATH` as described [here](#adding-the-installation-paths-to-the-system-PATH); in the latter case, you need to install the software as described [here](#installing-or-updating-python-and-java).
 
-Alternatively, you can use a package manager such as [Homebrew](https://brew.sh/), [MacPorts](https://www.macports.org/), or [Anaconda](https://www.anaconda.com/)'s `conda` (macOS), or [Chocolatey]() or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/) (Windows) for installation.
+#### Note for macOS users
+On older versions of macOS, the default installed version of Python is Python2. If the `version` command returns some version of Python2, you must use `python3` (and not `python`) in your commands.
 
-It is recommended to install the latest stable version of the software. Once the software is installed, proceed [here](#if-the-software-is-installed-on-your-system).
+### Installing or updating Python and Java
+Installing and updating Python and Java is done easiest and most efficiently using a command-line package manager, but it is also possible to download and install [Python](https://www.python.org/downloads/) and [Java](https://www.oracle.com/java/technologies/downloads/) manually.
 
-## If the software is installed on your system
-### If the software does not meet the minimum version requirement
-If the software is installed on your system but it needs to be updated to meet the minimum version requirement, it is easiest and most efficient to do this using a package manager, as described [below](#if-the-software-is-not-installed-on-your-system). However, it can be done manually as well.
+#### macOS
+Common native command-line package managers for macOS are [Homebrew](https://brew.sh/), [MacPorts](https://www.macports.org/), or [Anaconda](https://www.anaconda.com/)'s `conda`. In this `README`, Homebrew is used.
 
-It is recommended to update to the latest stable version of the software. Once the software is updated, proceed [here](#if-the-software-meets-the-minimum-version-requirement).
+To update or install Python and Java, run
 
-### If the software meets the minimum version requirement
-If the software is installed on your system and it meets the minimum version requirement, you must make sure that it is available in your CLI -- i.e., that its installation path (obtained using the `which` command, as shown above) is on the system `PATH`. You do this by adding the installation path to the `.bash_profile` file. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
+    $ brew install python
+
+and, for Java,
+
+    $ brew install openjdk
+    $ brew link --force openjdk
+
+To update to or install a specific version rather than the latest, add `@x.y.z` -- e.g., `python@3.12.0` or `openjdk@11.0.1`.
+
+#### Windows
+Native command-line package managers for Windows, such as [Chocolatey](https://chocolatey.org/) or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/), cannot be run from a Unix-emulating CLI -- so on Windows, you are restricted to the built-in package manager of your Unix-emulating CLI. Git Bash and MSYS2, for example, provide access to `pacman`, and Cygwin uses its own [`setup`](https://www.cygwin.com/install.html) tool, a package manager that is run independently of the CLI. In this `README`, Cygwin is used.
+
+To update to or install Python and Java, run the Cygwin `setup` tool.
+
+### Adding the installation paths to the system `PATH`
+To ensure that Python and Java are available in the CLI, you may need to add the Python and Java installation paths to the system `PATH`. Homebrew usually handles this automatically, but other package managers may not (the Cygwin `setup` tool, for example, does not); moreover, previously installed versions of the software may not yet have their installation paths added to the `PATH`. You can find how to locate the installation paths [here](#locating-the-installation-paths). 
+
+Note that on Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
+
+To check whether the installation paths are on the system `PATH`, run
+
+    $ echo $PATH
+
+If the installation paths are not on the `PATH`, you can add them by adding them to the `.bash_profile` file. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
 
     $ cd ~/
     $ ls -a
@@ -54,29 +76,83 @@ If the file does not appear in the items listed, you must create it.
 
     $ touch ~/.bash_profile
 
-Then, add the installation path (formatted exactly as returned by the `which` command) to `.bash_profile` by opening the latter with your editor of choice, and then adding the following line to it (replacing `<formatted_path>` with your actual installation path).
+Then, add the missing installation paths to `.bash_profile` by opening it with your editor of choice, and then adding the following line to it (replacing `<installation_path>` with your actual installation path).
 
-    export PATH="$PATH:<formatted_path>"
+    export PATH="$PATH:<installation_path>"
 
-E.g., for Python (on Windows)
+For example (macOS),
 
-    export PATH="$PATH:/c/cygdrive/<Username>/AppData/Local/Programs/Python/Python<version>/"
+    export PATH="$PATH:/usr/local/bin/"
 
-or, for Java (on macOS),
+or (Windows -- note the `/cygdrive/c/` prefix)
 
-    export PATH="$PATH:/usr/bin/java/"
+    export PATH="$PATH:/cygdrive/c/Users/<Username>/AppData/Local/Programs/Python/Python312/"
 
-Finally, save and `source` `.bash_profile` to apply the changes. Alternatively, you can simply close and reopen the CLI terminal. (Sometimes, both actions are needed.)
+and, for Java (macOS),
+
+    export PATH="$PATH:/usr/local/bin/"
+
+or (Windows -- note the `/cygdrive/c/` prefix)
+
+    export PATH="$PATH:/cygdrive/c/Program Files/Java/jdk-11.0.1/bin/"
+
+Finally, save `.bash_profile` and `source` it to apply the changes. Alternatively, you can simply close and reopen the CLI terminal. (Sometimes, both actions are needed.)
 
     $ source ~/.bash_profile
 
-If the `source` command results in one or more errors similar to `-bash: $'\r': command not found`, `.bash_profile` contains Windows-style CRLF (`\r\n`) line endings that must be replaced by Unix-style LF (`\n`) line endings. Retry after running
+If the `source` command results in one or more errors similar to `-bash: $'\r': command not found`, `.bash_profile` contains Windows-style CRLF line endings (`\r\n`) that must be replaced by Unix-style LF line endings (`\n`). Retry after running
 
     $ sed -i 's/\r//' ~/.bash_profile
 
-You can always check which paths are on the system `PATH` as follows.
+Check if the paths have been added to the system `PATH`.
 
     $ echo $PATH
+
+### Locating the installation paths
+#### macOS, using Homebrew
+Homebrew installs Python and Java in `/usr/local/opt/python@<version>` and `/usr/local/opt/openjdk@<version>`, respectively. You can confirm the installation paths with
+
+    $ brew --prefix python
+
+and, for Java,
+
+    $ brew --prefix openjdk
+
+Homebrew automatically adds a symlink to the Python executable in `/usr/local/bin/`; for Java, the `brew link` command (see [above](#installing-or-updating-python-and-java)) is required to achieve this. This makes `/usr/local/bin/` the installation path to be added to the system `PATH` (if it is not on it yet).
+
+#### macOS, other cases
+If Python and Java are installed through another package manager or manually, their installation paths can vary. Common Python installation paths are `/Library/Frameworks/Python.framework/Versions/<version>/bin`, `/usr/local/bin/python3/`, or `/usr/bin/python3/`; common Java installation paths are `/Library/Java/JavaVirtualMachines/` or `/usr/local/opt/openjdk@<version>/`. To locate the installation paths, run
+
+    $ which python
+
+and, for Java, 
+
+    $ which java
+
+If this does not work, or the executables are not symlinked, you can check the typical installation paths as mentioned above, or you can use `find` or `locate`.
+
+#### Windows, using Cygwin
+Cygwin installs Python and Java in its own installation directory, `C:/cygwin64/bin/` or `C:/cygwin/bin/`. You can confirm the installation paths with
+
+    $ which python
+
+and, for Java, 
+
+    $ which java
+
+#### Windows, other cases
+If Python and Java are installed through another package manager or manually, their installation path can vary. Common Python installation paths are `C:/Python<version>/`, or `C:/Users/<Username>/AppData/Local/Programs/Python/Python<version>/`; a common Java installation path is `C:/Program Files/Java/jdk-<version>/bin/`. To locate the installation paths, run
+
+    $ which python
+
+and, for Java, 
+
+    $ which java
+
+If this does not work, or the executables are not symlinked, you can check the typical installation paths as mentioned above, or you can use `find` or `locate`.
+
+### Re-verifying Python and Java installation
+Repeat the steps described [here](#verifying-python-and-java-installation) to verify that Python and Java are now installed correctly.
 
 # Installation
 1. Create, on a path of choice on your computer, a directory called `abtab/`. The path up to and including this directory is referred to as `<root_path>`, and the directory itself is where you will be working from.

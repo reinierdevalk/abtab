@@ -32,6 +32,7 @@
         "ANALYSIS_PYTHON_PATH":         "analysis/py/" // (Analyser)
     },
     "files": {
+        "MEI_2_TBP_SCRIPT":             "mei2tbp.py",
         "BEAM_SCRIPT":                  "beam.py",
         "SCIKIT_SCRIPT":                "model_scikit.py",
         "TENSORFLOW_SCRIPT":            "model_tensorflow.py",
