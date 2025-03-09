@@ -29,9 +29,9 @@ or (Windows)
 
     java version "x.y.z" ...
 
-If the output is a version that meets the mimimum required version, you can skip the remainder of this section and proceed [here](#installation); if it is a version that does not meet the mimimum required version, you must update the software as described [here](#2-installing-or-updating-python-and-java) and proceed from there.
+If the output is a version that meets the mimimum required version, you can skip the remainder of this section and proceed [here](#installation); if it is a version that does not meet the mimimum required version, you must update the software as described in [Step 2](#2-installing-or-updating-python-and-java) and proceed from there.
 
-If the output is an error or something else than a version, (a) the software is installed but its installation path is not on the system `PATH`, or (b) the software is not installed. In the former case, you need to locate the installation path and add it to the system `PATH` as described [here](#3-adding-the-installation-paths-to-the-system-PATH) and proceed from there; in the latter case, you need to install the software as described [here](#2-installing-or-updating-python-and-java) and proceed from there.
+If the output is an error or something else than a version, (a) the software is installed but its installation path is not on the system `PATH`, or (b) the software is not installed. In the former case, you need to locate the installation path and add it to the system `PATH` as described in [Step 3](#3-adding-the-installation-paths-to-the-system-PATH) and proceed from there; in the latter case, you need to install the software as described in [Step 2](#2-installing-or-updating-python-and-java) and proceed from there.
 
 #### Note for macOS users
 On older versions of macOS, the default installed version of Python is Python2. If the `--version` command returns some version of Python2, you must use `python3` (and not `python`) in your commands.
@@ -118,7 +118,7 @@ and, for Java,
 
     $ brew --prefix openjdk
 
-Homebrew automatically adds a symlink to the Python executable in `/usr/local/bin/`; for Java, the `brew link` command (see [above](#2-installing-or-updating-python-and-java)) is required to achieve this. This makes `/usr/local/bin/` the installation path to be added to the system `PATH` (if it is not on it yet).
+Homebrew automatically adds a symlink to the Python executable in `/usr/local/bin/`; for Java, the `brew link` command (see [Step 2](#2-installing-or-updating-python-and-java) above) is required to achieve this. This makes `/usr/local/bin/` the installation path to be added to the system `PATH` (if it is not on it yet).
 
 ##### macOS, other cases
 If Python and Java are installed through another package manager or manually, their installation paths can vary. Common Python installation paths are `/Library/Frameworks/Python.framework/Versions/<version>/bin/`, `/usr/local/bin/`, or `/usr/bin/`; common Java installation paths are `/Library/Java/JavaVirtualMachines/` or `/usr/local/opt/`. To locate the installation paths, run
@@ -152,7 +152,7 @@ and, for Java,
 If this does not work, or the executables are not symlinked, you can check the typical installation paths as mentioned above, or you can use `find` or `locate`.
 
 ### 4. Re-verifying Python and Java installation
-Repeat the steps described [here](#1-verifying-python-and-java-installation) to verify that Python and Java are now installed correctly.
+Repeat the steps described in [Step 1](#1-verifying-python-and-java-installation) to verify that Python and Java are now installed correctly.
 
 # Installation
 1. Create, on a path of choice on your computer, a directory called `abtab/`. The path up to and including this directory is referred to as `<root_path>`, and the directory itself is where you will be working from.
@@ -179,7 +179,7 @@ Repeat the steps described [here](#1-verifying-python-and-java-installation) to 
     $ echo $PATH
     ```
 
-    The procedure for adding `<exe_path>` to the system `PATH` is exactly the same as the one for adding the Python and Java installation path, as described [here](#3-adding-the-installation-paths-to-the-system-PATH). Note that on Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see [here](#3-adding-the-installation-paths-to-the-system-PATH)).
+    The procedure for adding `<exe_path>` to the system `PATH` is exactly the same as the one for adding the Python and Java installation path, as described in [Step 3](#3-adding-the-installation-paths-to-the-system-PATH) above. Note that on Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Step 3](#3-adding-the-installation-paths-to-the-system-PATH) above).
 
 4. Run the installer, `install.sh`, from `<root_path>`.
     ```
