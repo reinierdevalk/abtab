@@ -129,7 +129,7 @@ and, for Java,
 
     $ which java
 
-If this does not work, or the executables are not symlinked, you can check the typical installation paths as mentioned above, or you can use `find` or `locate`.
+If this does not work, or the executables are not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
 
 ##### Windows, using Cygwin
 Cygwin installs Python and Java in its own installation directory, `C:/cygwin64/bin/` or `C:/cygwin/bin/`. You can confirm the installation paths with
@@ -149,7 +149,7 @@ and, for Java,
 
     $ which java
 
-If this does not work, or the executables are not symlinked, you can check the typical installation paths as mentioned above, or you can use `find` or `locate`.
+If this does not work, or the executables are not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
 
 ### 4. Re-verifying Python and Java installation
 Repeat the steps described in [Step 1](#1-verifying-python-and-java-installation) to verify that Python and Java are now installed correctly.
