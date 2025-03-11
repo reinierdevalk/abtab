@@ -60,7 +60,7 @@ On older versions of macOS, the default installed version of Python is Python2. 
     $ echo $PATH
     ```
 
-    The procedure for adding `<exe_path>` to the system `PATH` is exactly the same as the one for adding the Python and Java installation path, as described in [Installing or updating Python and Java](#installing-or-updating-python-and-java), [Step 2. Adding the installation paths to the system `PATH`](#step-2-adding-the-installation-paths-to-the-system-PATH). Note that on Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Installing or updating Python and Java](#installing-or-updating-python-and-java), [Step 2. Adding the installation paths to the system `PATH`](#step-2-adding-the-installation-paths-to-the-system-PATH)).
+    The procedure for adding `<exe_path>` to the system `PATH` is exactly the same as the one for adding the Python and Java installation paths, as described in [Installing or updating Python and Java](#installing-or-updating-python-and-java), [Step 2. Adding the installation paths to the system `PATH`](#step-2-adding-the-installation-paths-to-the-system-PATH). Note that on Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Installing or updating Python and Java](#installing-or-updating-python-and-java), [Step 2. Adding the installation paths to the system `PATH`](#step-2-adding-the-installation-paths-to-the-system-PATH)), [a. Locating the installation paths](#a-locating-the-installation-paths).
 
 4. Run the installer, `install.sh`, from `<root_path>`.
     ```
@@ -159,6 +159,7 @@ and, for Java,
 
 If this does not work, or the executables are not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
 
+#### Note for Windows users
 Note that on Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
 
 ### b. Adding the installation paths
