@@ -28,7 +28,9 @@ or (Windows)
 
 If the output is a version that meets the minimum required version, you can proceed directly to [Installing `abtab`](#installing-abtab); if it is a version that does not meet the minimum required version, you must first go to [Installing or updating Python and Java](#installing-or-updating-python-and-java) and complete steps 1, 2, and 3 before proceeding to [Installing `abtab`](#installing-abtab).
 
-If the output is an error or something else than a version, (a) the software is not installed, or (b) the software is installed but its installation path is not on the system `PATH`. In both cases, you must first go to [Installing or updating Python and Java](#installing-or-updating-python-and-java) and complete steps 1, 2, and 3 (case (a)) or steps 2 and 3 (case (b)) before proceeding to [Installing `abtab`](#installing-abtab).
+If the output is an error or something else than a version
+- The software is not installed. In this case, you must first go to [Installing or updating Python and Java](#installing-or-updating-python-and-java) and complete Steps 1, 2, and 3 before proceeding to [Installing `abtab`](#installing-abtab).
+- The software is installed but its installation path is not on the system `PATH`. In this case, you must first go to [Installing or updating Python and Java](#installing-or-updating-python-and-java) and complete Steps 2 and 3 (you can skip Step 1) before proceeding to [Installing `abtab`](#installing-abtab).
 
 ### Note for macOS users
 On older versions of macOS, the default installed version of Python is Python2. If the `--version` command returns some version of Python2, you must use `python3` (and not `python`) in your commands.
