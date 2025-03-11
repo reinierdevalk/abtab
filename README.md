@@ -89,6 +89,8 @@ On older versions of macOS, the default installed version of Python is Python2. 
 
 # Installing or updating Python and Java
 
+If you are able to run `abtab`, you can skip this section.
+
 ## Step 1. Installing and updating
 Installing and updating Python and Java is done easiest and most efficiently using a command-line package manager, but it is also possible to download and install [Python](https://www.python.org/downloads/) and [Java](https://www.oracle.com/java/technologies/downloads/) manually.
 
