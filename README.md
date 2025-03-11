@@ -60,7 +60,7 @@ On older versions of macOS, the default installed version of Python is Python2. 
     $ echo $PATH
     ```
 
-    The procedure for adding `<exe_path>` to the system `PATH` is exactly the same as the one for adding the Python and Java installation path, as described in [Step 3](#3-adding-the-installation-paths-to-the-system-PATH) above. Note that on Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Step 3](#3-adding-the-installation-paths-to-the-system-PATH) above).
+    The procedure for adding `<exe_path>` to the system `PATH` is exactly the same as the one for adding the Python and Java installation path, as described in [Installing or updating Python and Java](#installing-or-updating-python-and-java), [Step 2. Adding the installation paths to the system `PATH`](#step-2-adding-the-installation-paths-to-the-system-PATH). Note that on Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Installing or updating Python and Java](#installing-or-updating-python-and-java), [Step 2. Adding the installation paths to the system `PATH`](#step-2-adding-the-installation-paths-to-the-system-PATH)).
 
 4. Run the installer, `install.sh`, from `<root_path>`.
     ```
@@ -91,7 +91,7 @@ On older versions of macOS, the default installed version of Python is Python2. 
 
 If you are able to run `abtab`, you can skip this section.
 
-## Step 1. Installing and updating
+## Step 1. Installing or updating
 Installing and updating Python and Java is done easiest and most efficiently using a command-line package manager, but it is also possible to download and install [Python](https://www.python.org/downloads/) and [Java](https://www.oracle.com/java/technologies/downloads/) manually.
 
 ### macOS
@@ -126,7 +126,7 @@ and, for Java,
 
     $ brew --prefix openjdk
 
-Homebrew automatically adds a symlink to the Python executable in `/usr/local/bin/`; for Java, the `brew link` command (see [Step 2](#2-installing-or-updating-python-and-java) above) is required to achieve this. This makes `/usr/local/bin/` the installation path to be added to the system `PATH` (if it is not on it yet).
+Homebrew automatically adds a symlink to the Python executable in `/usr/local/bin/`; for Java, the `brew link` command (see [Step 1. Installing or updating](#step-1-installing-or-updating) above) is required to achieve this. This makes `/usr/local/bin/` the installation path to be added to the system `PATH` (if it is not on it yet).
 
 #### macOS, other cases
 If Python and Java are installed through another package manager or manually, their installation paths can vary. Common Python installation paths are `/Library/Frameworks/Python.framework/Versions/<version>/bin/`, `/usr/local/bin/`, or `/usr/bin/`; common Java installation paths are `/Library/Java/JavaVirtualMachines/` or `/usr/local/opt/`. To locate the installation paths, run
