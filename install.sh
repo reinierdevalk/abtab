@@ -229,7 +229,7 @@ cp "$ex_tab" "$root_path""$data_dir""analyser/in/"
 cp "$ex_tab" "$root_path""$data_dir""converter/"
 cp "$ex_tab" "$root_path""$data_dir""tabmapper/in/tab/"
 cp "$ex_mid" "$root_path""$data_dir""tabmapper/in/MIDI/"
-#cp "$ex_tab" "$root_path""$data_dir""transcriber/diplomatic/in/" # TODO: currently accepts only .mei
+cp "$ex_tab" "$root_path""$data_dir""transcriber/diplomatic/in/"
 cp "$ex_tab" "$root_path""$data_dir""transcriber/polyphonic/in/"
 rm -f "$ex_tab"
 rm -f "$ex_mid"
