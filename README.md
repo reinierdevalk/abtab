@@ -66,6 +66,9 @@ On older versions of macOS, the default installed version of Python is Python2. 
     ```
     $ ./install.sh
     ```
+
+   If you encounter execute permission issues when running the script, see [Execute permission issues](#execute-permission-issues).  
+    
    The installer 
    - Checks whether `lib_path` and `exe_path` exist, and creates them if they do not.
    - Sets `root_path` and `lib_path` in the executable.
@@ -86,6 +89,20 @@ On older versions of macOS, the default installed version of Python is Python2. 
     $ abtab -h 
     $ abtab --help 
    ```
+
+## Troubleshooting
+### Execute permission issues
+If you encounter execute permission issues when running a script, ensure that Git tracks file permissions by running
+
+    $ git config --global core.fileMode true
+
+This is a one-time configuration that makes Git preserve file permissions across `clone`s and `pull`s. If you have already set this up, you do not need to do it again.
+
+If the above command does not resolve the issues, you can manually set execute permissions for all scripts (`install.sh`, `classpath.sh`, and `abtab`) by running
+
+    $ chmod +x install.sh classpath.sh abtab
+
+Note that you may need to run this command after each `git pull` or `git clone` if the execute permissions are not preserved.
 
 # Installing or updating Python and Java
 
