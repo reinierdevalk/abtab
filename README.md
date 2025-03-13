@@ -123,6 +123,8 @@ and, for Java,
     $ brew install openjdk
     $ brew link --force openjdk
 
+In case the `brew link` command returns a message that it was not successful, you can ignore this -- this case is dealt with in [macOS, using Homebrew](#macOS-using-homebrew).
+
 To update to or install a specific version rather than the latest, add `@x.y.z` -- e.g., `python@3.12.0` or `openjdk@11.0.1`.
 
 ### Windows
@@ -144,6 +146,8 @@ and, for Java,
     $ brew --prefix openjdk
 
 Homebrew automatically adds a symlink to the Python executable in `/usr/local/bin/`; for Java, the `brew link` command (see [Step 1. Installing or updating](#step-1-installing-or-updating)) is required to achieve this. This makes `/usr/local/bin/` the installation path to be added to the system `PATH` (if it is not on it yet).
+
+In case the `brew link` command returned a message that it was not successful, no symlink has been created -- and this makes the output of `brew --prefix openjdk` the installation path to be added to the system `PATH`.  
 
 #### macOS, other cases
 If Python and Java are installed through another package manager or manually, their installation paths can vary. Common Python installation paths are `/Library/Frameworks/Python.framework/Versions/<version>/bin/`, `/usr/local/bin/`, or `/usr/bin/`; common Java installation paths are `/Library/Java/JavaVirtualMachines/` or `/usr/local/opt/`. To locate the installation paths, run
@@ -195,23 +199,23 @@ If the file does not appear in the items listed, you must create it.
 
 Then, add each missing installation path to `.bash_profile` by opening it with your editor of choice, and then adding the following line to it (replacing `<installation_path>` with your actual installation path).
 
-    export PATH="$PATH:<installation_path>"
+    export PATH="<installation_path>:$PATH"
 
 For example (macOS),
 
-    export PATH="$PATH:/usr/local/bin/"
+    export PATH="/usr/local/bin:$PATH"
 
 or (Windows -- note the `/cygdrive/c/` prefix)
 
-    export PATH="$PATH:/cygdrive/c/Users/<Username>/AppData/Local/Programs/Python/Python312/"
+    export PATH="/cygdrive/c/Users/<Username>/AppData/Local/Programs/Python/Python312:$PATH"
 
 and, for Java (macOS),
 
-    export PATH="$PATH:/usr/local/bin/"
+    export PATH="/usr/local/bin:$PATH"
 
 or (Windows -- note the `/cygdrive/c/` prefix)
 
-    export PATH="$PATH:/cygdrive/c/Program Files/Java/jdk-11.0.1/bin/"
+    export PATH="/cygdrive/c/Program Files/Java/jdk-11.0.1/bin:$PATH"
 
 Finally, save `.bash_profile` and `source` it to apply the changes. Alternatively, you can simply close and reopen the CLI terminal. (Sometimes, both actions are needed.)
 
