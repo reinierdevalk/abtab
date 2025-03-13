@@ -5,6 +5,43 @@ AbsoLutely Tabulous (`abtab`) is a toolbox for computational processing and anal
 ## Command-line interface
 If you are using Windows, it is strongly recommended to install a Unix-like environment and command-line interface (CLI) such as [Cygwin](https://www.cygwin.com/), [Git Bash](https://gitforwindows.org/), or [MSYS2](https://www.msys2.org/). The remainder of this `README` assumes the usage of such a CLI (Cygwin).
 
+## Package manager
+Installing and updating dependencies is done easiest and most efficiently using a command-line package manager.
+
+Common native command-line package managers for macOS are [Homebrew](https://brew.sh/), [MacPorts](https://www.macports.org/), or [Anaconda](https://www.anaconda.com/)'s `conda`. In this `README`, Homebrew is used. 
+
+Native command-line package managers for Windows, such as [Chocolatey](https://chocolatey.org/) or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/), cannot be run from a Unix-emulating CLI -- so on Windows, you are restricted to the built-in package manager of your Unix-emulating CLI. Git Bash and MSYS2, for example, provide access to `pacman`, and Cygwin uses its own [`setup`](https://www.cygwin.com/install.html) tool, a package manager that is run independently of the CLI. In this `README`, Cygwin is used.
+
+## Bash
+The current version of `abtab` requires Bash 4.2 or higher. To check your Bash version, run
+
+    $ bash --version
+
+To update bash on macOS, run
+
+    $ brew install bash
+
+To update Bash on Windows, run the Cygwin `setup` tool.
+
+After updating, locate the correct installation path and ensure that it is on the system `PATH` -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
+
+## GNU `getopt` (macOS users only)
+The current version of `abtab` requires GNU `getopt`. To check your GNU `getopt` version, run
+
+    $ getopt --version
+
+If GNU `getopt` is installed correctly, you should see output similar to
+
+    $ getopt from util-linux x.y.z
+
+If the output is an error or something else than a version, GNU `getopt` is not installed. Run
+
+    $ brew install gnu-getopt
+
+After installing,
+- If you want to make GNU `getopt` the default `getopt` on your machine (on macOS, normally this is BSD `getopt`), locate the installation path (usually `/usr/local/opt/gnu-getopt/bin/`) and ensure that it is on the system `PATH` -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH). Note that scripts that rely on BSD `getopt` may not work anymore!
+- If not (recommended), proceed. `abtab` has a built-in check that selects the `getopt` version based on the detected operating system(where it it assumed that the installation path for GNU `getopt` is `/usr/local/opt/gnu-getopt/bin/`). 
+
 ## Python and Java
 The current version of `abtab` requires Python 3.12.0 or higher and Java 11.0.1 or higher. To verify whether Python and Java are installed and meet the minimum required version, run
 
@@ -34,6 +71,36 @@ If the output is an error or something else than a version
 
 ### Note for macOS users
 On older versions of macOS, the default installed version of Python is Python2. If the `--version` command returns some version of Python2, you must use `python3` (and not `python`) in your commands.
+
+## Adding an installation path to the system `PATH`
+To check whether an installation path is on the system `PATH`, run
+
+    $ echo $PATH
+
+If the installation path is not on the `PATH`, you can it them by adding it to the `.bash_profile` file. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
+
+    $ cd ~/
+    $ ls -a
+
+If the file does not appear in the items listed, you must create it.
+
+    $ touch ~/.bash_profile
+
+Then, add the missing installation path to `.bash_profile` by opening it with your editor of choice, and then adding the following line to it (replacing `<installation_path>` with your actual installation path).
+
+    export PATH="<installation_path>:$PATH"
+
+Finally, save `.bash_profile` and `source` it to apply the changes. Alternatively, you can simply close and reopen the CLI terminal. (Sometimes, both actions are needed.)
+
+    $ source ~/.bash_profile
+
+If the `source` command results in one or more errors similar to `-bash: $'\r': command not found`, `.bash_profile` contains Windows-style CRLF line endings (`\r\n`) that must be replaced by Unix-style LF line endings (`\n`). Retry after running
+
+    $ sed -i 's/\r//' ~/.bash_profile
+
+Check if the path has been added to the system `PATH`.
+
+    $ echo $PATH
 
 # Installing `abtab`
 1. Create, on a path of choice on your computer, a directory called `abtab/`. The path up to and including this directory is referred to as `<root_path>`, and the directory itself is where you will be working from.

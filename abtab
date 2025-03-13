@@ -48,6 +48,15 @@ if command -v python2 &>/dev/null; then
 	PYTHON="python3"
 fi
 
+# Ensure that on macOS, GNU getopt is called (and not the default BSD getopt)
+if "$IS_WIN"; then
+	GETOPT_CMD="getopt" # works for Cygwin and Linux
+else
+#elif [[ "$(uname -s)" == "Darwin" ]]; then
+	GETOPT_CMD="/usr/local/opt/gnu-getopt/bin/getopt" # assuming that this is the installation path of GNU getopt
+fi
+ARGS=$($GETOPT_CMD -o hvl: -l help,verbose,logfile: -- "$@")
+
 config="config.cfg"
 classpath="classpath.sh"
 
