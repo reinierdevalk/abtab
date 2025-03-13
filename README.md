@@ -3,16 +3,16 @@ AbsoLutely Tabulous (`abtab`) is a toolbox for computational processing and anal
 
 # Dependencies
 ## Command-line interface
-If you are using Windows, it is strongly recommended to install a Unix-like environment and command-line interface (CLI) such as [Cygwin](https://www.cygwin.com/), [Git Bash](https://gitforwindows.org/), or [MSYS2](https://www.msys2.org/). The remainder of this `README` assumes the usage of such a CLI (Cygwin).
+If you are using Windows, it is strongly recommended to install a Unix-like environment and command-line interface (CLI) such as [Cygwin](https://www.cygwin.com/), [Git Bash](https://gitforwindows.org/), or [MSYS2](https://www.msys2.org/). This `README` assumes the usage of such a CLI (Cygwin).
 
 ## Package manager
 Installing and updating dependencies is done easiest and most efficiently using a command-line package manager.
 
 Common native command-line package managers for macOS are [Homebrew](https://brew.sh/), [MacPorts](https://www.macports.org/), or [Anaconda](https://www.anaconda.com/)'s `conda`. In this `README`, Homebrew is used. 
 
-Native command-line package managers for Windows, such as [Chocolatey](https://chocolatey.org/) or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/), cannot be run from a Unix-emulating CLI -- so on Windows, you are restricted to the built-in package manager of your Unix-emulating CLI. Git Bash and MSYS2, for example, provide access to `pacman`, and Cygwin uses its own [`setup`](https://www.cygwin.com/install.html) tool, a package manager that is run independently of the CLI. In this `README`, Cygwin is used.
+Native command-line package managers for Windows, such as [Chocolatey](https://chocolatey.org/) or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/), cannot be run from a Unix-emulating CLI -- so on Windows, you are restricted to the built-in package manager of your Unix-emulating CLI. Git Bash and MSYS2, for example, provide access to `pacman`, and Cygwin uses its own [`setup`](https://www.cygwin.com/install.html) tool, a package manager that is run independently of the CLI.
 
-## Bash
+## Bash (macOS users only)
 The current version of `abtab` requires Bash 4.2 or higher. To check your Bash version, run
 
     $ bash --version
@@ -23,7 +23,7 @@ To update bash on macOS, run
 
 To update Bash on Windows, run the Cygwin `setup` tool.
 
-After updating, locate the correct installation path and ensure that it is on the system `PATH` -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
+After updating, locate the installation path (usually `/usr/local/bin/bash/`) and ensure that it is on the system `PATH` -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
 ## GNU `getopt` (macOS users only)
 The current version of `abtab` requires GNU `getopt`. To check your GNU `getopt` version, run
@@ -40,7 +40,7 @@ If the output is an error or something else than a version, GNU `getopt` is not 
 
 After installing,
 - If you want to make GNU `getopt` the default `getopt` on your machine (on macOS, normally this is BSD `getopt`), locate the installation path (usually `/usr/local/opt/gnu-getopt/bin/`) and ensure that it is on the system `PATH` -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH). Note that scripts that rely on BSD `getopt` may not work anymore!
-- If not (recommended), proceed. `abtab` has a built-in check that selects the `getopt` version based on the detected operating system(where it it assumed that the installation path for GNU `getopt` is `/usr/local/opt/gnu-getopt/bin/`). 
+- If not (recommended), proceed. `abtab` has a built-in check that selects the `getopt` version based on the detected operating system (where it it assumed that the installation path for GNU `getopt` is `/usr/local/opt/gnu-getopt/bin/`).
 
 ## Python and Java
 The current version of `abtab` requires Python 3.12.0 or higher and Java 11.0.1 or higher. To verify whether Python and Java are installed and meet the minimum required version, run

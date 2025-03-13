@@ -59,6 +59,7 @@ ARGS=$($GETOPT_CMD -o hvl: -l help,verbose,logfile: -- "$@")
 
 config="config.cfg"
 classpath="classpath.sh"
+pythonpath="transcriber/py/"
 
 # a. Set manually
 TOOLS_DESC=(
@@ -685,12 +686,12 @@ if "$DEV"; then
 	LIB_PATH_="$LIB_PATH" # from config
 # Real-world case: paths added once during installation (in install.sh)
 else
-	ROOT_PATH_="rp_placeholder"
-	LIB_PATH_="lp_placeholder"
+	ROOT_PATH_="_RP_PLACEHOLDER_"
+	LIB_PATH_="_LP_PLACEHOLDER_"
 	# Source config 
 	source_filtered "$LIB_PATH_""$config"
 fi
-PYTHON_PATH="${LIB_PATH_}transcriber/py/"
+PYTHON_PATH="${LIB_PATH_}$pythonpath"
 # Create the class path
 # NB Instead of creating the class path every time this script is
 # called, it can also be created once, in install.sh. However, the

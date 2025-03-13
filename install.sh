@@ -86,8 +86,8 @@ for path in "${config_paths[@]}"; do
 done
 
 # 3. Set ROOT_PATH_ and LIB_PATH_ in executable
-rp_placeholder="rp_placeholder"
-lp_placeholder="lp_placeholder"
+rp_placeholder="_RP_PLACEHOLDER_"
+lp_placeholder="_LP_PLACEHOLDER_"
 if $IS_WIN; then
     # Escape forward slashes in root_ and lib_path
     root_path_esc=$(echo "$root_path" | sed 's/\//\\\//g')
@@ -98,6 +98,11 @@ else
     # dw
     sed -i "" "s|$rp_placeholder|$root_path|g" "$abtab"
     sed -i "" "s|$lp_placeholder|$lib_path|g" "$abtab"
+    # Adapt shebang
+    sb_placeholder="!/bin/bash"
+    shebang="!/usr/local/bin/bash"
+    sed -i "" "s|$sb_placeholder|$shebang|g" "$abtab"
+
 #    root_path_esc="/var/git/abtab/"
 #    lib_path_esc="/var/git/abtab/lib/abtab/"
 #    sed -i "" "s|$rp_placeholder|$root_path_esc|g" "$abtab"
