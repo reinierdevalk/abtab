@@ -98,10 +98,10 @@ else
     # dw
     sed -i "" "s|$rp_placeholder|$root_path|g" "$abtab"
     sed -i "" "s|$lp_placeholder|$lib_path|g" "$abtab"
-    # Adapt shebang
-    sb_placeholder="!/bin/bash"
-    shebang="!/usr/local/bin/bash"
-    sed -i "" "s|$sb_placeholder|$shebang|g" "$abtab"
+    # Replace Windows shebang
+    win_shebang="!/bin/bash"
+    mac_shebang="!/usr/local/bin/bash"
+    sed -i "" "s|$win_shebang|$mac_shebang|g" "$abtab"
 
 #    root_path_esc="/var/git/abtab/"
 #    lib_path_esc="/var/git/abtab/lib/abtab/"
