@@ -149,7 +149,7 @@ Cygwin installs Python in its own installation directory, `C:/cygwin64/bin/` or 
     $ which python
 
 #### Windows, other cases
-If Python is installed through another package manager, or manually, its installation path can vary. Common Python installation paths are `C:/Python<version>/`, or `C:/Users/<Username>/AppData/Local/Programs/Python/Python<version>/`. To locate the installation paths, run
+If Python is installed through another package manager, or manually, its installation path can vary. Common Python installation paths are `C:/Python<version>/`, or `C:/Users/<Username>/AppData/Local/Programs/Python/Python<version>/`. To locate the installation path, run
 
     $ which python
 
@@ -194,7 +194,7 @@ To install or update Java, run the Cygwin `setup` tool.
 
 ### Installation path
 #### macOS, using Homebrew
-Homebrew installs Java in `/usr/local/opt/`. You can confirm the installation path with
+Homebrew installs Java in `/usr/local/opt/`. You can confirm the installation path by running
 
     $ brew --prefix openjdk
 
