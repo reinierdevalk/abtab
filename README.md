@@ -39,11 +39,15 @@ If this returns `/usr/local/bin/bash` (macOS) or `/usr/bin/bash` (Windows with C
 
 If it returns some other path (this is unlikely), you must re-install Bash, ensuring the appropriate installation path.
 
+### `PATH`
 Finally, to ensure that Bash is available in the CLI, confirm that the installation path is on the system `PATH` by running
 
     $ echo $PATH
 
 If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
+
+### Verifying installation
+To verify that Bash is now installed correctly, see [Bash](#bash).
 
 ## GNU `getopt`
 The current version of `abtab` requires GNU `getopt` 2.40.2 or higher. To verify whether GNU `getopt` is installed and meets the minimum required version, run (macOS)
@@ -84,6 +88,7 @@ or (Windows with Cygwin)
 
 If this returns `/usr/local/opt/gnu-getopt/bin/getopt` or `/opt/homebrew/opt/gnu-getopt/bin/getopt` (macOS), or `/usr/bin/getopt` (Windows with Cygwin), GNU `getopt` is correctly installed. If it returns some other path (this is unlikely), you must re-install GNU `getopt`, ensuring the appropriate installation path.
 
+### `PATH`
 Finally, to ensure that GNU `getopt` is available in the CLI, confirm that the installation path is on the system `PATH` by running (Windows)
 
     $ echo $PATH
@@ -94,6 +99,9 @@ If it is not, you must add it -- see [Adding an installation path to the system 
 macOS comes with its own default version of `getopt`, BSD `getopt`. If GNU `getopt` is made the default `getopt` by adding it to the `PATH`, scripts that rely on BSD `getopt` may not work anymore on your machine. It is therefore recommended not to do this.
 
 Instead, `abtab` has a built-in check that selects the `getopt` version based on the operating system that is detected -- ensuring that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt`.
+
+### Verifying installation
+To verify that GNU `getopt` is now installed correctly, see [GNU `getopt`](#gnu-getopt).
 
 ## Python
 The current version of `abtab` requires Python 3.12.0 or higher. To verify whether Python is installed and meets the minimum required version, run
@@ -147,15 +155,13 @@ If Python is installed through another package manager, or manually, its install
 
 If this does not work, or the executable is not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
 
-#### When the installation path has been located
+### `PATH`
 Finally, to ensure that Python is available in the CLI, confirm that the installation path is on the system `PATH` by running 
 
     $ echo $PATH
 
 ### Verifying installation
-To verify that Python is now installed correctly, run
-
-    $ python --version
+To verify that Python is now installed correctly, see [Python](#python).
 
 ## Java
 The current version of `abtab` requires Java 11.0.1 or higher. To verify whether Java is installed and meets the minimum required version, run
@@ -215,15 +221,17 @@ If Java is installed through another package manager, or manually, its installat
 
 If this does not work, or the executable is not symlinked, you can check the typical installation path as mentioned above, or you can use the `find` or `locate` commands.
 
-#### When the installation path has been located
+### `PATH`
 Finally, to ensure that Java is available in the CLI, confirm that the installation path is on the system `PATH` by running 
 
     $ echo $PATH
 
 ### Verifying installation
-To verify that Java is now installed correctly, run
+To verify that Java is now installed correctly, see [Java](#java).
 
     $ java -version
+
+
 
 ## Adding an installation path to the system `PATH`
 To check whether an installation path is on the system `PATH`, run
