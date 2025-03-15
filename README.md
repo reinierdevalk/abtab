@@ -120,6 +120,43 @@ To update to or install a specific version rather than the latest, add `@x.y.z` 
 #### Windows
 To install or update Python, run the Cygwin `setup` tool.
 
+### Installation path
+#### macOS, using Homebrew
+Homebrew installs Python in `/usr/local/opt/`. You can confirm the installation path with
+
+    $ brew --prefix python
+
+Homebrew automatically adds a symlink to the Python executable in `/usr/local/bin/`. This makes `/usr/local/bin/` the installation path to be added to the system `PATH` (if it is not on it yet).
+
+#### macOS, other cases
+If Python is installed through another package manager, or manually, its installation path can vary. Common Python installation paths are `/Library/Frameworks/Python.framework/Versions/<version>/bin/`, `/usr/local/bin/`, or `/usr/bin/`. To locate the installation path, run
+
+    $ which python
+
+If this does not work, or the executable is not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
+
+#### Windows, using Cygwin
+Cygwin installs Python in its own installation directory, `C:/cygwin64/bin/` or `C:/cygwin/bin/`. You can confirm the installation path by running
+
+    $ which python
+
+#### Windows, other cases
+If Python is installed through another package manager, or manually, its installation path can vary. Common Python installation paths are `C:/Python<version>/`, or `C:/Users/<Username>/AppData/Local/Programs/Python/Python<version>/`. To locate the installation paths, run
+
+    $ which python
+
+If this does not work, or the executable is not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
+
+#### When the installation path has been located
+Finally, to ensure that Python is available in the CLI, confirm that the installation path is on the system `PATH` by running 
+
+    $ echo $PATH
+
+### Verifying installation
+To verify that Python is now installed correctly, run
+
+    $ python --version
+
 ## Java
 The current version of `abtab` requires Java 11.0.1 or higher. To verify whether Java is installed and meets the minimum required version, run
 
@@ -136,7 +173,7 @@ or (Windows)
 ### Installing and updating
 Installing and updating Java is done easiest and most efficiently using a command-line package manager, but it is also possible to download and install [Java](https://www.oracle.com/java/technologies/downloads/) manually.
 
-### macOS
+#### macOS
 To install or update Java, run
 
     $ brew install openjdk
@@ -146,85 +183,47 @@ In case the `brew link` command returns a message that it was not successful, yo
 
 To update to or install a specific version rather than the latest, add `@x.y.z` -- e.g., `openjdk@11.0.1`.
 
-### Windows
+#### Windows
 To install or update Java, run the Cygwin `setup` tool.
 
-
-WWWWWWWWWWWWWWWWWWWWW
-
-## Step 2. Adding the installation paths to the system `PATH`
-To ensure that Python and Java are available in the CLI, you may need to add the Python and Java installation paths to the system `PATH`. Homebrew usually handles this automatically, but other package managers may not (the Cygwin `setup` tool, for example, does not); moreover, previously installed versions of the software may not yet have had their installation paths added to the `PATH`.
-
-### a. Locating the installation paths
+### Installation path
 #### macOS, using Homebrew
-Homebrew installs Python and Java in `/usr/local/opt/`. You can confirm the installation paths with
-
-    $ brew --prefix python
-
-and, for Java,
+Homebrew installs Java in `/usr/local/opt/`. You can confirm the installation path with
 
     $ brew --prefix openjdk
 
-Homebrew automatically adds a symlink to the Python executable in `/usr/local/bin/`; for Java, the `brew link` command (see [Step 1. Installing or updating](#step-1-installing-or-updating)) is required to achieve this. This makes `/usr/local/bin/` the installation path to be added to the system `PATH` (if it is not on it yet).
+Homebrew does not automatically add a symlink to the Java executable in `/usr/local/bin/`; to this end, the `brew link` command (see ABOVE) is needed. This makes `/usr/local/bin/` the installation path to be added to the system `PATH` (if it is not on it yet).
 
 In case the `brew link` command returns a message that it was not successful, no symlink has been created -- and this makes the output of `brew --prefix openjdk` the installation path to be added to the system `PATH`.  
 
 #### macOS, other cases
-If Python and Java are installed through another package manager or manually, their installation paths can vary. Common Python installation paths are `/Library/Frameworks/Python.framework/Versions/<version>/bin/`, `/usr/local/bin/`, or `/usr/bin/`; common Java installation paths are `/Library/Java/JavaVirtualMachines/` or `/usr/local/opt/`. To locate the installation paths, run
-
-    $ which python
-
-and, for Java, 
+If Java is installed through another package manager, or manually, its installation path can vary. Common Java installation paths are `/Library/Java/JavaVirtualMachines/` or `/usr/local/opt/`. To locate the installation path, run
 
     $ which java
 
-If this does not work, or the executables are not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
+If this does not work, or the executable is not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
 
 #### Windows, using Cygwin
-Cygwin installs Python and Java in its own installation directory, `C:/cygwin64/bin/` or `C:/cygwin/bin/`. You can confirm the installation paths with
-
-    $ which python
-
-and, for Java, 
+Cygwin installs Java in its own installation directory, `C:/cygwin64/bin/` or `C:/cygwin/bin/`. You can confirm the installation path by running
 
     $ which java
 
 #### Windows, other cases
-If Python and Java are installed through another package manager or manually, their installation path can vary. Common Python installation paths are `C:/Python<version>/`, or `C:/Users/<Username>/AppData/Local/Programs/Python/Python<version>/`; a common Java installation path is `C:/Program Files/Java/jdk-<version>/bin/`. To locate the installation paths, run
-
-    $ which python
-
-and, for Java, 
+If Java is installed through another package manager, or manually, its installation path can vary. A common Java installation path is `C:/Program Files/Java/jdk-<version>/bin/`. To locate the installation path, run
 
     $ which java
 
-If this does not work, or the executables are not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
+If this does not work, or the executable is not symlinked, you can check the typical installation path as mentioned above, or you can use the `find` or `locate` commands.
 
-#### Note for Windows users
-Note that on Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
+#### When the installation path has been located
+Finally, to ensure that Java is available in the CLI, confirm that the installation path is on the system `PATH` by running 
 
-### b. Adding the installation paths
-For example (macOS),
+    $ echo $PATH
 
-    export PATH="/usr/local/bin:$PATH"
+### Verifying installation
+To verify that Java is now installed correctly, run
 
-or (Windows -- note the `/cygdrive/c/` prefix)
-
-    export PATH="/cygdrive/c/Users/<Username>/AppData/Local/Programs/Python/Python312:$PATH"
-
-and, for Java (macOS),
-
-    export PATH="/usr/local/bin:$PATH"
-
-or (Windows -- note the `/cygdrive/c/` prefix)
-
-    export PATH="/cygdrive/c/Program Files/Java/jdk-11.0.1/bin:$PATH"
-
-
-## Step 3. Verifying Python and Java installation
-To verify that Python and Java are now installed correctly, repeat the steps described in [Python and Java](#python-and-java).
-
-WWWWWWWWWWWWWWWWWWWWWW
+    $ java -version
 
 ## Adding an installation path to the system `PATH`
 To check whether an installation path is on the system `PATH`, run
@@ -256,15 +255,8 @@ Check if the path has been added to the system `PATH`.
 
     $ echo $PATH
 
-
-
-
-
-
-
-
-
-
+### Note for Windows users
+Note that on Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
 
 # Installing `abtab`
 1. Create, on a path of choice on your computer, a directory called `abtab/`. The path up to and including this directory is referred to as `<root_path>`, and the directory itself is where you will be working from.
@@ -426,3 +418,79 @@ To update to or install a specific version rather than the latest, add `@x.y.z` 
 
 ### Windows
 To install or update Python and Java, run the Cygwin `setup` tool.
+
+WWWWWWWWWWWWWWWWWWWWW
+
+## Step 2. Adding the installation paths to the system `PATH`
+To ensure that Python and Java are available in the CLI, you may need to add the Python and Java installation paths to the system `PATH`. Homebrew usually handles this automatically, but other package managers may not (the Cygwin `setup` tool, for example, does not); moreover, previously installed versions of the software may not yet have had their installation paths added to the `PATH`.
+
+### a. Locating the installation paths
+#### macOS, using Homebrew
+Homebrew installs Python and Java in `/usr/local/opt/`. You can confirm the installation paths with
+
+    $ brew --prefix python
+
+and, for Java,
+
+    $ brew --prefix openjdk
+
+Homebrew automatically adds a symlink to the Python executable in `/usr/local/bin/`; for Java, the `brew link` command (see [Step 1. Installing or updating](#step-1-installing-or-updating)) is required to achieve this. This makes `/usr/local/bin/` the installation path to be added to the system `PATH` (if it is not on it yet).
+
+In case the `brew link` command returns a message that it was not successful, no symlink has been created -- and this makes the output of `brew --prefix openjdk` the installation path to be added to the system `PATH`.  
+
+#### macOS, other cases
+If Python and Java are installed through another package manager or manually, their installation paths can vary. Common Python installation paths are `/Library/Frameworks/Python.framework/Versions/<version>/bin/`, `/usr/local/bin/`, or `/usr/bin/`; common Java installation paths are `/Library/Java/JavaVirtualMachines/` or `/usr/local/opt/`. To locate the installation paths, run
+
+    $ which python
+
+and, for Java, 
+
+    $ which java
+
+If this does not work, or the executables are not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
+
+#### Windows, using Cygwin
+Cygwin installs Python and Java in its own installation directory, `C:/cygwin64/bin/` or `C:/cygwin/bin/`. You can confirm the installation paths with
+
+    $ which python
+
+and, for Java, 
+
+    $ which java
+
+#### Windows, other cases
+If Python and Java are installed through another package manager or manually, their installation path can vary. Common Python installation paths are `C:/Python<version>/`, or `C:/Users/<Username>/AppData/Local/Programs/Python/Python<version>/`; a common Java installation path is `C:/Program Files/Java/jdk-<version>/bin/`. To locate the installation paths, run
+
+    $ which python
+
+and, for Java, 
+
+    $ which java
+
+If this does not work, or the executables are not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
+
+#### Note for Windows users
+Note that on Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
+
+### b. Adding the installation paths
+For example (macOS),
+
+    export PATH="/usr/local/bin:$PATH"
+
+or (Windows -- note the `/cygdrive/c/` prefix)
+
+    export PATH="/cygdrive/c/Users/<Username>/AppData/Local/Programs/Python/Python312:$PATH"
+
+and, for Java (macOS),
+
+    export PATH="/usr/local/bin:$PATH"
+
+or (Windows -- note the `/cygdrive/c/` prefix)
+
+    export PATH="/cygdrive/c/Program Files/Java/jdk-11.0.1/bin:$PATH"
+
+
+## Step 3. Verifying Python and Java installation
+To verify that Python and Java are now installed correctly, repeat the steps described in [Python and Java](#python-and-java).
+
+WWWWWWWWWWWWWWWWWWWWWW
