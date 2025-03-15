@@ -22,11 +22,11 @@ You should see output similar to
     GNU bash, version x.y.z ...
 
 ### Installing and updating
-To install or update Bash on macOS, run
+To install or update Bash, run (macOS)  
 
     $ brew install bash
 
-To install or update Bash on Windows, run the Cygwin `setup` tool.
+On Windows, to install or update Bash, run the Cygwin `setup` tool.
 
 ### Installation path
 `abtab` assumes the default installation path for Bash, i.e., `/usr/local/bin/bash` (macOS) or `/usr/bin/` (Windows with Cygwin). To locate the installation path, run
@@ -63,11 +63,11 @@ You should see output similar to
     getopt from util-linux x.y.z
 
 ### Installing and updating
-To install or update GNU `getopt` on macOS, run
+To install or update GNU `getopt`, run (macOS)
 
     $ brew install gnu-getopt
 
-To install or update GNU `getopt` on Windows, run the Cygwin `setup` tool.
+On Windows, to install or update GNU `getopt`, run the Cygwin `setup` tool.
 
 ### Installation path
 `abtab` assumes the default installation path for GNU `getopt`, i.e., `/usr/local/opt/gnu-getopt/bin/` or `/opt/homebrew/opt/gnu-getopt/bin/` (macOS), or `/usr/bin/` (Windows with Cygwin). 
@@ -228,7 +228,6 @@ If the above command does not resolve the issues, you can manually set execute p
 Note that you may need to run this command after each `git pull` or `git clone` if the execute permissions are not preserved.
 
 # Installing or updating Python and Java
-
 If you are able to run `abtab`, you can skip this section.
 
 ## Step 1. Installing or updating
@@ -253,7 +252,7 @@ To update to or install a specific version rather than the latest, add `@x.y.z` 
 ### Windows
 Native command-line package managers for Windows, such as [Chocolatey](https://chocolatey.org/) or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/), cannot be run from a Unix-emulating CLI -- so on Windows, you are restricted to the built-in package manager of your Unix-emulating CLI. Git Bash and MSYS2, for example, provide access to `pacman`, and Cygwin uses its own [`setup`](https://www.cygwin.com/install.html) tool, a package manager that is run independently of the CLI. In this `README`, Cygwin is used.
 
-To update to or install Python and Java, run the Cygwin `setup` tool.
+To install or update Python and Java, run the Cygwin `setup` tool.
 
 ## Step 2. Adding the installation paths to the system `PATH`
 To ensure that Python and Java are available in the CLI, you may need to add the Python and Java installation paths to the system `PATH`. Homebrew usually handles this automatically, but other package managers may not (the Cygwin `setup` tool, for example, does not); moreover, previously installed versions of the software may not yet have had their installation paths added to the `PATH`.
@@ -270,7 +269,7 @@ and, for Java,
 
 Homebrew automatically adds a symlink to the Python executable in `/usr/local/bin/`; for Java, the `brew link` command (see [Step 1. Installing or updating](#step-1-installing-or-updating)) is required to achieve this. This makes `/usr/local/bin/` the installation path to be added to the system `PATH` (if it is not on it yet).
 
-In case the `brew link` command returned a message that it was not successful, no symlink has been created -- and this makes the output of `brew --prefix openjdk` the installation path to be added to the system `PATH`.  
+In case the `brew link` command returns a message that it was not successful, no symlink has been created -- and this makes the output of `brew --prefix openjdk` the installation path to be added to the system `PATH`.  
 
 #### macOS, other cases
 If Python and Java are installed through another package manager or manually, their installation paths can vary. Common Python installation paths are `/Library/Frameworks/Python.framework/Versions/<version>/bin/`, `/usr/local/bin/`, or `/usr/bin/`; common Java installation paths are `/Library/Java/JavaVirtualMachines/` or `/usr/local/opt/`. To locate the installation paths, run
