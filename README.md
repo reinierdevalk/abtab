@@ -39,7 +39,7 @@ If this returns `/usr/local/bin/bash` (macOS) or `/usr/bin/bash` (Windows with C
 
 If it returns some other path (this is unlikely), you must re-install Bash, ensuring the appropriate installation path.
 
-Finally, ensure that the installation path is on the system `PATH` by running
+Finally, to ensure that Bash is available in the CLI, confirm that the installation path is on the system `PATH` by running
 
     $ echo $PATH
 
@@ -70,9 +70,7 @@ To install or update GNU `getopt`, run (macOS)
 On Windows, to install or update GNU `getopt`, run the Cygwin `setup` tool.
 
 ### Installation path
-`abtab` assumes the default installation path for GNU `getopt`, i.e., `/usr/local/opt/gnu-getopt/bin/` or `/opt/homebrew/opt/gnu-getopt/bin/` (macOS), or `/usr/bin/` (Windows with Cygwin). 
-
-To locate the installation path, run (macOS)
+`abtab` assumes the default installation path for GNU `getopt`, i.e., `/usr/local/opt/gnu-getopt/bin/` or `/opt/homebrew/opt/gnu-getopt/bin/` (macOS), or `/usr/bin/` (Windows with Cygwin). To locate the installation path, run (macOS)
 
     $ which /usr/local/opt/gnu-getopt/bin/getopt
 
@@ -86,32 +84,48 @@ or (Windows with Cygwin)
 
 If this returns `/usr/local/opt/gnu-getopt/bin/getopt` or `/opt/homebrew/opt/gnu-getopt/bin/getopt` (macOS), or `/usr/bin/getopt` (Windows with Cygwin), GNU `getopt` is correctly installed. If it returns some other path (this is unlikely), you must re-install GNU `getopt`, ensuring the appropriate installation path.
 
-#### Windows
-Finally, ensure that the installation path is on the system `PATH` by running
+Finally, to ensure that GNU `getopt` is available in the CLI, confirm that the installation path is on the system `PATH` by running (Windows)
 
     $ echo $PATH
 
 If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
-#### macOS
+#### Note for macOS users
 macOS comes with its own default version of `getopt`, BSD `getopt`. If GNU `getopt` is made the default `getopt` by adding it to the `PATH`, scripts that rely on BSD `getopt` may not work anymore on your machine. It is therefore recommended not to do this.
 
 Instead, `abtab` has a built-in check that selects the `getopt` version based on the operating system that is detected -- ensuring that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt`.
 
-## Python and Java
-The current version of `abtab` requires Python 3.12.0 or higher and Java 11.0.1 or higher. To verify whether Python and Java are installed and meet the minimum required version, run
+## Python
+The current version of `abtab` requires Python 3.12.0 or higher. To verify whether Python is installed and meets the minimum required version, run
 
     $ python --version
-
-and, for Java,
-
-    $ java -version
 
 If the software is installed correctly, you should see output similar to
 
     Python x.y.z
 
-and, for Java (macOS),
+### Note for macOS users
+On older versions of macOS, the default installed version of Python is Python2. If the `--version` command returns some version of Python2, you must use `python3` (and not `python`) in your commands.
+
+### Installing and updating
+Installing and updating Python is done easiest and most efficiently using a command-line package manager, but it is also possible to download and install [Python](https://www.python.org/downloads/) manually.
+
+#### macOS
+To install or update Python, run
+
+    $ brew install python
+
+To update to or install a specific version rather than the latest, add `@x.y.z` -- e.g., `python@3.12.0`.
+
+#### Windows
+To install or update Python, run the Cygwin `setup` tool.
+
+## Java
+The current version of `abtab` requires Java 11.0.1 or higher. To verify whether Java is installed and meets the minimum required version, run
+
+    $ java -version
+
+If the software is installed correctly, you should see output similar to (macOS)
 
     openjdk version "x.y.z" ...
 
@@ -119,140 +133,24 @@ or (Windows)
 
     java version "x.y.z" ...
 
-If the output is a version that meets the minimum required version, you can proceed directly to [Installing `abtab`](#installing-abtab); if it is a version that does not meet the minimum required version, you must first go to [Installing or updating Python and Java](#installing-or-updating-python-and-java) and complete steps 1, 2, and 3 before proceeding to [Installing `abtab`](#installing-abtab).
-
-If the output is an error or something else than a version
-- The software is not installed. In this case, you must first go to [Installing or updating Python and Java](#installing-or-updating-python-and-java) and complete Steps 1, 2, and 3 before proceeding to [Installing `abtab`](#installing-abtab).
-- The software is installed but its installation path is not on the system `PATH`. In this case, you must first go to [Installing or updating Python and Java](#installing-or-updating-python-and-java) and complete Steps 2 and 3 (you can skip Step 1) before proceeding to [Installing `abtab`](#installing-abtab).
-
-### Note for macOS users
-On older versions of macOS, the default installed version of Python is Python2. If the `--version` command returns some version of Python2, you must use `python3` (and not `python`) in your commands.
-
-## Adding an installation path to the system `PATH`
-To check whether an installation path is on the system `PATH`, run
-
-    $ echo $PATH
-
-If the installation path is not on the `PATH`, you can it them by adding it to the `.bash_profile` file. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
-
-    $ cd ~/
-    $ ls -a
-
-If the file does not appear in the items listed, you must create it.
-
-    $ touch ~/.bash_profile
-
-Then, add the missing installation path to `.bash_profile` by opening it with your editor of choice, and then adding the following line to it (replacing `<installation_path>` with your actual installation path).
-
-    export PATH="<installation_path>:$PATH"
-
-Finally, save `.bash_profile` and `source` it to apply the changes. Alternatively, you can simply close and reopen the CLI terminal. (Sometimes, both actions are needed.)
-
-    $ source ~/.bash_profile
-
-If the `source` command results in one or more errors similar to `-bash: $'\r': command not found`, `.bash_profile` contains Windows-style CRLF line endings (`\r\n`) that must be replaced by Unix-style LF line endings (`\n`). Retry after running
-
-    $ sed -i 's/\r//' ~/.bash_profile
-
-Check if the path has been added to the system `PATH`.
-
-    $ echo $PATH
-
-# Installing `abtab`
-1. Create, on a path of choice on your computer, a directory called `abtab/`. The path up to and including this directory is referred to as `<root_path>`, and the directory itself is where you will be working from.
-
-2. `cd` into `<root_path>` and clone the `abtab` GitHub repository into it (note the dot at the end of the `clone` command!).
-    ```
-    $ cd <root_path>
-    $ git clone https://github.com/reinierdevalk/abtab.git .
-    ```
-
-3. Open `config.cfg` and adapt the paths. Always use Unix-style forward slashes (`/`) as separators.
-   - Replace the default value of the `ROOT_PATH` variable with `<root_path>`; make sure it ends with a `/`. 
-   - Replace the default value of the `LIB_PATH` variable with `<lib_path>`; make sure it ends with a `/`. `<lib_path>` is the location where the installer places the code. Recommended locations are
-     - On Windows: `C:/Users/<Username>/lib/abtab/` . 
-     - On Unix: `/usr/local/lib/abtab/`.
-   - Replace the default value of the `EXE_PATH` variable with `<exe_path>`; make sure it ends with a `/`. `<exe_path>` is the location where the installer places the executable. Recommended locations are 
-     - On Windows: `C:/Users/<Username>/bin/`.
-     - On Unix: `/usr/local/bin/`.
-    
-    If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installer.
-
-    If `<exe_path>` is not on the system `PATH`, you must add it. You can check which paths are on the system `PATH` as follows.
-    ```
-    $ echo $PATH
-    ```
-
-    The procedure for adding `<exe_path>` to the system `PATH` is exactly the same as the one for adding the Python and Java installation paths, as described in [Step 2. Adding the installation paths to the system `PATH`](#step-2-adding-the-installation-paths-to-the-system-PATH). Note that on Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Note for Windows users](#note-for-windows-users)).
-
-4. Run the installer, `install.sh`, from `<root_path>`.
-    ```
-    $ ./install.sh
-    ```
-
-   If you encounter execute permission issues when running the script, see [Execute permission issues](#execute-permission-issues).  
-    
-   The installer 
-   - Checks whether `lib_path` and `exe_path` exist, and creates them if they do not.
-   - Sets `root_path` and `lib_path` in the executable.
-   - Handles any previously installed version of `abtab`: removes any old executable from `<exe_path>`, and clears `<lib_path>`.
-   - Creates, in `<root_path>`, the `data/` directory structure, and moves the example `.tc` and `.mid` files into the `data/<tool>/in/` subdirectories.
-   - Clones the required repositories from `https://github.com/reinierdevalk/` into `<root_path>`. These include
-       - Code repositories, as listed in `repositories.txt` (before the empty line).
-       - Non-code repositories, as listed in `repositories.txt` (after the empty line).
-   - Installs `abtab`: moves all code to `<lib_path>`, and the executable to `<exe_path>`.
-
-   When the installation process has finished, `<root_path>` contains
-   - The `data/` directory. Contains, for each tool, the directories from which the input files are read (`in/`) and to which the output files are stored (`out/`). Apart from the example files moved into them during the installation process, these directories are empty.  
-   - The `models/` directory. Contains the trained machine learning models called by the `transcriber` tool.
-   - The `templates/` directory. Contains a high-level template of an MEI file, whose `<header>` can be adapted at will. 
-
-5. Run `abtab`. This can be done from any directory on your computer. Use the help (`-h` or `--help`) option to get started; this lists all the currently available tools in the toolbox.
-    ``` 
-    $ abtab -h 
-    $ abtab --help 
-   ```
-
-## Troubleshooting
-### Execute permission issues
-If you encounter execute permission issues when running a script, ensure that Git tracks file permissions by running
-
-    $ git config --global core.fileMode true
-
-This is a one-time configuration that makes Git preserve file permissions across `clone`s and `pull`s. If you have already set this up, you do not need to do it again.
-
-If the above command does not resolve the issues, you can manually set execute permissions for all scripts (`install.sh`, `classpath.sh`, and `abtab`) by running
-
-    $ chmod +x install.sh classpath.sh abtab
-
-Note that you may need to run this command after each `git pull` or `git clone` if the execute permissions are not preserved.
-
-# Installing or updating Python and Java
-If you are able to run `abtab`, you can skip this section.
-
-## Step 1. Installing or updating
-Installing and updating Python and Java is done easiest and most efficiently using a command-line package manager, but it is also possible to download and install [Python](https://www.python.org/downloads/) and [Java](https://www.oracle.com/java/technologies/downloads/) manually.
+### Installing and updating
+Installing and updating Java is done easiest and most efficiently using a command-line package manager, but it is also possible to download and install [Java](https://www.oracle.com/java/technologies/downloads/) manually.
 
 ### macOS
-Common native command-line package managers for macOS are [Homebrew](https://brew.sh/), [MacPorts](https://www.macports.org/), or [Anaconda](https://www.anaconda.com/)'s `conda`. In this `README`, Homebrew is used.
-
-To update or install Python and Java, run
-
-    $ brew install python
-
-and, for Java,
+To install or update Java, run
 
     $ brew install openjdk
     $ brew link --force openjdk
 
 In case the `brew link` command returns a message that it was not successful, you can ignore this -- this case is dealt with in [macOS, using Homebrew](#macOS-using-homebrew).
 
-To update to or install a specific version rather than the latest, add `@x.y.z` -- e.g., `python@3.12.0` or `openjdk@11.0.1`.
+To update to or install a specific version rather than the latest, add `@x.y.z` -- e.g., `openjdk@11.0.1`.
 
 ### Windows
-Native command-line package managers for Windows, such as [Chocolatey](https://chocolatey.org/) or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/), cannot be run from a Unix-emulating CLI -- so on Windows, you are restricted to the built-in package manager of your Unix-emulating CLI. Git Bash and MSYS2, for example, provide access to `pacman`, and Cygwin uses its own [`setup`](https://www.cygwin.com/install.html) tool, a package manager that is run independently of the CLI. In this `README`, Cygwin is used.
+To install or update Java, run the Cygwin `setup` tool.
 
-To install or update Python and Java, run the Cygwin `setup` tool.
+
+WWWWWWWWWWWWWWWWWWWWW
 
 ## Step 2. Adding the installation paths to the system `PATH`
 To ensure that Python and Java are available in the CLI, you may need to add the Python and Java installation paths to the system `PATH`. Homebrew usually handles this automatically, but other package managers may not (the Cygwin `setup` tool, for example, does not); moreover, previously installed versions of the software may not yet have had their installation paths added to the `PATH`.
@@ -306,23 +204,6 @@ If this does not work, or the executables are not symlinked, you can check the t
 Note that on Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
 
 ### b. Adding the installation paths
-To check whether the installation paths are on the system `PATH`, run
-
-    $ echo $PATH
-
-If the installation paths are not on the `PATH`, you can add them by adding them to the `.bash_profile` file. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this as follows.
-
-    $ cd ~/
-    $ ls -a
-
-If the file does not appear in the items listed, you must create it.
-
-    $ touch ~/.bash_profile
-
-Then, add each missing installation path to `.bash_profile` by opening it with your editor of choice, and then adding the following line to it (replacing `<installation_path>` with your actual installation path).
-
-    export PATH="<installation_path>:$PATH"
-
 For example (macOS),
 
     export PATH="/usr/local/bin:$PATH"
@@ -339,6 +220,30 @@ or (Windows -- note the `/cygdrive/c/` prefix)
 
     export PATH="/cygdrive/c/Program Files/Java/jdk-11.0.1/bin:$PATH"
 
+
+## Step 3. Verifying Python and Java installation
+To verify that Python and Java are now installed correctly, repeat the steps described in [Python and Java](#python-and-java).
+
+WWWWWWWWWWWWWWWWWWWWWW
+
+## Adding an installation path to the system `PATH`
+To check whether an installation path is on the system `PATH`, run
+
+    $ echo $PATH
+
+If the installation path is not on the `PATH`, you can it them by adding it to the `.bash_profile` file. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this by running
+
+    $ cd ~/
+    $ ls -a
+
+If the file does not appear in the items listed, you must create it.
+
+    $ touch ~/.bash_profile
+
+Then, add the missing installation path to `.bash_profile` by opening it with your editor of choice, and then adding the following line to it (replacing `<installation_path>` with your actual installation path).
+
+    export PATH="<installation_path>:$PATH"
+
 Finally, save `.bash_profile` and `source` it to apply the changes. Alternatively, you can simply close and reopen the CLI terminal. (Sometimes, both actions are needed.)
 
     $ source ~/.bash_profile
@@ -347,12 +252,88 @@ If the `source` command results in one or more errors similar to `-bash: $'\r': 
 
     $ sed -i 's/\r//' ~/.bash_profile
 
-Check if the paths have been added to the system `PATH`.
+Check if the path has been added to the system `PATH`.
 
     $ echo $PATH
 
-## Step 3. Verifying Python and Java installation
-To verify that Python and Java are now installed correctly, repeat the steps described in [Python and Java](#python-and-java).
+
+
+
+
+
+
+
+
+
+
+# Installing `abtab`
+1. Create, on a path of choice on your computer, a directory called `abtab/`. The path up to and including this directory is referred to as `<root_path>`, and the directory itself is where you will be working from.
+
+2. `cd` into `<root_path>` and clone the `abtab` GitHub repository into it (note the dot at the end of the `clone` command!).
+    ```
+    $ cd <root_path>
+    $ git clone https://github.com/reinierdevalk/abtab.git .
+    ```
+
+3. Open `config.cfg` and adapt the paths. Always use Unix-style forward slashes (`/`) as separators.
+   - Replace the default value of the `ROOT_PATH` variable with `<root_path>`; make sure it ends with a `/`. 
+   - Replace the default value of the `LIB_PATH` variable with `<lib_path>`; make sure it ends with a `/`. `<lib_path>` is the location where the installer places the code. Recommended locations are
+     - On Windows: `C:/Users/<Username>/lib/abtab/` . 
+     - On Unix: `/usr/local/lib/abtab/`.
+   - Replace the default value of the `EXE_PATH` variable with `<exe_path>`; make sure it ends with a `/`. `<exe_path>` is the location where the installer places the executable. Recommended locations are 
+     - On Windows: `C:/Users/<Username>/bin/`.
+     - On Unix: `/usr/local/bin/`.
+    
+    If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installer.
+
+    If `<exe_path>` is not on the system `PATH`, you must add it. You can check which paths are on the system `PATH` by running
+    ```
+    $ echo $PATH
+    ```
+
+    The procedure for adding `<exe_path>` to the system `PATH` is exactly the same as the one for adding the Python and Java installation paths, as described in [Step 2. Adding the installation paths to the system `PATH`](#step-2-adding-the-installation-paths-to-the-system-PATH). Note that on Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Note for Windows users](#note-for-windows-users)).
+
+4. Run the installer, `install.sh`, from `<root_path>`.
+    ```
+    $ ./install.sh
+    ```
+
+   If you encounter execute permission issues when running the script, see [Execute permission issues](#execute-permission-issues).  
+    
+   The installer 
+   - Checks whether `lib_path` and `exe_path` exist, and creates them if they do not.
+   - Sets `root_path` and `lib_path` in the executable.
+   - Handles any previously installed version of `abtab`: removes any old executable from `<exe_path>`, and clears `<lib_path>`.
+   - Creates, in `<root_path>`, the `data/` directory structure, and moves the example `.tc` and `.mid` files into the `data/<tool>/in/` subdirectories.
+   - Clones the required repositories from `https://github.com/reinierdevalk/` into `<root_path>`. These include
+       - Code repositories, as listed in `repositories.txt` (before the empty line).
+       - Non-code repositories, as listed in `repositories.txt` (after the empty line).
+   - Installs `abtab`: moves all code to `<lib_path>`, and the executable to `<exe_path>`.
+
+   When the installation process has finished, `<root_path>` contains
+   - The `data/` directory. Contains, for each tool, the directories from which the input files are read (`in/`) and to which the output files are stored (`out/`). Apart from the example files moved into them during the installation process, these directories are empty.  
+   - The `models/` directory. Contains the trained machine learning models called by the `transcriber` tool.
+   - The `templates/` directory. Contains a high-level template of an MEI file, whose `<header>` can be adapted at will. 
+
+5. Run `abtab`. This can be done from any directory on your computer. Use the help (`-h` or `--help`) option to get started; this lists all the currently available tools in the toolbox.
+    ``` 
+    $ abtab -h 
+    $ abtab --help 
+   ```
+
+## Troubleshooting
+### Execute permission issues
+If you encounter execute permission issues when running a script, ensure that Git tracks file permissions by running
+
+    $ git config --global core.fileMode true
+
+This is a one-time configuration that makes Git preserve file permissions across `clone`s and `pull`s. If you have already set this up, you do not need to do it again.
+
+If the above command does not resolve the issues, you can manually set execute permissions for all scripts (`install.sh`, `classpath.sh`, and `abtab`) by running
+
+    $ chmod +x install.sh classpath.sh abtab
+
+Note that you may need to run this command after each `git pull` or `git clone` if the execute permissions are not preserved.
 
 # Example usage
 You can use the provided example files to experiment with the various tools. 
@@ -386,3 +367,62 @@ Alternatively, if both a source and a destination file are provided when `conver
 ## `transcriber`
 
 [TODO]
+
+
+
+
+OLDOLDOLDOLD
+## Python and Java
+The current version of `abtab` requires Python 3.12.0 or higher and Java 11.0.1 or higher. To verify whether Python and Java are installed and meet the minimum required version, run
+
+    $ python --version
+
+and, for Java,
+
+    $ java -version
+
+If the software is installed correctly, you should see output similar to
+
+    Python x.y.z
+
+and, for Java (macOS),
+
+    openjdk version "x.y.z" ...
+
+or (Windows)
+
+    java version "x.y.z" ...
+
+If the output is a version that meets the minimum required version, you can proceed directly to [Installing `abtab`](#installing-abtab); if it is a version that does not meet the minimum required version, you must first go to [Installing or updating Python and Java](#installing-or-updating-python-and-java) and complete steps 1, 2, and 3 before proceeding to [Installing `abtab`](#installing-abtab).
+
+If the output is an error or something else than a version
+- The software is not installed. In this case, you must first go to [Installing or updating Python and Java](#installing-or-updating-python-and-java) and complete Steps 1, 2, and 3 before proceeding to [Installing `abtab`](#installing-abtab).
+- The software is installed but its installation path is not on the system `PATH`. In this case, you must first go to [Installing or updating Python and Java](#installing-or-updating-python-and-java) and complete Steps 2 and 3 (you can skip Step 1) before proceeding to [Installing `abtab`](#installing-abtab).
+
+### Note for macOS users
+On older versions of macOS, the default installed version of Python is Python2. If the `--version` command returns some version of Python2, you must use `python3` (and not `python`) in your commands.
+OLDOLDOLDOLD
+
+WWWWWWWWWWWWWWWWWWWWWWWWW
+
+# Installing or updating Python and Java
+
+## Step 1. Installing or updating
+Installing and updating Python and Java is done easiest and most efficiently using a command-line package manager, but it is also possible to download and install [Python](https://www.python.org/downloads/) and [Java](https://www.oracle.com/java/technologies/downloads/) manually.
+
+### macOS
+To install or update Python and Java, run
+
+    $ brew install python
+
+and, for Java,
+
+    $ brew install openjdk
+    $ brew link --force openjdk
+
+In case the `brew link` command returns a message that it was not successful, you can ignore this -- this case is dealt with in [macOS, using Homebrew](#macOS-using-homebrew).
+
+To update to or install a specific version rather than the latest, add `@x.y.z` -- e.g., `python@3.12.0` or `openjdk@11.0.1`.
+
+### Windows
+To install or update Python and Java, run the Cygwin `setup` tool.
