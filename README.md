@@ -12,35 +12,91 @@ Common native command-line package managers for macOS are [Homebrew](https://bre
 
 Native command-line package managers for Windows, such as [Chocolatey](https://chocolatey.org/) or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/), cannot be run from a Unix-emulating CLI -- so on Windows, you are restricted to the built-in package manager of your Unix-emulating CLI. Git Bash and MSYS2, for example, provide access to `pacman`, and Cygwin uses its own [`setup`](https://www.cygwin.com/install.html) tool, a package manager that is run independently of the CLI.
 
-## Bash (macOS users only)
-The current version of `abtab` requires Bash 4.2 or higher. To check your Bash version, run
+## Bash
+The current version of `abtab` requires Bash 4.2 or higher. To verify whether Bash is installed and meets the minimum required version, run
 
     $ bash --version
 
-To update bash on macOS, run
+You should see output similar to
+
+    GNU bash, version x.y.z ...
+
+### Installing and updating
+To install or update Bash on macOS, run
 
     $ brew install bash
 
-To update Bash on Windows, run the Cygwin `setup` tool.
+To install or update Bash on Windows, run the Cygwin `setup` tool.
 
-After updating, locate the installation path (usually `/usr/local/bin/bash/`) and ensure that it is on the system `PATH` -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
+### Installation path
+`abtab` assumes the default installation path for Bash, i.e., `/usr/local/bin/bash` (macOS) or `/usr/bin/` (Windows with Cygwin). To locate the installation path, run
 
-## GNU `getopt` (macOS users only)
-The current version of `abtab` requires GNU `getopt`. To check your GNU `getopt` version, run
+    $ which bash
+
+If this returns `/usr/local/bin/bash` (macOS) or `/usr/bin/bash` (Windows with Cygwin), Bash is correctly installed. If it returns `/opt/homebrew/bin/bash` (macOS), Bash is correctly installed, but you must create a symlink from `/opt/homebrew/bin/bash` to `/usr/local/bin/bash` by running
+
+    $ sudo ln -s /opt/homebrew/bin/bash /usr/local/bin/bash
+
+If it returns some other path (this is unlikely), you must re-install Bash, ensuring the appropriate installation path.
+
+Finally, ensure that the installation path is on the system `PATH` by running
+
+    $ echo $PATH
+
+If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
+
+## GNU `getopt`
+The current version of `abtab` requires GNU `getopt` 2.40.2 or higher. To verify whether GNU `getopt` is installed and meets the minimum required version, run (macOS)
+
+    $ /usr/local/opt/gnu-getopt/bin/getopt --version
+
+or 
+
+    $ /opt/homebrew/opt/gnu-getopt/bin/getopt --version
+
+or (Windows with Cygwin)
 
     $ getopt --version
 
-If GNU `getopt` is installed correctly, you should see output similar to
+You should see output similar to
 
-    $ getopt from util-linux x.y.z
+    getopt from util-linux x.y.z
 
-If the output is an error or something else than a version, GNU `getopt` is not installed. Run
+### Installing and updating
+To install or update GNU `getopt` on macOS, run
 
     $ brew install gnu-getopt
 
-After installing,
-- If you want to make GNU `getopt` the default `getopt` on your machine (on macOS, normally this is BSD `getopt`), locate the installation path (usually `/usr/local/opt/gnu-getopt/bin/`) and ensure that it is on the system `PATH` -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH). Note that scripts that rely on BSD `getopt` may not work anymore!
-- If not (recommended), proceed. `abtab` has a built-in check that selects the `getopt` version based on the detected operating system (where it it assumed that the installation path for GNU `getopt` is `/usr/local/opt/gnu-getopt/bin/`).
+To install or update GNU `getopt` on Windows, run the Cygwin `setup` tool.
+
+### Installation path
+`abtab` assumes the default installation path for GNU `getopt`, i.e., `/usr/local/opt/gnu-getopt/bin/` or `/opt/homebrew/opt/gnu-getopt/bin/` (macOS), or `/usr/bin/` (Windows with Cygwin). 
+
+To locate the installation path, run (macOS)
+
+    $ which /usr/local/opt/gnu-getopt/bin/getopt
+
+or 
+
+    $ which /opt/homebrew/opt/gnu-getopt/bin/getopt
+
+or (Windows with Cygwin)
+
+    $ which getopt
+
+If this returns `/usr/local/opt/gnu-getopt/bin/getopt` or `/opt/homebrew/opt/gnu-getopt/bin/getopt` (macOS), or `/usr/bin/getopt` (Windows with Cygwin), GNU `getopt` is correctly installed. If it returns some other path (this is unlikely), you must re-install GNU `getopt`, ensuring the appropriate installation path.
+
+#### Windows
+Finally, ensure that the installation path is on the system `PATH` by running
+
+    $ echo $PATH
+
+If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
+
+#### macOS
+macOS comes with its own default version of `getopt`, BSD `getopt`. If GNU `getopt` is made the default `getopt` by adding it to the `PATH`, scripts that rely on BSD `getopt` may not work anymore on your machine. It is therefore recommended not to do this.
+
+Instead, `abtab` has a built-in check that selects the `getopt` version based on the operating system that is detected -- ensuring that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt`.
 
 ## Python and Java
 The current version of `abtab` requires Python 3.12.0 or higher and Java 11.0.1 or higher. To verify whether Python and Java are installed and meet the minimum required version, run
