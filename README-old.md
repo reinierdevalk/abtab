@@ -22,20 +22,18 @@ You should see output similar to
     GNU bash, version x.y.z ...
 
 ### Installing and updating
-#### macOS
-To install or update Bash, run  
+To install or update Bash, run (macOS)  
 
     $ brew install bash
 
-#### Windows
-To install or update Bash, run the Cygwin `setup` tool.
+On Windows, to install or update Bash, run the Cygwin `setup` tool.
 
 ### Installation path
-`abtab` assumes the default installation path for Bash, i.e., `/usr/local/bin/bash` (macOS) or `/usr/bin/` (Windows). To locate the installation path, run
+`abtab` assumes the default installation path for Bash, i.e., `/usr/local/bin/bash` (macOS) or `/usr/bin/` (Windows with Cygwin). To locate the installation path, run
 
     $ which bash
 
-If this returns `/usr/local/bin/bash` (macOS) or `/usr/bin/bash` (Windows), Bash is correctly installed. If it returns `/opt/homebrew/bin/bash` (macOS), Bash is correctly installed, but you must create a symlink from `/opt/homebrew/bin/bash` to `/usr/local/bin/bash` by running
+If this returns `/usr/local/bin/bash` (macOS) or `/usr/bin/bash` (Windows with Cygwin), Bash is correctly installed. If it returns `/opt/homebrew/bin/bash` (macOS), Bash is correctly installed, but you must create a symlink from `/opt/homebrew/bin/bash` to `/usr/local/bin/bash` by running
 
     $ sudo ln -s /opt/homebrew/bin/bash /usr/local/bin/bash
 
@@ -60,7 +58,7 @@ or
 
     $ /opt/homebrew/opt/gnu-getopt/bin/getopt --version
 
-or (Windows)
+or (Windows with Cygwin)
 
     $ getopt --version
 
@@ -69,16 +67,14 @@ You should see output similar to
     getopt from util-linux x.y.z
 
 ### Installing and updating
-#### macOS
-To install or update GNU `getopt`, run
+To install or update GNU `getopt`, run (macOS)
 
     $ brew install gnu-getopt
 
-#### Windows
-To install or update GNU `getopt`, run the Cygwin `setup` tool.
+On Windows, to install or update GNU `getopt`, run the Cygwin `setup` tool.
 
 ### Installation path
-`abtab` assumes the default installation path for GNU `getopt`, i.e., `/usr/local/opt/gnu-getopt/bin/` or `/opt/homebrew/opt/gnu-getopt/bin/` (macOS), or `/usr/bin/` (Windows). To locate the installation path, run (macOS)
+`abtab` assumes the default installation path for GNU `getopt`, i.e., `/usr/local/opt/gnu-getopt/bin/` or `/opt/homebrew/opt/gnu-getopt/bin/` (macOS), or `/usr/bin/` (Windows with Cygwin). To locate the installation path, run (macOS)
 
     $ which /usr/local/opt/gnu-getopt/bin/getopt
 
@@ -86,11 +82,11 @@ or
 
     $ which /opt/homebrew/opt/gnu-getopt/bin/getopt
 
-or (Windows)
+or (Windows with Cygwin)
 
     $ which getopt
 
-If this returns `/usr/local/opt/gnu-getopt/bin/getopt` or `/opt/homebrew/opt/gnu-getopt/bin/getopt` (macOS), or `/usr/bin/getopt` (Windows), GNU `getopt` is correctly installed. If it returns some other path (this is unlikely), you must re-install GNU `getopt`, ensuring the appropriate installation path.
+If this returns `/usr/local/opt/gnu-getopt/bin/getopt` or `/opt/homebrew/opt/gnu-getopt/bin/getopt` (macOS), or `/usr/bin/getopt` (Windows with Cygwin), GNU `getopt` is correctly installed. If it returns some other path (this is unlikely), you must re-install GNU `getopt`, ensuring the appropriate installation path.
 
 ### `PATH`
 Finally, to ensure that GNU `getopt` is available in the CLI, confirm that the installation path is on the system `PATH` by running (Windows)
