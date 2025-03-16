@@ -21,7 +21,7 @@ You should see output similar to
 
     GNU bash, version x.y.z ...
 
-### Installing and updating
+### 1. Installing and updating
 #### macOS
 To install or update Bash, run  
 
@@ -30,7 +30,7 @@ To install or update Bash, run
 #### Windows
 To install or update Bash, run the Cygwin `setup` tool.
 
-### Installation path
+### 2. Installation path
 `abtab` assumes the default installation path for Bash, i.e., `/usr/local/bin/bash` (macOS) or `/usr/bin/` (Windows). To locate the installation path, run
 
     $ which bash
@@ -41,14 +41,14 @@ If this returns `/usr/local/bin/bash` (macOS) or `/usr/bin/bash` (Windows), Bash
 
 If it returns some other path (this is unlikely), you must re-install Bash, ensuring the appropriate installation path.
 
-### `PATH`
+### 3. `PATH`
 Finally, to ensure that Bash is available in the CLI, confirm that the installation path is on the system `PATH` by running
 
     $ echo $PATH
 
 If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
-### Verifying installation
+### 4. Verifying installation
 To verify that Bash is now installed correctly, see [Bash](#bash).
 
 ## GNU `getopt`
@@ -68,7 +68,7 @@ You should see output similar to
 
     getopt from util-linux x.y.z
 
-### Installing and updating
+### 1. Installing and updating
 #### macOS
 To install or update GNU `getopt`, run
 
@@ -77,7 +77,7 @@ To install or update GNU `getopt`, run
 #### Windows
 To install or update GNU `getopt`, run the Cygwin `setup` tool.
 
-### Installation path
+### 2. Installation path
 `abtab` assumes the default installation path for GNU `getopt`, i.e., `/usr/local/opt/gnu-getopt/bin/` or `/opt/homebrew/opt/gnu-getopt/bin/` (macOS), or `/usr/bin/` (Windows). To locate the installation path, run (macOS)
 
     $ which /usr/local/opt/gnu-getopt/bin/getopt
@@ -92,7 +92,7 @@ or (Windows)
 
 If this returns `/usr/local/opt/gnu-getopt/bin/getopt` or `/opt/homebrew/opt/gnu-getopt/bin/getopt` (macOS), or `/usr/bin/getopt` (Windows), GNU `getopt` is correctly installed. If it returns some other path (this is unlikely), you must re-install GNU `getopt`, ensuring the appropriate installation path.
 
-### `PATH`
+### 3. `PATH`
 Finally, to ensure that GNU `getopt` is available in the CLI, confirm that the installation path is on the system `PATH` by running (Windows)
 
     $ echo $PATH
@@ -104,7 +104,7 @@ macOS comes with its own default version of `getopt`, BSD `getopt`. If GNU `geto
 
 Instead, `abtab` has a built-in check that selects the `getopt` version based on the operating system that is detected -- ensuring that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt`.
 
-### Verifying installation
+### 4. Verifying installation
 To verify that GNU `getopt` is now installed correctly, see [GNU `getopt`](#gnu-getopt).
 
 ## Python
@@ -119,7 +119,7 @@ If the software is installed correctly, you should see output similar to
 ### Note for macOS users
 On older versions of macOS, the default installed version of Python is Python2. If the `--version` command returns some version of Python2, you must use `python3` (and not `python`) in your commands.
 
-### Installing and updating
+### 1. Installing and updating
 Installing and updating Python is done easiest and most efficiently using a command-line package manager, but it is also possible to download and install [Python](https://www.python.org/downloads/) manually.
 
 #### macOS
@@ -132,7 +132,7 @@ To update to or install a specific version rather than the latest, add `@x.y.z` 
 #### Windows
 To install or update Python, run the Cygwin `setup` tool.
 
-### Installation path
+### 2. Installation path
 #### macOS, using Homebrew
 Homebrew installs Python in `/usr/local/opt/`. You can confirm the installation path with
 
@@ -159,12 +159,12 @@ If Python is installed through another package manager, or manually, its install
 
 If this does not work, or the executable is not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
 
-### `PATH`
+### 3. `PATH`
 Finally, to ensure that Python is available in the CLI, confirm that the installation path is on the system `PATH` by running 
 
     $ echo $PATH
 
-### Verifying installation
+### 4. Verifying installation
 To verify that Python is now installed correctly, see [Python](#python).
 
 ## Java
@@ -180,7 +180,7 @@ or (Windows)
 
     java version "x.y.z" ...
 
-### Installing and updating
+### 1. Installing and updating
 Installing and updating Java is done easiest and most efficiently using a command-line package manager, but it is also possible to download and install [Java](https://www.oracle.com/java/technologies/downloads/) manually.
 
 #### macOS
@@ -196,7 +196,7 @@ To update to or install a specific version rather than the latest, add `@x.y.z` 
 #### Windows
 To install or update Java, run the Cygwin `setup` tool.
 
-### Installation path
+### 2. Installation path
 #### macOS, using Homebrew
 Homebrew installs Java in `/usr/local/opt/`. You can confirm the installation path by running
 
@@ -225,12 +225,12 @@ If Java is installed through another package manager, or manually, its installat
 
 If this does not work, or the executable is not symlinked, you can check the typical installation path as mentioned above, or you can use the `find` or `locate` commands.
 
-### `PATH`
+### 3. `PATH`
 Finally, to ensure that Java is available in the CLI, confirm that the installation path is on the system `PATH` by running 
 
     $ echo $PATH
 
-### Verifying installation
+### 4. Verifying installation
 To verify that Java is now installed correctly, see [Java](#java).
 
     $ java -version
