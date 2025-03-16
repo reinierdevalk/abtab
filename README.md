@@ -73,8 +73,8 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to 
     $ abtab --help 
    ```
 
-## Troubleshooting
-### Execute permission issues
+# Troubleshooting
+## Execute permission issues
 If you encounter execute permission issues when running a script, ensure that Git tracks file permissions by running
 
     $ git config --global core.fileMode true
@@ -87,7 +87,7 @@ If the above command does not resolve the issues, you can manually set execute p
 
 Note that you may need to run this command after each `git pull` or `git clone` if the execute permissions are not preserved.
 
-### Adding an installation path to the system `PATH`
+## Adding an installation path to the system `PATH`
 To check whether an installation path is on the system `PATH`, run
 
     $ echo $PATH
