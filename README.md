@@ -113,7 +113,7 @@ The current version of `abtab` requires Python 3.12.0 or higher. To verify wheth
 
     $ python --version
 
-If the software is installed correctly, you should see output similar to
+You should see output similar to
 
     Python x.y.z
 
@@ -172,7 +172,7 @@ The current version of `abtab` requires Java 11.0.1 or higher. To verify whether
 
     $ java -version
 
-If the software is installed correctly, you should see output similar to (macOS)
+You should see output similar to (macOS)
 
     openjdk version "x.y.z" ...
 
