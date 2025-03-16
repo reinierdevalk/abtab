@@ -42,7 +42,7 @@ If this returns `/usr/local/bin/bash` (macOS) or `/usr/bin/bash` (Windows), Bash
 If it returns some other path (this is unlikely), you must re-install Bash, ensuring the appropriate installation path.
 
 ### 3. `PATH`
-Finally, to ensure that Bash is available in the CLI, confirm that the installation path is on the system `PATH` by running
+To ensure that Bash is available in the CLI, confirm that the installation path is on the system `PATH` by running
 
     $ echo $PATH
 
@@ -99,7 +99,7 @@ macOS comes with its own default version of `getopt`, BSD `getopt`. If GNU `geto
 Instead, `abtab` has a built-in check that selects the `getopt` version based on the operating system that is detected -- ensuring that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt`.
 
 #### Windows
-Finally, to ensure that GNU `getopt` is available in the CLI, confirm that the installation path is on the system `PATH` by running
+To ensure that GNU `getopt` is available in the CLI, confirm that the installation path is on the system `PATH` by running
 
     $ echo $PATH
 
@@ -160,7 +160,7 @@ If Python is installed through another package manager, or manually, its install
 If this does not work, or the executable is not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
 
 ### 3. `PATH`
-Finally, to ensure that Python is available in the CLI, confirm that the installation path is on the system `PATH` by running 
+To ensure that Python is available in the CLI, confirm that the installation path is on the system `PATH` by running 
 
     $ echo $PATH
 
@@ -226,7 +226,7 @@ If Java is installed through another package manager, or manually, its installat
 If this does not work, or the executable is not symlinked, you can check the typical installation path as mentioned above, or you can use the `find` or `locate` commands.
 
 ### 3. `PATH`
-Finally, to ensure that Java is available in the CLI, confirm that the installation path is on the system `PATH` by running 
+To ensure that Java is available in the CLI, confirm that the installation path is on the system `PATH` by running 
 
     $ echo $PATH
 
