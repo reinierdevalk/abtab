@@ -35,12 +35,15 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to 
     
     If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installer.
 
-    If `<exe_path>` is not on the system `PATH`, you must add it. You can check which paths are on the system `PATH` by running
+    To ensure that `abtab` is available in the CLI, confirm that `<exe_path>` is on the system `PATH` by running 
+
     ```
     $ echo $PATH
     ```
 
-    The procedure for adding `<exe_path>` to the system `PATH` is exactly the same as the one for adding the Python and Java installation paths, as described in [Step 2. Adding the installation paths to the system `PATH`](#step-2-adding-the-installation-paths-to-the-system-PATH). Note that on Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Note for Windows users](#note-for-windows-users)).
+    If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
+
+    Note that on Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for Windows users**).
 
 4. Run the installer, `install.sh`, from `<root_path>`.
     ```
@@ -137,7 +140,7 @@ To install or update Bash, run
 #### Windows
 To install or update Bash, run the Cygwin `setup` tool.
 
-### 3. Installation path
+### 3. Locating the installation path
 `abtab` assumes the default installation path for Bash, i.e., `/usr/local/bin/bash` (macOS) or `/usr/bin/` (Windows). To locate the installation path, run
 
     $ which bash
@@ -148,7 +151,7 @@ If this returns `/usr/local/bin/bash` (macOS) or `/usr/bin/bash` (Windows), Bash
 
 If it returns some other path (this is unlikely), you must re-install Bash, ensuring the appropriate installation path.
 
-### 4. `PATH`
+### 4. Adding the installation path to the system `PATH`
 To ensure that Bash is available in the CLI, confirm that the installation path is on the system `PATH` by running
 
     $ echo $PATH
@@ -184,7 +187,7 @@ To install or update GNU `getopt`, run
 #### Windows
 To install or update GNU `getopt`, run the Cygwin `setup` tool.
 
-### 3. Installation path
+### 3. Locating the installation path
 `abtab` assumes the default installation path for GNU `getopt`, i.e., `/usr/local/opt/gnu-getopt/bin/` or `/opt/homebrew/opt/gnu-getopt/bin/` (macOS), or `/usr/bin/` (Windows). To locate the installation path, run (macOS)
 
     $ which /usr/local/opt/gnu-getopt/bin/getopt
@@ -199,7 +202,7 @@ or (Windows)
 
 If this returns `/usr/local/opt/gnu-getopt/bin/getopt` or `/opt/homebrew/opt/gnu-getopt/bin/getopt` (macOS), or `/usr/bin/getopt` (Windows), GNU `getopt` is correctly installed. If it returns some other path (this is unlikely), you must re-install GNU `getopt`, ensuring the appropriate installation path.
 
-### 4. `PATH`
+### 4. Adding the installation path to the system `PATH`
 #### macOS
 macOS comes with its own default version of `getopt`, BSD `getopt`. If GNU `getopt` is made the default `getopt` by adding it to the `PATH`, scripts that rely on BSD `getopt` may not work anymore on your machine. It is therefore recommended not to do this.
 
@@ -234,14 +237,14 @@ To install or update Python, run
 
     $ brew install python
 
-To update to or install a specific version rather than the latest, add `@x.y.z` -- e.g., `python@3.12.0`.
+To install or update to a specific version rather than the latest, add `@x.y.z` -- e.g., `python@3.12.0`.
 
 #### Windows
 To install or update Python, run the Cygwin `setup` tool.
 
-### 3. Installation path
+### 3. Locating the installation path
 #### macOS, using Homebrew
-Homebrew installs Python in `/usr/local/opt/`. You can confirm the installation path with
+Homebrew installs Python in `/usr/local/opt/`. You can confirm the installation path by running
 
     $ brew --prefix python
 
@@ -252,7 +255,7 @@ If Python is installed through another package manager or manually, its installa
 
     $ which python
 
-If this does not work, or the executable is not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
+If this does not work, or the executable is not symlinked, you can check the typical installation paths as mentioned above manually, or you can use the `find` or `locate` commands.
 
 #### Windows, using Cygwin
 Cygwin installs Python in its own installation directory, `C:/cygwin64/bin/` or `C:/cygwin/bin/`. You can confirm the installation path by running
@@ -264,12 +267,14 @@ If Python is installed through another package manager or manually, its installa
 
     $ which python
 
-If this does not work, or the executable is not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
+If this does not work, or the executable is not symlinked, you can check the typical installation paths as mentioned above manually, or you can use the `find` or `locate` commands.
 
-### 4. `PATH`
+### 4. Adding the installation path to the system `PATH`
 To ensure that Python is available in the CLI, confirm that the installation path is on the system `PATH` by running 
 
     $ echo $PATH
+
+If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
 **Verify that Python is now installed correctly by repeating Step 1 above.**
 
@@ -296,14 +301,14 @@ To install or update Java, run
     $ brew install openjdk
     $ brew link --force openjdk
 
-In case the `brew link` command returns a message that it was not successful, you can ignore it -- this case is dealt with in [macOS, using Homebrew](#macOS-using-homebrew).
+In case the `brew link` command returns a message that it was not successful, you can ignore it -- this case is dealt with below.
 
-To update to or install a specific version rather than the latest, add `@x.y.z` -- e.g., `openjdk@11.0.1`.
+To install or update to a specific version rather than the latest, add `@x.y.z` -- e.g., `openjdk@11.0.1`.
 
 #### Windows
 To install or update Java, run the Cygwin `setup` tool.
 
-### 3. Installation path
+### 3. Locating the installation path
 #### macOS, using Homebrew
 Homebrew installs Java in `/usr/local/opt/`. You can confirm the installation path by running
 
@@ -311,14 +316,14 @@ Homebrew installs Java in `/usr/local/opt/`. You can confirm the installation pa
 
 Homebrew does not automatically add a symlink to the Java executable in `/usr/local/bin/`; that is why the additional `brew link` command (see above) is needed. `/usr/local/bin/` is the installation path to be added to the system `PATH`.
 
-In case the `brew link` command returns a message that it was not successful, no symlink has been created -- in which case `/usr/local/opt/` is the installation path to be added to the system `PATH`.  
+**Note** In case the `brew link` command returns a message that it was not successful, no symlink has been created -- in which case `/usr/local/opt/` is the installation path to be added to the system `PATH`.  
 
 #### macOS, other cases
 If Java is installed through another package manager or manually, its installation path can vary. Common Java installation paths are `/Library/Java/JavaVirtualMachines/` or `/usr/local/opt/`. To locate the installation path, run
 
     $ which java
 
-If this does not work, or the executable is not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
+If this does not work, or the executable is not symlinked, you can check the typical installation paths as mentioned above manually, or you can use the `find` or `locate` commands.
 
 #### Windows, using Cygwin
 Cygwin installs Java in its own installation directory, `C:/cygwin64/bin/` or `C:/cygwin/bin/`. You can confirm the installation path by running
@@ -330,15 +335,16 @@ If Java is installed through another package manager or manually, its installati
 
     $ which java
 
-If this does not work, or the executable is not symlinked, you can check the typical installation path as mentioned above, or you can use the `find` or `locate` commands.
+If this does not work, or the executable is not symlinked, you can check the typical installation path as mentioned above manually, or you can use the `find` or `locate` commands.
 
-### 4. `PATH`
+### 4. Adding the installation path to the system `PATH`
 To ensure that Java is available in the CLI, confirm that the installation path is on the system `PATH` by running 
 
     $ echo $PATH
 
-**Verify that Java is now installed correctly by repeating Step 1 above.**
+If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
+**Verify that Java is now installed correctly by repeating Step 1 above.**
 
 ## Adding an installation path to the system `PATH`
 To check whether an installation path is on the system `PATH`, run
@@ -457,7 +463,7 @@ and, for Java,
 
     $ which java
 
-If this does not work, or the executables are not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
+If this does not work, or the executables are not symlinked, you can check the typical installation paths as mentioned above manually, or you can use the `find` or `locate` commands.
 
 #### Windows, using Cygwin
 Cygwin installs Python and Java in its own installation directory, `C:/cygwin64/bin/` or `C:/cygwin/bin/`. You can confirm the installation paths with
