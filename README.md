@@ -13,6 +13,7 @@ Common native command-line package managers for macOS are [Homebrew](https://bre
 Native command-line package managers for Windows, such as [Chocolatey](https://chocolatey.org/) or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/), cannot be run from a Unix-emulating CLI -- so on Windows, you are restricted to the built-in package manager of your Unix-emulating CLI. Git Bash and MSYS2, for example, provide access to `pacman`, and Cygwin uses its own [`setup`](https://www.cygwin.com/install.html) tool, a package manager that is run independently of the CLI.
 
 ## Bash
+### 1. Verifying installation
 The current version of `abtab` requires Bash 4.2 or higher. To verify whether Bash is installed and meets the minimum required version, run
 
     $ bash --version
@@ -21,7 +22,7 @@ You should see output similar to
 
     GNU bash, version x.y.z ...
 
-### 1. Installing and updating
+### 2. Installing and updating
 #### macOS
 To install or update Bash, run  
 
@@ -30,7 +31,7 @@ To install or update Bash, run
 #### Windows
 To install or update Bash, run the Cygwin `setup` tool.
 
-### 2. Installation path
+### 3. Installation path
 `abtab` assumes the default installation path for Bash, i.e., `/usr/local/bin/bash` (macOS) or `/usr/bin/` (Windows). To locate the installation path, run
 
     $ which bash
@@ -41,17 +42,17 @@ If this returns `/usr/local/bin/bash` (macOS) or `/usr/bin/bash` (Windows), Bash
 
 If it returns some other path (this is unlikely), you must re-install Bash, ensuring the appropriate installation path.
 
-### 3. `PATH`
+### 4. `PATH`
 To ensure that Bash is available in the CLI, confirm that the installation path is on the system `PATH` by running
 
     $ echo $PATH
 
 If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
-### 4. Verifying installation
-To verify that Bash is now installed correctly, see [Bash](#bash).
+**Verify that GNU Bash is now installed correctly by repeating Step 1 above.**
 
 ## GNU `getopt`
+### 1. Verifying installation
 The current version of `abtab` requires GNU `getopt` 2.40.2 or higher. To verify whether GNU `getopt` is installed and meets the minimum required version, run (macOS)
 
     $ /usr/local/opt/gnu-getopt/bin/getopt --version
@@ -68,7 +69,7 @@ You should see output similar to
 
     getopt from util-linux x.y.z
 
-### 1. Installing and updating
+### 2. Installing and updating
 #### macOS
 To install or update GNU `getopt`, run
 
@@ -77,7 +78,7 @@ To install or update GNU `getopt`, run
 #### Windows
 To install or update GNU `getopt`, run the Cygwin `setup` tool.
 
-### 2. Installation path
+### 3. Installation path
 `abtab` assumes the default installation path for GNU `getopt`, i.e., `/usr/local/opt/gnu-getopt/bin/` or `/opt/homebrew/opt/gnu-getopt/bin/` (macOS), or `/usr/bin/` (Windows). To locate the installation path, run (macOS)
 
     $ which /usr/local/opt/gnu-getopt/bin/getopt
@@ -92,7 +93,7 @@ or (Windows)
 
 If this returns `/usr/local/opt/gnu-getopt/bin/getopt` or `/opt/homebrew/opt/gnu-getopt/bin/getopt` (macOS), or `/usr/bin/getopt` (Windows), GNU `getopt` is correctly installed. If it returns some other path (this is unlikely), you must re-install GNU `getopt`, ensuring the appropriate installation path.
 
-### 3. `PATH`
+### 4. `PATH`
 #### macOS
 macOS comes with its own default version of `getopt`, BSD `getopt`. If GNU `getopt` is made the default `getopt` by adding it to the `PATH`, scripts that rely on BSD `getopt` may not work anymore on your machine. It is therefore recommended not to do this.
 
@@ -105,10 +106,10 @@ To ensure that GNU `getopt` is available in the CLI, confirm that the installati
 
 If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
-### 4. Verifying installation
-To verify that GNU `getopt` is now installed correctly, see [GNU `getopt`](#gnu-getopt).
+**Verify that GNU `getopt` is now installed correctly by repeating Step 1 above.**
 
 ## Python
+### 1. Verifying installation
 The current version of `abtab` requires Python 3.12.0 or higher. To verify whether Python is installed and meets the minimum required version, run
 
     $ python --version
@@ -119,7 +120,7 @@ You should see output similar to
 
 **Note for macOS users** On older versions of macOS, the default installed version of Python is Python2. If the `--version` command returns some version of Python2, you must use `python3` (and not `python`) in your commands.
 
-### 1. Installing and updating
+### 2. Installing and updating
 Installing and updating Python is done easiest and most efficiently using a command-line package manager, but it is also possible to download and install [Python](https://www.python.org/downloads/) manually.
 
 #### macOS
@@ -132,16 +133,16 @@ To update to or install a specific version rather than the latest, add `@x.y.z` 
 #### Windows
 To install or update Python, run the Cygwin `setup` tool.
 
-### 2. Installation path
+### 3. Installation path
 #### macOS, using Homebrew
 Homebrew installs Python in `/usr/local/opt/`. You can confirm the installation path with
 
     $ brew --prefix python
 
-Homebrew automatically adds a symlink to the Python executable in `/usr/local/bin/`. This makes `/usr/local/bin/` the installation path to be added to the system `PATH` (if it is not on it yet).
+Homebrew automatically adds a symlink to the Python executable in `/usr/local/bin/`. This makes `/usr/local/bin/` the installation path to be added to the system `PATH`.
 
 #### macOS, other cases
-If Python is installed through another package manager, or manually, its installation path can vary. Common Python installation paths are `/Library/Frameworks/Python.framework/Versions/<version>/bin/`, `/usr/local/bin/`, or `/usr/bin/`. To locate the installation path, run
+If Python is installed through another package manager or manually, its installation path can vary. Common Python installation paths are `/Library/Frameworks/Python.framework/Versions/<version>/bin/`, `/usr/local/bin/`, or `/usr/bin/`. To locate the installation path, run
 
     $ which python
 
@@ -153,21 +154,21 @@ Cygwin installs Python in its own installation directory, `C:/cygwin64/bin/` or 
     $ which python
 
 #### Windows, other cases
-If Python is installed through another package manager, or manually, its installation path can vary. Common Python installation paths are `C:/Python<version>/`, or `C:/Users/<Username>/AppData/Local/Programs/Python/Python<version>/`. To locate the installation path, run
+If Python is installed through another package manager or manually, its installation path can vary. Common Python installation paths are `C:/Python<version>/`, or `C:/Users/<Username>/AppData/Local/Programs/Python/Python<version>/`. To locate the installation path, run
 
     $ which python
 
 If this does not work, or the executable is not symlinked, you can check the typical installation paths as mentioned above, or you can use the `find` or `locate` commands.
 
-### 3. `PATH`
+### 4. `PATH`
 To ensure that Python is available in the CLI, confirm that the installation path is on the system `PATH` by running 
 
     $ echo $PATH
 
-### 4. Verifying installation
-To verify that Python is now installed correctly, see [Python](#python).
+**Verify that Python is now installed correctly by repeating Step 1 above.**
 
 ## Java
+### 1. Verifying installation
 The current version of `abtab` requires Java 11.0.1 or higher. To verify whether Java is installed and meets the minimum required version, run
 
     $ java -version
@@ -180,7 +181,7 @@ or (Windows)
 
     java version "x.y.z" ...
 
-### 1. Installing and updating
+### 2. Installing and updating
 Installing and updating Java is done easiest and most efficiently using a command-line package manager, but it is also possible to download and install [Java](https://www.oracle.com/java/technologies/downloads/) manually.
 
 #### macOS
@@ -189,25 +190,25 @@ To install or update Java, run
     $ brew install openjdk
     $ brew link --force openjdk
 
-In case the `brew link` command returns a message that it was not successful, you can ignore this -- this case is dealt with in [macOS, using Homebrew](#macOS-using-homebrew).
+In case the `brew link` command returns a message that it was not successful, you can ignore it -- this case is dealt with in [macOS, using Homebrew](#macOS-using-homebrew).
 
 To update to or install a specific version rather than the latest, add `@x.y.z` -- e.g., `openjdk@11.0.1`.
 
 #### Windows
 To install or update Java, run the Cygwin `setup` tool.
 
-### 2. Installation path
+### 3. Installation path
 #### macOS, using Homebrew
 Homebrew installs Java in `/usr/local/opt/`. You can confirm the installation path by running
 
     $ brew --prefix openjdk
 
-Homebrew does not automatically add a symlink to the Java executable in `/usr/local/bin/`; to this end, the `brew link` command (see ABOVE) is needed. This makes `/usr/local/bin/` the installation path to be added to the system `PATH` (if it is not on it yet).
+Homebrew does not automatically add a symlink to the Java executable in `/usr/local/bin/`; to this end, the `brew link` command (see above) is needed. This makes `/usr/local/bin/` the installation path to be added to the system `PATH`.
 
-In case the `brew link` command returns a message that it was not successful, no symlink has been created -- and this makes the output of `brew --prefix openjdk` the installation path to be added to the system `PATH`.  
+In case the `brew link` command returns a message that it was not successful, no symlink has been created -- and this makes `/usr/local/opt/` the installation path to be added to the system `PATH`.  
 
 #### macOS, other cases
-If Java is installed through another package manager, or manually, its installation path can vary. Common Java installation paths are `/Library/Java/JavaVirtualMachines/` or `/usr/local/opt/`. To locate the installation path, run
+If Java is installed through another package manager or manually, its installation path can vary. Common Java installation paths are `/Library/Java/JavaVirtualMachines/` or `/usr/local/opt/`. To locate the installation path, run
 
     $ which java
 
@@ -219,22 +220,18 @@ Cygwin installs Java in its own installation directory, `C:/cygwin64/bin/` or `C
     $ which java
 
 #### Windows, other cases
-If Java is installed through another package manager, or manually, its installation path can vary. A common Java installation path is `C:/Program Files/Java/jdk-<version>/bin/`. To locate the installation path, run
+If Java is installed through another package manager or manually, its installation path can vary. A common Java installation path is `C:/Program Files/Java/jdk-<version>/bin/`. To locate the installation path, run
 
     $ which java
 
 If this does not work, or the executable is not symlinked, you can check the typical installation path as mentioned above, or you can use the `find` or `locate` commands.
 
-### 3. `PATH`
+### 4. `PATH`
 To ensure that Java is available in the CLI, confirm that the installation path is on the system `PATH` by running 
 
     $ echo $PATH
 
-### 4. Verifying installation
-To verify that Java is now installed correctly, see [Java](#java).
-
-    $ java -version
-
+**Verify that Java is now installed correctly by repeating Step 1 above.**
 
 
 ## Adding an installation path to the system `PATH`
@@ -267,7 +264,7 @@ Check if the path has been added to the system `PATH`.
 
     $ echo $PATH
 
-**Note for Windows users** Note that on Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
+**Note for Windows users** On Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
 
 # Installing `abtab`
 1. Create, on a path of choice on your computer, a directory called `abtab/`. The path up to and including this directory is referred to as `<root_path>`, and the directory itself is where you will be working from.
