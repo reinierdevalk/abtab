@@ -93,16 +93,17 @@ or (Windows)
 If this returns `/usr/local/opt/gnu-getopt/bin/getopt` or `/opt/homebrew/opt/gnu-getopt/bin/getopt` (macOS), or `/usr/bin/getopt` (Windows), GNU `getopt` is correctly installed. If it returns some other path (this is unlikely), you must re-install GNU `getopt`, ensuring the appropriate installation path.
 
 ### 3. `PATH`
-Finally, to ensure that GNU `getopt` is available in the CLI, confirm that the installation path is on the system `PATH` by running (Windows)
+#### macOS
+macOS comes with its own default version of `getopt`, BSD `getopt`. If GNU `getopt` is made the default `getopt` by adding it to the `PATH`, scripts that rely on BSD `getopt` may not work anymore on your machine. It is therefore recommended not to do this.
+
+Instead, `abtab` has a built-in check that selects the `getopt` version based on the operating system that is detected -- ensuring that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt`.
+
+#### Windows
+Finally, to ensure that GNU `getopt` is available in the CLI, confirm that the installation path is on the system `PATH` by running
 
     $ echo $PATH
 
 If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
-
-#### Note for macOS users
-macOS comes with its own default version of `getopt`, BSD `getopt`. If GNU `getopt` is made the default `getopt` by adding it to the `PATH`, scripts that rely on BSD `getopt` may not work anymore on your machine. It is therefore recommended not to do this.
-
-Instead, `abtab` has a built-in check that selects the `getopt` version based on the operating system that is detected -- ensuring that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt`.
 
 ### 4. Verifying installation
 To verify that GNU `getopt` is now installed correctly, see [GNU `getopt`](#gnu-getopt).
