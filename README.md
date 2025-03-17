@@ -25,11 +25,11 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to 
     ```
 
 3. Open `config.cfg` and adapt the paths. Always use Unix-style forward slashes (`/`) as separators.
-   - Replace the default value of the `ROOT_PATH` variable with `<root_path>`; make sure it ends with a `/`. 
-   - Replace the default value of the `LIB_PATH` variable with `<lib_path>`; make sure it ends with a `/`. `<lib_path>` is the location where the installer places the code. Recommended locations are
+   - Replace the default value of the `ROOT_PATH` variable with `<root_path>`; **make sure it ends with a `/`**. 
+   - Replace the default value of the `LIB_PATH` variable with `<lib_path>`; **make sure it ends with a `/`**. `<lib_path>` is the location where the installer places the code. Recommended locations are
      - On Windows: `C:/Users/<Username>/lib/abtab/` . 
      - On Unix: `/usr/local/lib/abtab/`.
-   - Replace the default value of the `EXE_PATH` variable with `<exe_path>`; make sure it ends with a `/`. `<exe_path>` is the location where the installer places the executable. Recommended locations are 
+   - Replace the default value of the `EXE_PATH` variable with `<exe_path>`; **make sure it ends with a `/`**. `<exe_path>` is the location where the installer places the executable. Recommended locations are 
      - On Windows: `C:/Users/<Username>/bin/`.
      - On Unix: `/usr/local/bin/`.
     
