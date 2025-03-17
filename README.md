@@ -43,7 +43,7 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to 
 
     If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
-    Note that on Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for Windows users**).
+    **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for Windows users**).
 
 4. Run the installer, `install.sh`, from `<root_path>`.
     ```
