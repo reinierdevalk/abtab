@@ -36,7 +36,7 @@
 
 
 # 0. GLOBAL VARIABLES
-# Check OS: Windows or Linux-like
+# Check OS: Windows or Unix-like
 IS_WIN=false
 if [[ -n "$WINDIR" || "$os_type" == "CYGWIN"* || "$os_type" == "MINGW"* || "$os_type" == "MSYS"* ]]; then
     IS_WIN=true
@@ -50,7 +50,7 @@ fi
 
 # Ensure that on macOS, GNU getopt is called (and not the default BSD getopt)
 if "$IS_WIN"; then
-	GETOPT_CMD="getopt" # works for Cygwin and Linux
+	GETOPT_CMD="getopt" # Cygwin and Linux
 else
 #elif [[ "$(uname -s)" == "Darwin" ]]; then
 	usr_dir="/usr/local/opt/gnu-getopt/bin/getopt"
@@ -460,7 +460,8 @@ parse_options() {
 	# arguments appearing after a '--'. Example:
 	# $@      : transcriber -k -2 -y GLT
 	# $PARSED : -k '-2' -y 'GLT' -- 'transcriber'
-	PARSED=$(getopt --options="$opts_str" --longoptions="$opts_long_str" --name "$0" -- "$@")
+	PARSED=$($GETOPT_CMD --options="$opts_str" --longoptions="$opts_long_str" --name "$0" -- "$@")
+#	PARSED=$(getopt --options="$opts_str" --longoptions="$opts_long_str" --name "$0" -- "$@")
 	if [[ $? -ne 0 ]]; then # if the exit status of the last command (i.e., `getopt`) is not 0
 		_show_help ""
 		exit 1
