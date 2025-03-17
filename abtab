@@ -53,12 +53,12 @@ if "$IS_WIN"; then
 	GETOPT_CMD="getopt" # Cygwin and Linux
 else
 #elif [[ "$(uname -s)" == "Darwin" ]]; then
-	usr_dir="/usr/local/opt/gnu-getopt/bin/getopt"
-	opt_dir="/opt/homebrew/opt/gnu-getopt/bin/getopt"
+	usr_dir="/usr/local/opt/gnu-getopt/bin/"
+	opt_dir="/opt/homebrew/opt/gnu-getopt/bin/"
 	if [ -d $usr_dir ]; then
-		GETOPT_CMD=$usr_dir
+		GETOPT_CMD="$usr_dir""getopt"
 	else
-		GETOPT_CMD=$opt_dir
+		GETOPT_CMD="$opt_dir""getopt"
 	fi
 fi
 ARGS=$($GETOPT_CMD -o hvl: -l help,verbose,logfile: -- "$@")
