@@ -59,6 +59,7 @@ else
 		GETOPT_CMD=$usr_dir
 	else
 		GETOPT_CMD=$opt_dir
+	fi
 fi
 ARGS=$($GETOPT_CMD -o hvl: -l help,verbose,logfile: -- "$@")
 
