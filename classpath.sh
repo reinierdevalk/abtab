@@ -26,9 +26,10 @@ while IFS= read -r line; do
         if "$is_win"; then
             # If line is a dot (i.e., starts with a dot)
             if [[ "$clean_line" == .* ]]; then
-                # First make win_path; then add dot (is removed by cygpath)
-                win_path=$(cygpath -w "$lib_path")
-                classpath+="$win_path$clean_line;"
+                # First make cygpath; then add dot (is removed by cygpath)
+                win_path=$(cygpath -w "$lib_path")$clean_line
+#                win_path+=$clean_line
+                classpath+="$win_path;"
             else
                 win_path=$(cygpath -w "$lib_path$clean_line")
                 classpath+="$win_path"bin";"
@@ -36,13 +37,14 @@ while IFS= read -r line; do
             fi
         # Unix case
         else
-            unix_path="$lib_path$clean_line"
             # If line is a dot (i.e., starts with a dot)
             if [[ "$clean_line" == .* ]]; then
-                classpath+="$unix_path;"
+                unix_path="$lib_path$clean_line"
+                classpath+="$unix_path:"
             else
-                classpath+="$unix_path"bin";"
-                classpath+="$unix_path"lib/*";"
+                unix_path="$lib_path$clean_line"
+                classpath+="$unix_path"bin":"
+                classpath+="$unix_path"lib/*":"
             fi
         fi
     fi
