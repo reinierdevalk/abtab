@@ -61,7 +61,7 @@ else
 		GETOPT_CMD="$opt_dir""getopt"
 	fi
 fi
-ARGS=$($GETOPT_CMD -o hvl: -l help,verbose,logfile: -- "$@")
+#ARGS=$($GETOPT_CMD -o hvl: -l help,verbose,logfile: -- "$@")
 
 config="config.cfg"
 classpath="classpath.sh"
