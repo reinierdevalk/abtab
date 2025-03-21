@@ -13,7 +13,7 @@ Common native command-line package managers for macOS are [Homebrew](https://bre
 Native command-line package managers for Windows, such as [Chocolatey](https://chocolatey.org/) or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/), cannot be run from a Unix-emulating CLI -- so on Windows, you are restricted to the built-in package manager of your Unix-emulating CLI. Git Bash and MSYS2, for example, provide access to `pacman`, and Cygwin uses its own [`setup`](https://www.cygwin.com/install.html) tool, a package manager that is run independently of the CLI.
 
 ## External software dependencies
-The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to be installed on your system. Before proceeding to [Installing `abtab`](#installing-abtab), you must make sure that you have the mimimum required version of each of these installed. For detailed instructions on how to do that, see [Installing external software dependencies](#installing-external-software-dependencies).  
+The current version of `abtab` requires Bash, GNU `getopt`, Python, Java, and `music21` (a Python package) to be installed on your system. Before proceeding to [Installing `abtab`](#installing-abtab), you must make sure that you have the mimimum required version of each of these installed. For detailed instructions on how to do that, see [Installing external software dependencies](#installing-external-software-dependencies).  
 
 # Installing `abtab`
 1. Create, on a path of choice on your computer, a directory called `abtab/`. The path up to and including this directory is referred to as `<root_path>`, and the directory itself is where you will be working from.
@@ -249,6 +249,58 @@ If it is not, you must add it -- see [Adding an installation path to the system 
 
 **Verify that GNU `getopt` is now installed correctly by repeating Step 1 above.**
 
+## `music21`
+### 1. Verifying installation
+The current version of `abtab` requires `music21` 9.1.0 or higher. To verify whether `music21` is installed and meets the minimum required version, run
+
+    $ python -c "import music21; print(music21.__version__)"
+
+You should see output similar to
+
+    9.1.0
+
+If you have installed `music21` inside a virtual environment, you must activate it prior to running the above command (see [Using a virtual environment](#using-a-virtual-environment)]).
+
+**Note for macOS users** On older versions of macOS, the default installed version of Python is Python2. If the `python --version` command returns some version of Python2, you must use `python3` (and not `python`) in your commands.
+
+### 2. Installing and updating
+To install or update `music21`, run
+
+    $ pip install --upgrade music21
+
+**Note for macOS users** On older versions of macOS, the default installed version of Python is Python2. If the `python --version` command returns some version of Python2, you must use `pip3` (and not `pip`) in your commands.
+
+#### Using a virtual environment
+If you want to keep your `music21` installation separate from other installations, you can install it inside a virtual environment, using the same command as above. The virtual environment must first be created and activated. To create the virtual environment, run
+
+    $ python -m venv ~/myenv
+
+To activate the virtual environment, run
+
+    $ source ~/myenv/bin/activate
+
+You need to *create* the virtual environment (and install `music21` inside it) only once, but because `music21` will only be available inside the virtual environment, you will need to make sure that the virtual environment is *activated* every time you run `abtab`. You can see that the virtual environment is activated when your CLI terminal prompt has changed to something similar to `(myenv)`.   
+
+To deactivate the virtual environment, run
+
+    $ deactivate       
+
+When using a virtual environment, you can skip Steps 3 and 4 below.
+
+### 3. Locating the installation path
+`pip` typically installs Python packages such as `music21` in the Python installation path (see [Python](#python)). You can confirm the installation path by running
+
+    $ python -c "import music21; print(music21.__file__)"
+
+### 4. Adding the installation path to the system `PATH`
+To ensure that `music21` is available in the CLI, confirm that the installation path is on the system `PATH` by running
+
+    $ echo $PATH
+
+If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
+
+**Verify that `music21` is now installed correctly by repeating Step 1 above.**
+
 ## Python
 ### 1. Verifying installation
 The current version of `abtab` requires Python 3.12.0 or higher. To verify whether Python is installed and meets the minimum required version, run
@@ -259,10 +311,10 @@ You should see output similar to
 
     Python x.y.z
 
-**Note for macOS users** On older versions of macOS, the default installed version of Python is Python2. If the `--version` command returns some version of Python2, you must use `python3` (and not `python`) in your commands.
+**Note for macOS users** On older versions of macOS, the default installed version of Python is Python2. If the `python --version` command returns some version of Python2, you must use `python3` (and not `python`) in your commands.
 
 ### 2. Installing and updating
-Installing and updating Python is done easiest and most efficiently using a command-line package manager, but it is also possible to download and install [Python](https://www.python.org/downloads/) manually.
+**Note for Windows users** Installing and updating Python can be done using a command-line package manager, but it generally not a bad idea to download and install [Python](https://www.python.org/downloads/) manually.
 
 #### macOS
 To install or update Python, run
@@ -325,7 +377,7 @@ or (Windows)
     java version "x.y.z" ...
 
 ### 2. Installing and updating
-Installing and updating Java is done easiest and most efficiently using a command-line package manager, but it is also possible to download and install [Java](https://www.oracle.com/java/technologies/downloads/) manually.
+**Note for Windows users** Installing and updating Java can be done using a command-line package manager, but it generally not a bad idea to download and install [Java](https://www.oracle.com/java/technologies/downloads/) manually.
 
 #### macOS
 To install or update Java, run
