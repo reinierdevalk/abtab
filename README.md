@@ -47,7 +47,7 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, Java, and `m
 
 4. Run the installer, `install.sh`, from `<root_path>`.
     ```
-    $ ./install.sh
+    $ ./install
     ```
 
    If you encounter execute permission issues when running the script, see [Execute permission issues](#execute-permission-issues).  
