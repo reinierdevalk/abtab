@@ -45,7 +45,7 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, Java, and `m
 
     **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for Windows users**).
 
-4. Run the installer, `install.sh`, from `<root_path>`.
+4. Run the installer, `install`, from `<root_path>`.
     ```
     $ ./install
     ```
@@ -81,9 +81,9 @@ If you encounter execute permission issues when running a script, ensure that Gi
 
 This is a one-time configuration that makes Git preserve file permissions across `clone`s and `pull`s. If you have already set this up, you do not need to do it again.
 
-If the above command does not resolve the issues, you can manually set execute permissions for all scripts (`install.sh`, `classpath.sh`, and `abtab`) by running
+If the above command does not resolve the issues, you can manually set execute permissions for all scripts (`install`, `classpath.sh`, and `abtab`) by running
 
-    $ chmod +x install.sh classpath.sh abtab
+    $ chmod +x install classpath.sh abtab
 
 Note that you may need to run this command after each `git pull` or `git clone` if the execute permissions are not preserved.
 
