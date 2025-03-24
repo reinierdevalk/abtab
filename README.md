@@ -26,14 +26,14 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, Java, and `m
 
 3. Open `config.cfg` and adapt the paths. Always use Unix-style forward slashes (`/`) as separators.
    - Replace the default value of the `ROOT_PATH` variable with `<root_path>`; **make sure it ends with a `/`**. 
-   - Replace the default value of the `LIB_PATH` variable with `<lib_path>`; **make sure it ends with a `/`**. `<lib_path>` is the location where the installer places the code. Recommended locations are
+   - Replace the default value of the `LIB_PATH` variable with `<lib_path>`; **make sure it ends with a `/`**. `<lib_path>` is the location where the installation script places the code. Recommended locations are
      - On Windows: `C:/Users/<Username>/lib/abtab/` . 
      - On Unix: `/usr/local/lib/abtab/`.
-   - Replace the default value of the `EXE_PATH` variable with `<exe_path>`; **make sure it ends with a `/`**. `<exe_path>` is the location where the installer places the executable. Recommended locations are 
+   - Replace the default value of the `EXE_PATH` variable with `<exe_path>`; **make sure it ends with a `/`**. `<exe_path>` is the location where the installation script places the executable. Recommended locations are 
      - On Windows: `C:/Users/<Username>/bin/`.
      - On Unix: `/usr/local/bin/`.
     
-    If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installer.
+    If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installation script.
 
     To ensure that `abtab` is available in the CLI, confirm that `<exe_path>` is on the system `PATH` by running 
 
@@ -45,14 +45,14 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, Java, and `m
 
     **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for Windows users**).
 
-4. Run the installer, `install`, from `<root_path>`.
+4. Run the installation script, `install`, from `<root_path>`.
     ```
     $ ./install
     ```
 
    If you encounter execute permission issues when running the script, see [Execute permission issues](#execute-permission-issues).  
     
-   The installer 
+   The installation script 
    - Checks whether `lib_path` and `exe_path` exist, and creates them if they do not.
    - Sets `root_path` and `lib_path` in the executable.
    - Handles any previously installed version of `abtab`: removes any old executable from `<exe_path>`, and clears `<lib_path>`.
