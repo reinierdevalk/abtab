@@ -190,7 +190,7 @@ To ensure that Bash is available in the CLI, confirm that the installation path 
 
 If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
-**Verify that GNU Bash is now installed correctly by repeating Step 1 above.**
+**Verify that Bash is now installed correctly by repeating Step 1 above.**
 
 ## GNU `getopt`
 ### 1. Verifying installation
@@ -238,7 +238,7 @@ If this returns `/usr/local/opt/gnu-getopt/bin/getopt` or `/opt/homebrew/opt/gnu
 #### macOS
 macOS comes with its own default version of `getopt`, BSD `getopt`. If GNU `getopt` is made the default `getopt` by adding it to the `PATH`, scripts that rely on BSD `getopt` may not work anymore on your machine. It is therefore recommended not to do this.
 
-Instead, `abtab` has a built-in check that selects the `getopt` version based on the operating system that is detected -- ensuring that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt`.
+Instead, `abtab` has a built-in check that selects the `getopt` version based on the operating system that it detects -- ensuring that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt`.
 
 #### Windows
 To ensure that GNU `getopt` is available in the CLI, confirm that the installation path is on the system `PATH` by running

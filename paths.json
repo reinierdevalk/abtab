@@ -29,10 +29,11 @@
         "VOICE_SEP_PYTHON_PATH":        "voice_separation/py/", // (TrainingManager, TestManager), (TestManager)
         "VOICE_SEP_MATLAB_PATH":        "voice_separation/m/", // (TestManager), (TestManager)
         // toolbox case
-        "ANALYSIS_PYTHON_PATH":         "analysis/py/" // (Analyser)
+        "ANALYSIS_PYTHON_PATH":         "analysis/py/", // (Analyser)
+        "FORMATS_PYTHON_PATH":          "formats/py/" // (TabImport)
     },
     "files": {
-        "MEI_2_TBP_SCRIPT":             "mei2tbp.py",
+        "MEI2TBP_SCRIPT":               "mei2tbp.py",
         "BEAM_SCRIPT":                  "beam.py",
         "SCIKIT_SCRIPT":                "model_scikit.py",
         "TENSORFLOW_SCRIPT":            "model_tensorflow.py",
