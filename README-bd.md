@@ -253,17 +253,13 @@ If it is not, you must add it -- see [Adding an installation path to the system 
 ### 1. Verifying installation
 The current version of `abtab` requires Python 3.12.0 or higher. To verify whether Python is installed and meets the minimum required version, run
 
-    $ python3 --version
+    $ python --version
 
 You should see output similar to
 
-    Python 3.x.y
+    Python x.y.z
 
-**Note for Windows users** If the command `python3 --version` return a `command not found error`, try running `python --version` instead. If you see the expected output (`Python3.x.y`), Python3 has been installed, but no symlink to it has been created. To create the symlink, run
-
-    ln -s $(which python) /usr/bin/python3
-
-Alternatively, you can just use `python` (and not `python3`) in your commands.
+**Note for macOS users** On older versions of macOS, the default installed version of Python is Python2. If the `python --version` command returns some version of Python2, you must use `python3` (and not `python`) in your commands.
 
 ### 2. Installing and updating
 #### macOS
