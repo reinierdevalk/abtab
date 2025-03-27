@@ -13,7 +13,9 @@ Common native command-line package managers for macOS are [Homebrew](https://bre
 Native command-line package managers for Windows, such as [Chocolatey](https://chocolatey.org/) or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/), cannot be run from a Unix-emulating CLI -- so on Windows, you are restricted to the built-in package manager of your Unix-emulating CLI. Git Bash and MSYS2, for example, provide access to `pacman`, and Cygwin uses its own [`setup`](https://www.cygwin.com/install.html) tool, a package manager that is run independently of the CLI.
 
 ## External software dependencies
-The current version of `abtab` requires Bash, GNU `getopt`, Python, Java, and `music21` to be installed on your system. Before proceeding to [Installing `abtab`](#installing-abtab), you must make sure that you have the mimimum required version of each of these installed. For detailed instructions on how to do that, see [Installing external software dependencies](#installing-external-software-dependencies).  
+The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to be installed on your system. Before proceeding to [Installing `abtab`](#installing-abtab), you must make sure that you have the mimimum required version of each of these installed. For detailed instructions on how to do that, see [Installing external software dependencies](#installing-external-software-dependencies).
+
+**Note** Project-specific Python packages (such as `music21`) are not installed system-wide, but in a virtual environment; this is covered in [Installing `abtab`](#installing-abtab). 
 
 # Installing `abtab`
 1. Create, on a path of choice on your computer, a directory called `abtab/`. The path up to and including this directory is referred to as `<root_path>`, and the directory itself is where you will be working from.
@@ -67,11 +69,37 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, Java, and `m
    - The `models/` directory. Contains the trained machine learning models called by the `transcriber` tool.
    - The `templates/` directory. Contains a high-level template of an MEI file, whose `<header>` can be adapted at will. 
 
-5. Run `abtab`. This can be done from any directory on your computer. Use the help (`-h` or `--help`) option to get started; this lists all the currently available tools in the toolbox.
-    ``` 
+5. It is recommended to use a virtual environment to isolate project-specific Python package installations from system-wide
+   installations, ensuring a clean and conflict-free environment. It is good practice to have the virtual environment for a specific project inside the project's directory -- i.e., here, inside `<root_path>`. 
+
+   To create the virtual environment (by convention called `venv` or `.venv`), run
+    ```
+    $ cd <root_path>
+    $ python3 -m venv venv
+    ```
+ 
+   To activate the virtual environment, run
+    ```
+    $ source <root_path>/venv/bin/activate
+    ```
+
+   You can see that the virtual environment is activated when your CLI terminal prompt has changed to something similar to `(venv)`. 
+
+   Once the virtual environment is activated, you must install all project-specific Python packages in it -- see [Installing project-specific Python packages in the virtual environment](#installing-project-specific-Python-packages-in-the-virtual-environment).
+
+   To deactivate the virtual environment, run
+    ```
+    $ deactivate 
+    ```
+
+`abtab` is now installed and ready to use. It can be run from any directory on your computer -- but make sure to activate the virtual environment before you start your `abtab` session, and to deactivate it when you end your session.
+
+Use the help (`-h` or `--help`) option to get started; this lists all the currently available tools in the toolbox.
+ 
     $ abtab -h 
     $ abtab --help 
-   ```
+
+For more in-depth examples, see [Example usage](#example-usage).
 
 # Troubleshooting
 ## Execute permission issues
@@ -109,9 +137,13 @@ Finally, save `.bash_profile` and `source` it to apply the changes. Alternativel
 
     $ source ~/.bash_profile
 
-If the `source` command results in one or more errors similar to `-bash: $'\r': command not found`, `.bash_profile` contains Windows-style CRLF line endings (`\r\n`) that must be replaced by Unix-style LF line endings (`\n`). Retry after running
+If the `source` command results in one or more errors similar to `-bash: $'\r': command not found`, `.bash_profile` contains Windows-style line endings. You must replace these before retrying -- see [Replace CRLF line endings](#replace-CRLFline-endings).
+
+## Replace CRLF line endings
+If `source`ing a file or running a Bash script returns one or more errors similar to `-bash: $'\r': command not found`, the file or script in question contains Windows-style CRLF line endings (`\r\n`) that must be replaced by Unix-style LF line endings (`\n`). To achieve this, run
 
     $ sed -i 's/\r//' ~/.bash_profile
+
 
 Check if the path has been added to the system `PATH`.
 
@@ -259,7 +291,7 @@ You should see output similar to
 
     Python 3.x.y
 
-**Note for Windows users** If the command `python3 --version` return a `command not found error`, try running `python --version` instead. If you see the expected output (`Python3.x.y`), Python3 has been installed, but no symlink to it has been created. To create the symlink, run
+**Note for Windows users** If the command `python3 --version` returns a `command not found error`, try running `python --version` instead. If you see the expected output (`Python3.x.y`), Python3 has been installed, but no symlink to it has been created. To create the symlink, run
 
     ln -s $(which python) /usr/bin/python3
 
@@ -382,54 +414,25 @@ If it is not, you must add it -- see [Adding an installation path to the system 
 
 **Verify that Java is now installed correctly by repeating Step 1 above.**
 
+# Installing project-specific Python packages in the virtual environment
 ## `music21`
+### 0. Activating the virtual environment
+To activate the virtual environment, run
+
+    $ source <root_path>/venv/bin/activate
+
 ### 1. Verifying installation
 The current version of `abtab` requires `music21` 9.1.0 or higher. To verify whether `music21` is installed and meets the minimum required version, run
 
-    $ python -c "import music21; print(music21.__version__)"
+    $ python3 -c "import music21; print(music21.__version__)"
 
 You should see output similar to
 
     9.1.0
 
-If you have installed `music21` inside a virtual environment, you must activate it prior to running the above command (see [Using a virtual environment](#using-a-virtual-environment)).
-
-**Note for macOS users** On older versions of macOS, the default installed version of Python is Python2. If the `python --version` command returns some version of Python2, you must use `python3` (and not `python`) in your commands.
-
 ### 2. Installing and updating
 To install or update `music21`, run
 
-    $ pip install --upgrade music21
-
-**Note for macOS users** On older versions of macOS, the default installed version of Python is Python2. If the `python --version` command returns some version of Python2, you must use `pip3` (and not `pip`) in your commands.
-
-#### Using a virtual environment
-If you want to keep your `music21` installation separate from other installations, you can install it inside a virtual environment, using the same command as above. The virtual environment must first be created and activated. To create the virtual environment, run
-
-    $ python -m venv ~/myenv
-
-To activate the virtual environment, run
-
-    $ source ~/myenv/bin/activate
-
-You need to *create* the virtual environment (and install `music21` inside it) only once, but because `music21` will only be available inside the virtual environment, you will need to make sure that it is *activated* every time you run `abtab`. You can see that the virtual environment is activated when your CLI terminal prompt has changed to something similar to `(myenv)`.   
-
-To deactivate the virtual environment, run
-
-    $ deactivate       
-
-When using a virtual environment, you can skip Steps 3 and 4 below.
-
-### 3. Locating the installation path
-`pip` installs Python packages such as `music21` in the Python installation path (see [Python](#python)). To confirm the installation path, run
-
-    $ python -c "import music21; print(music21.__file__)"
-
-### 4. Adding the installation path to the system `PATH`
-To ensure that `music21` is available in the CLI, confirm that the installation path is on the system `PATH` by running
-
-    $ echo $PATH
-
-If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
+    $ pip3 install --upgrade music21
 
 **Verify that `music21` is now installed correctly by repeating Step 1 above.**
