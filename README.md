@@ -139,17 +139,16 @@ Finally, save `.bash_profile` and `source` it to apply the changes. Alternativel
 
 If the `source` command results in one or more errors similar to `-bash: $'\r': command not found`, `.bash_profile` contains Windows-style line endings. You must replace these before retrying -- see [Replace CRLF line endings](#replace-CRLFline-endings).
 
-## Replace CRLF line endings
-If `source`ing a file or running a Bash script returns one or more errors similar to `-bash: $'\r': command not found`, the file or script in question contains Windows-style CRLF line endings (`\r\n`) that must be replaced by Unix-style LF line endings (`\n`). To achieve this, run
-
-    $ sed -i 's/\r//' ~/.bash_profile
-
-
 Check if the path has been added to the system `PATH`.
 
     $ echo $PATH
 
 **Note for Windows users** On Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
+
+## Replace CRLF line endings
+If `source`ing a file or running a Bash script returns one or more errors similar to `-bash: $'\r': command not found`, the file or script in question contains Windows-style CRLF line endings (`\r\n`) that must be replaced by Unix-style LF line endings (`\n`). To achieve this, run
+
+    $ sed -i 's/\r//' ~/.bash_profile
 
 # Example usage
 You can use the provided example files to experiment with the various tools. 
