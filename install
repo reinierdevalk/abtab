@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 # Script that installs `abtab`. It must be called from the same
 # folder that folds config.cfg, classpath.sh, repositories.txt, 
@@ -99,8 +99,10 @@ else
     sed -i "" "s|$rp_placeholder|$root_path|g" "$abtab"
     sed -i "" "s|$lp_placeholder|$lib_path|g" "$abtab"
     # Replace Windows shebang
-    win_shebang="!/bin/bash"
-    mac_shebang="!/usr/local/bin/bash"
+    win_shebang=$(sed -n '1p' "$0") # "#!/usr/bin/bash"
+#    win_shebang="#!/usr/bin/bash"
+    mac_shebang="#!""$(which bash)"
+#    mac_shebang="!/usr/local/bin/bash"
     sed -i "" "s|$win_shebang|$mac_shebang|g" "$abtab"
 
 #    root_path_esc="/var/git/abtab/"

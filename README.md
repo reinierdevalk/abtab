@@ -78,6 +78,8 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to 
     $ python3 -m venv venv
     ```
  
+   This creates a fourth directory, called `venv`, in `<root_dir>`. 
+
    To activate the virtual environment, run
     ```
     $ source <root_path>/venv/bin/activate

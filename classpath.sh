@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 # Script that constructs the classpath from repositories.txt. This
 # script is called by abtab every time it is run.
