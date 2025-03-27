@@ -30,22 +30,22 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to 
    - Replace the default value of the `ROOT_PATH` variable with `<root_path>`; **make sure it ends with a `/`**. 
    - Replace the default value of the `LIB_PATH` variable with `<lib_path>`; **make sure it ends with a `/`**. `<lib_path>` is the location where the installation script places the code. Recommended locations are
      - On Windows: `C:/Users/<Username>/lib/abtab/` . 
-     - On Unix: `/usr/local/lib/abtab/`.
+     - On Unix: `/Users/<Username>/.local/lib/abtab/`.
    - Replace the default value of the `EXE_PATH` variable with `<exe_path>`; **make sure it ends with a `/`**. `<exe_path>` is the location where the installation script places the executable. Recommended locations are 
      - On Windows: `C:/Users/<Username>/bin/`.
-     - On Unix: `/usr/local/bin/`.
+     - On Unix: `/Users/<Username>/.local/bin/`.
     
-    If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installation script.
+   If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installation script.
 
-    To ensure that `abtab` is available in the CLI, confirm that `<exe_path>` is on the system `PATH` by running 
+   To ensure that `abtab` is available in the CLI, confirm that `<exe_path>` is on the system `PATH` by running 
 
     ```
     $ echo $PATH
     ```
 
-    If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
+   If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
-    **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for Windows users**).
+   **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for Windows users**).
 
 4. Run the installation script, `install`, from `<root_path>`.
     ```
@@ -99,7 +99,7 @@ Use the help (`-h` or `--help`) option to get started; this lists all the curren
     $ abtab -h 
     $ abtab --help 
 
-For more in-depth examples, see [Example usage](#example-usage).
+For examples of how to use the different tools, see [Example usage](#example-usage).
 
 # Troubleshooting
 ## Execute permission issues
