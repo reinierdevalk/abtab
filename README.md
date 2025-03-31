@@ -46,7 +46,7 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
 
    If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
-   :warning: **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for WIndows users**).
+   :warning: **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for Windows users**).
 
 4. Run the installation script, `install`, from `<root_path>`.
     ```
@@ -211,7 +211,7 @@ To install or update Bash, run
 To install or update Bash, run the Cygwin `setup` tool.
 
 ### 3. Confirming installation
-Once Bash is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system $PATH -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
+Once Bash is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
  
 <!-- OLD VERSION BASH
 ## Bash
@@ -256,7 +256,7 @@ If it is not, you must add it -- see [Adding an installation path to the system 
 
 ## GNU `getopt`
 ### 1. Verifying installation
-:warning: **Note for macOS users** macOS comes with its own default version of `getopt`, BSD `getopt`, which will be called when using the `getopt` command. To call GNU `getopt`, you must prepend the full path to the GNU `getopt` installation directory with the `bin/` directory added to it. You can find the full path to the installation directory (`<gnu_getopt_path>`) by running 
+:warning: **Note for macOS users** macOS comes with its own default version of `getopt`, BSD `getopt`, which will be called when using the `getopt` command. To call GNU `getopt`, you must prepend the full path to the `bin/` directory in the GNU `getopt` installation directory. You can find the full path to the installation directory (`<gnu_getopt_path>`) by running 
 
     $ brew --prefix gnu-getopt
 
@@ -276,7 +276,7 @@ If the output shows a version that is too old, or an error like `Error: No avail
 
 ### 2. Installing and updating
 :warning: **Note**
-Keep track of the installation path during installation, as you may need to add it to the system `PATH`. |
+Keep track of the installation path during installation, as you may need to add it to the system `PATH`.
 
 #### macOS
 To install or update GNU `getopt`, run
@@ -287,47 +287,12 @@ To install or update GNU `getopt`, run
 To install or update GNU `getopt`, run the Cygwin `setup` tool.
 
 ### 3. Confirming installation
-Once GNU `getopt` is installed, repeat Step 1. On Windows, if the output does not show the version you just installed, you must add the installation path to the system $PATH -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
+Once GNU `getopt` is installed, repeat Step 1. On Windows, if the output does not show the version you just installed, you must add the installation path to the system `PATH` -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH). On macOS, it is recommended not to do this: if GNU `getopt` is made the default `getopt` by adding it to the system `PATH`, scripts that rely on BSD `getopt` may not work anymore on your machine. `abtab` has a built-in mechanism that selects the `getopt` version based on the operating system that it detects, and that ensures that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt`.
 
+:warning: **Note for macOS users**
+In the unlikely case where `brew --prefix gnu-getopt` returns a path that is neither `/opt/homebrew/opt/gnu-getopt` nor `/usr/local/opt/gnu-getopt` (the typical installation paths), you must note it down -- you will need it again during the installation of `abtab`. 
 
-
-
-<!-- OLD
-#### macOS
-To verify whether GNU `getopt` is installed, run
-
-    $ brew --prefix gnu-getopt
-
-You should see output similar to 
-
-    /opt/homebrew/opt/gnu-getopt
-
-If the output shows an error like `Error: No available formula with the name "gnu-getopt"` (indicating that GNU `getopt` is not installed), proceed to Step 2.
-
-To verify whether GNU `getopt` meets the minimum required version, run (replacing `<getopt_path>` with the GNU `getopt` installation path)
-
-    $ <getopt_path>/bin/getopt --version
-
-You should see output similar to
-
-    getopt from util-linux x.y.z
-
-If the output shows a version that is too old, proceed to Step 2.
-
-#### Windows
-To verify whether GNU `getopt` is installed and meets the minimum required version, run
-
-    $ getopt --version
-
-You should see output similar to
-
-    getopt from util-linux x.y.z
-
-If the output shows a version that is too old, or an error like `bash: getopt: command not found` (indicating that GNU `getopt` is not installed), proceed to Step 2.
-
-### 2. Installing and updating GNU `getopt`
--->
-
+<!-- OLD VERSION GETOPT
 ## GNU `getopt`
 ### 1. Verifying installation
 The current version of `abtab` requires GNU `getopt` 2.40.2 or higher. To verify whether GNU `getopt` is installed and meets the minimum required version, run (macOS)
@@ -384,7 +349,7 @@ To ensure that GNU `getopt` is available in the CLI, confirm that the installati
 If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
 **Verify that GNU `getopt` is now installed correctly by repeating Step 1 above.**
-
+-->
 
 ## Python
 ### 1. Verifying installation
