@@ -199,7 +199,7 @@ You should see output similar to
 If the output shows a version that is too old, or an error like `bash: command not found` (indicating that Bash is not installed), proceed to Step 2.
 
 ### 2. Installing and updating
-> [!NOTE]
+> [!NOTE FOR macOS USERS]
 > Keep track of the installation path during installation, as you may need to add it to the system $PATH.
 
 #### macOS
@@ -256,17 +256,42 @@ If it is not, you must add it -- see [Adding an installation path to the system 
 
 ## GNU `getopt`
 ### 1. Verifying installation
-The current version of `abtab` requires GNU `getopt` 2.40.2 or higher. To verify whether GNU `getopt` is installed and meets the minimum required version, run
+> [!NOTE]
+>
 
+The current version of `abtab` requires GNU `getopt` 2.40.2 or higher. 
 
+#### macOS
+To verify whether GNU `getopt` is installed, run
 
-    $ getopt --version ()
+    $ brew --prefix gnu-getopt
+
+You should see output similar to 
+
+    /opt/homebrew/opt/gnu-getopt
+
+If the output shows an error like `Error: No available formula with the name "gnu-getopt"` (indicating that GNU `getopt` is not installed), proceed to Step 2.
+
+To verify whether GNU `getopt` meets the minimum required version, run (replacing `<getopt_path>` with the GNU `getopt` installation path)
+
+    $ <getopt_path>/bin/getopt --version
 
 You should see output similar to
 
     getopt from util-linux x.y.z
 
-If the output shows a version that is too old, or an error like `getopt: command not found` (indicating that GNU `getopt` is not installed), proceed to Step 2.
+If the output shows a version that is too old, proceed to Step 2.
+
+#### Windows
+To verify whether GNU `getopt` is installed and meets the minimum required version, run
+
+    $ getopt --version
+
+You should see output similar to
+
+    getopt from util-linux x.y.z
+
+If the output shows a version that is too old, or an error like `Error: No available formula with the name "gnu-getopt"` (indicating that GNU `getopt` is not installed), proceed to Step 2.
 
 ### 2. Installing and updating GNU `getopt`
 
