@@ -280,7 +280,9 @@ You should see output similar to
 If the output shows a version that is too old, or an error like `Error: No available formula with the name "gnu-getopt"` (macOS) or `bash: getopt: command not found` (Windows), indicating that GNU `getopt` is not installed, proceed to Step 2.
 
 ### 2. Installing and updating
-:warning: **Note** Keep track of the installation path during installation, as you may need to add it to the system `PATH`.
+| :warning: **Note** |
+|----------------------------| 
+| Keep track of the installation path during installation, as you may need to add it to the system `PATH`. |
 
 #### macOS
 To install or update GNU `getopt`, run
