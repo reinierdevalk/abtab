@@ -15,8 +15,8 @@ Native command-line package managers for Windows, such as [Chocolatey](https://c
 ## External software dependencies
 The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to be installed on your system. Before proceeding to [Installing `abtab`](#installing-abtab), you must make sure that you have the mimimum required version of each of these installed. For detailed instructions on how to do that, see [Installing external software dependencies](#installing-external-software-dependencies).
 
-> [!NOTE]
-> Project-specific Python packages (such as `music21`) are not installed system-wide, but in a virtual environment; this is covered in [Installing `abtab`](#installing-abtab). 
+:warning: **Note**
+Project-specific Python packages (such as `music21`) are not installed system-wide, but in a virtual environment; this is covered in [Installing `abtab`](#installing-abtab). 
 
 # Installing `abtab`
 1. Create, on a path of choice on your computer, a directory called `abtab/`. The path up to and including this directory is referred to as `<root_path>`, and the directory itself is where you will be working from.
@@ -280,9 +280,8 @@ You should see output similar to
 If the output shows a version that is too old, or an error like `Error: No available formula with the name "gnu-getopt"` (macOS) or `bash: getopt: command not found` (Windows), indicating that GNU `getopt` is not installed, proceed to Step 2.
 
 ### 2. Installing and updating
-| :warning: **Note** |
-|----------------------------| 
-| Keep track of the installation path during installation, as you may need to add it to the system `PATH`. |
+:warning: **Note**
+Keep track of the installation path during installation, as you may need to add it to the system `PATH`. |
 
 #### macOS
 To install or update GNU `getopt`, run
