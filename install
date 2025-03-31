@@ -7,19 +7,21 @@
 # NB: When editing this file with Sublime, set the line endings to Unix: 
 #     View > Line endings > Unix
 
-# Check OS: Windows or Linux-like
-IS_WIN=false
-if [[ -n "$WINDIR" || "$os_type" == "CYGWIN"* || "$os_type" == "MINGW"* || "$os_type" == "MSYS"* ]]; then
-    IS_WIN=true
-fi
 
+# 0. GLOBAL VARIABLES
 config="config.cfg"
 repositories="repositories.txt"
 abtab="abtab"
 ex_tab="rore-anchor_che_col_1-10.tc"
 ex_mid="rore-anchor_che_col_1-10.mid"
 
+IS_WIN=false
+if [[ -n "$WINDIR" || "$os_type" == "CYGWIN"* || "$os_type" == "MINGW"* || "$os_type" == "MSYS"* ]]; then
+    IS_WIN=true
+fi
 
+
+# 1. FUNCTIONS
 remove_carriage_returns() {
     local file="$1"
     if grep -q $'\r' "$file"; then
@@ -60,8 +62,8 @@ handle_file() {
 }
 
 
+# 2. SCRIPT CODE
 echo "Installation started ..."
-
 # 1. Handle files
 echo "... handling files ..."
 handle_file "$config" false

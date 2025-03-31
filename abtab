@@ -36,33 +36,6 @@
 
 
 # 0. GLOBAL VARIABLES
-# Check OS: Windows or Unix-like
-IS_WIN=false
-if [[ -n "$WINDIR" || "$os_type" == "CYGWIN"* || "$os_type" == "MINGW"* || "$os_type" == "MSYS"* ]]; then
-    IS_WIN=true
-fi
-
-# Check if a version of Python2 is installed; if so, overrule
-PYTHON="python"
-if command -v python2 &>/dev/null; then
-	PYTHON="python3"
-fi
-
-# Ensure that on macOS, GNU getopt is called (and not the default BSD getopt)
-if "$IS_WIN"; then
-	GETOPT_CMD="getopt" # Cygwin and Linux
-else
-#elif [[ "$(uname -s)" == "Darwin" ]]; then
-	usr_dir="/usr/local/opt/gnu-getopt/bin/"
-	opt_dir="/opt/homebrew/opt/gnu-getopt/bin/"
-	if [ -d $usr_dir ]; then
-		GETOPT_CMD="$usr_dir""getopt"
-	else
-		GETOPT_CMD="$opt_dir""getopt"
-	fi
-fi
-#ARGS=$($GETOPT_CMD -o hvl: -l help,verbose,logfile: -- "$@")
-
 config="config.cfg"
 classpath="classpath.sh"
 pythonpath="transcriber/py/"
@@ -168,6 +141,39 @@ provided, an editor, additionally facilitating editing and viewing of the source
 )
 
 # b. Set automatically
+IS_WIN=false
+if [[ -n "$WINDIR" || "$os_type" == "CYGWIN"* || "$os_type" == "MINGW"* || "$os_type" == "MSYS"* ]]; then
+    IS_WIN=true
+fi
+
+PYTHON="python3"
+# If Python3 returns a "command not found" error
+if command -v python3 &> /dev/null; then
+	PYTHON="python"
+fi
+
+## Check if a version of Python2 is installed; if so, overrule
+#PYTHON="python"
+#if command -v python2 &>/dev/null; then
+#	PYTHON="python3"
+#fi
+
+## Ensure that on macOS, GNU getopt is called (and not the default BSD getopt)
+#if "$IS_WIN"; then
+#	GETOPT_CMD="getopt" # Cygwin and Linux
+#else
+#	usr_path="/usr/local/opt/gnu-getopt/"
+#	opt_path="/opt/homebrew/opt/gnu-getopt/"
+#	if [ -d $usr_path ]; then
+#		GETOPT_CMD="$usr_path""bin/getopt"
+#	elif [ -d $opt_path ]; then
+#		GETOPT_CMD="$opt_path""bin/getopt"
+#	else
+#		GETOPT_CMD="$GETOPT_PATH_""bin/getopt"
+#	fi
+#fi
+##ARGS=$($GETOPT_CMD -o hvl: -l help,verbose,logfile: -- "$@")
+
 TOOLBOX=$(basename "$0")
 DEV=false
 if [[ "$TOOLBOX" == 'abtab-dev' ]]; then
@@ -202,7 +208,6 @@ _get_column() {
     echo "${res[@]}"
 }
 
-
 _array_contains() {
 	# Checks if the given array contains an exact match of the given string.
 
@@ -218,7 +223,6 @@ _array_contains() {
 
 	return 1
 }
-
 
 _show_help() {
 	local arg_tool="$1"
@@ -361,7 +365,6 @@ _show_help() {
     fi
 }
 
-
 _print_help_cols() {
 	# Prints the left and right column of the help item; breaks the right  
 	# column into multiple lines if its length exceeds the give max length.
@@ -388,7 +391,6 @@ _print_help_cols() {
 	fi
 }
 
-
 source_filtered() {
 	# Filters out empty lines and removes carriage returns (\r)
 	# from all lines before sourcing the given file. The file
@@ -397,7 +399,6 @@ source_filtered() {
 	local file="$1"
 	source <(grep -v '^[[:space:]]*$' "$file" | tr -d '\r')
 }
-
 
 check_first_arg() {
 	# Checks the first argument given to the script, which should be
@@ -417,7 +418,6 @@ check_first_arg() {
 		shift # make the next arg $1
 	fi
 }
-
 
 set_global_vars() {
 	# Sets the global variables for the given tool.
@@ -445,7 +445,6 @@ set_global_vars() {
 	OPTS_LONG=($(_get_column 1 "${OPTS_VALS[@]}"))
 	VALS_DEFAULT=($(_get_column 4 "${OPTS_VALS[@]}"))
 }
-
 
 parse_options() {
 	# Populate opts_str and opts_long_str
@@ -476,7 +475,6 @@ parse_options() {
 
 	echo "$@"
 }
-
 
 _make_options_str() {
 	# Creates a string of all options in the given list. By default, all options
@@ -515,7 +513,6 @@ _make_options_str() {
 
 	echo "$res"
 }
-
 
 expand_args() {
 	local parsed_args_str="$@" # str
@@ -572,7 +569,6 @@ expand_args() {
 	fi
 }
 
-
 populate_opts_and_vals_lists() {
 	# Populates options_used and values_used by parsing the given args; in the process,
 	# validates input vals (getopt has no built-in functionality to do this). If one
@@ -627,7 +623,6 @@ populate_opts_and_vals_lists() {
 	done
 }
 
-
 _get_option_details() {
 	# Finds the row in OPTS_VALS that goes with the given opt and
 	# assigns it to the declared array.
@@ -647,7 +642,6 @@ _get_option_details() {
 
 	return 1
 }
-
 
 create_cli_args() {
 	# Converts the CLI opts (o) and vals (v) into a string of one of 
@@ -697,6 +691,7 @@ else
 	LIB_PATH_="_LP_PLACEHOLDER_"
 	# Source config 
 	source_filtered "$LIB_PATH_""$config"
+	GETOPT_PATH_="$GETOPT_PATH" # from config
 fi
 PYTHON_PATH="${LIB_PATH_}$pythonpath"
 # Create the class path
@@ -711,24 +706,41 @@ PYTHON_PATH="${LIB_PATH_}$pythonpath"
 #fi
 class_path=$($LIB_PATH_/$classpath $LIB_PATH_ $IS_WIN)
 
-# 2. Check first argument provided, which must be -h/--help or a valid tool
+# 2. Set GETOPT_CMD
+if "$IS_WIN"; then
+	GETOPT_CMD="getopt" # Cygwin and Linux
+else
+	# Ensure that GNU getopt is called (and not the default BSD getopt)
+	usr_path="/usr/local/opt/gnu-getopt/"
+	opt_path="/opt/homebrew/opt/gnu-getopt/"
+	if [ -d $usr_path ]; then
+		GETOPT_CMD="$usr_path""bin/getopt"
+	elif [ -d $opt_path ]; then
+		GETOPT_CMD="$opt_path""bin/getopt"
+	else
+		GETOPT_CMD="$GETOPT_PATH_""bin/getopt"
+	fi
+fi
+#ARGS=$($GETOPT_CMD -o hvl: -l help,verbose,logfile: -- "$@")
+
+# 3. Check first argument provided, which must be -h/--help or a valid tool
 check_first_arg "$@"
 
-# 3. Set global vars
+# 4. Set global vars
 set_global_vars "$TOOL"
 
-# 4. Parse args
+# 5. Parse args
 # NB $@ is *not* updated inside parse_options() and retains its initial
 #    value (all args passed to the script via the terminal)
 parsed_args=($(parse_options "$@"))
 parsed_args=($(expand_args "${parsed_args[@]}"))
 
-# 5. Populate options_used and values_used with the parsed args
+# 6. Populate options_used and values_used with the parsed args
 options_used=()
 values_used=()
 populate_opts_and_vals_lists "${parsed_args[@]}"
 
-# 6. Call tool
+# 7. Call tool
 # Join array elements into a string with space as delimiter
 opts_java="${OPTS[*]}"
 default_vals_java="${VALS_DEFAULT[*]}"
