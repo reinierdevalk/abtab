@@ -196,7 +196,7 @@ You should see output similar to
 
     GNU bash, version x.y.z ...
 
-If the output shows a version that is too old, or an error like `bash: command not found` (indicating that Bash is not installed), proceed to Step 2.
+If the output shows a version that is too old, or an error like `bash: command not found`, indicating that Bash is not installed, proceed to Step 2.
 
 ### 2. Installing and updating
 > **Note** Keep track of the installation path during installation, as you may need to add it to the system `PATH`.
@@ -255,11 +255,26 @@ If it is not, you must add it -- see [Adding an installation path to the system 
 
 ## GNU `getopt`
 ### 1. Verifying installation
-> [!NOTE]
->
+> **Note for macOS users** macOS comes with its own default version of `getopt`, BSD `getopt`, which will be called when using the `getopt` command. To call GNU `getopt`, you must instead use `<GNU_getopt_path>/bin/getopt`. To find `GNU_getopt_path>`, run 
 
-The current version of `abtab` requires GNU `getopt` 2.40.2 or higher. 
+    $ brew --prefix gnu-getopt
 
+The current version of `abtab` requires GNU `getopt` 2.40.2 or higher. To verify whether GNU `getopt` is installed and meets the minimum required version, run (macOS)
+
+    $ <GNU_getopt_path>/bin/getopt --version
+
+or (Windows)
+
+    $ getopt --version
+
+You should see output similar to
+
+    getopt from util-linux x.y.z
+
+If the output shows a version that is too old, or an error like `Error: No available formula with the name "gnu-getopt"` (macOS) or `bash: getopt: command not found` (Windows), indicating that GNU `getopt` is not installed, proceed to Step 2.
+
+
+<!-- OLD
 #### macOS
 To verify whether GNU `getopt` is installed, run
 
@@ -290,10 +305,10 @@ You should see output similar to
 
     getopt from util-linux x.y.z
 
-If the output shows a version that is too old, or an error like `Error: No available formula with the name "gnu-getopt"` (indicating that GNU `getopt` is not installed), proceed to Step 2.
+If the output shows a version that is too old, or an error like `bash: getopt: command not found` (indicating that GNU `getopt` is not installed), proceed to Step 2.
 
 ### 2. Installing and updating GNU `getopt`
-
+-->
 
 ## GNU `getopt`
 ### 1. Verifying installation
