@@ -16,7 +16,7 @@ Native command-line package managers for Windows, such as [Chocolatey](https://c
 The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to be installed on your system. Before proceeding to [Installing `abtab`](#installing-abtab), you must make sure that you have the mimimum required version of each of these installed. For detailed instructions on how to do that, see [Installing external software dependencies](#installing-external-software-dependencies).
 
 > [!NOTE]
-> **Note** Project-specific Python packages (such as `music21`) are not installed system-wide, but in a virtual environment; this is covered in [Installing `abtab`](#installing-abtab). 
+> Project-specific Python packages (such as `music21`) are not installed system-wide, but in a virtual environment; this is covered in [Installing `abtab`](#installing-abtab). 
 
 # Installing `abtab`
 1. Create, on a path of choice on your computer, a directory called `abtab/`. The path up to and including this directory is referred to as `<root_path>`, and the directory itself is where you will be working from.
@@ -47,7 +47,7 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to 
    If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
    > [!NOTE]
-   > **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for Windows users**).
+   > **For Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note**).
 
 4. Run the installation script, `install`, from `<root_path>`.
     ```
