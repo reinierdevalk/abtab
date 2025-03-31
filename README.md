@@ -15,7 +15,8 @@ Native command-line package managers for Windows, such as [Chocolatey](https://c
 ## External software dependencies
 The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to be installed on your system. Before proceeding to [Installing `abtab`](#installing-abtab), you must make sure that you have the mimimum required version of each of these installed. For detailed instructions on how to do that, see [Installing external software dependencies](#installing-external-software-dependencies).
 
-**Note** Project-specific Python packages (such as `music21`) are not installed system-wide, but in a virtual environment; this is covered in [Installing `abtab`](#installing-abtab). 
+> [!NOTE]
+> **Note** Project-specific Python packages (such as `music21`) are not installed system-wide, but in a virtual environment; this is covered in [Installing `abtab`](#installing-abtab). 
 
 # Installing `abtab`
 1. Create, on a path of choice on your computer, a directory called `abtab/`. The path up to and including this directory is referred to as `<root_path>`, and the directory itself is where you will be working from.
@@ -45,7 +46,8 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to 
 
    If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
-   **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for Windows users**).
+   > [!NOTE]
+   > **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for Windows users**).
 
 4. Run the installation script, `install`, from `<root_path>`.
     ```
@@ -145,7 +147,8 @@ Check if the path has been added to the system `PATH`.
 
     $ echo $PATH
 
-**Note for Windows users** On Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
+> [!NOTE]
+> **Note for Windows users** On Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
 
 ## Replace CRLF line endings
 If `source`ing a file or running a Bash script returns one or more errors similar to `-bash: $'\r': command not found`, the file or script in question contains Windows-style CRLF line endings (`\r\n`) that must be replaced by Unix-style LF line endings (`\n`). To achieve this, run
@@ -199,6 +202,7 @@ You should see output similar to
 If the output shows a version that is too old, or an error like `bash: command not found`, indicating that Bash is not installed, proceed to Step 2.
 
 ### 2. Installing and updating
+> [!NOTE]
 > **Note** Keep track of the installation path during installation, as you may need to add it to the system `PATH`.
 
 #### macOS
