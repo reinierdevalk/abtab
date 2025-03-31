@@ -188,7 +188,7 @@ Alternatively, if both a source and a destination file are provided when `conver
 # Installing external software dependencies
 ## Bash
 ### 1. Verifying installation
-To verify whether Bash is installed and meets the minimum required version, run
+The current version of `abtab` requires Bash 4.2 or higher. To verify whether Bash is installed and meets the minimum required version, run
 
     $ bash --version
 
@@ -212,7 +212,7 @@ To install or update Bash, run
 To install or update Bash, run the Cygwin `setup` tool.
 
 ### 3. Confirming installation
-Once Bash is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system $PATH -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)
+Once Bash is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system $PATH -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
  
 <!-- OLD VERSION BASH
 ## Bash
