@@ -118,7 +118,7 @@ If the above command does not resolve the issues, you can manually set execute p
 Note that you may need to run this command after each `git pull` or `git clone` if the execute permissions are not preserved.
 
 ## Adding an installation path to the system `PATH`
-To check whether an installation path is on the system `PATH`, run
+To ensure that a software application is available in the CLI, its installation path must be on the system `PATH`. To check whether an installation path is on the system `PATH`, run
 
     $ echo $PATH
 
@@ -187,6 +187,35 @@ Alternatively, if both a source and a destination file are provided when `conver
 
 # Installing external software dependencies
 ## Bash
+# 1. Verifying installation
+To verify whether Bash is installed and meets the minimum required version, run
+
+    $ bash --version
+
+You should see output similar to
+
+    GNU bash, version x.y.z ...
+
+If the output shows a version that is too old, or an error like `bash: command not found` (indicating that Bash is not installed), 
+proceed to Step 2.
+
+# 2. Installing and updating
+> [!NOTE]
+> Keep track of the installation path during installation, as you may need to add it to the system $PATH.
+
+## macOS
+To install or update Bash, run
+
+    $ brew install bash
+
+## Windows
+To install or update Bash, run the Cygwin `setup` tool.
+
+## Confirming installation
+Once Bash is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system $PATH -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)
+
+<!-- OLD VERSION 
+## Bash
 ### 1. Verifying installation
 The current version of `abtab` requires Bash 4.2 or higher. To verify whether Bash is installed and meets the minimum required version, run
 
@@ -224,6 +253,7 @@ To ensure that Bash is available in the CLI, confirm that the installation path 
 If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
 **Verify that Bash is now installed correctly by repeating Step 1 above.**
+-->
 
 ## GNU `getopt`
 ### 1. Verifying installation
