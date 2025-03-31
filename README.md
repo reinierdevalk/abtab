@@ -187,7 +187,7 @@ Alternatively, if both a source and a destination file are provided when `conver
 
 # Installing external software dependencies
 ## Bash
-# 1. Verifying installation
+### 1. Verifying installation
 To verify whether Bash is installed and meets the minimum required version, run
 
     $ bash --version
@@ -199,22 +199,22 @@ You should see output similar to
 If the output shows a version that is too old, or an error like `bash: command not found` (indicating that Bash is not installed), 
 proceed to Step 2.
 
-# 2. Installing and updating
+### 2. Installing and updating
 > [!NOTE]
 > Keep track of the installation path during installation, as you may need to add it to the system $PATH.
 
-## macOS
+#### macOS
 To install or update Bash, run
 
     $ brew install bash
 
-## Windows
+#### Windows
 To install or update Bash, run the Cygwin `setup` tool.
 
-# 3. Confirming installation
+### 3. Confirming installation
 Once Bash is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system $PATH -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)
-
-<!-- OLD VERSION 
+ 
+<!-- OLD VERSION BASH
 ## Bash
 ### 1. Verifying installation
 The current version of `abtab` requires Bash 4.2 or higher. To verify whether Bash is installed and meets the minimum required version, run
@@ -255,6 +255,11 @@ If it is not, you must add it -- see [Adding an installation path to the system 
 **Verify that Bash is now installed correctly by repeating Step 1 above.**
 -->
 
+## GNU `getopt`
+### 1. Verifying installation
+
+
+<!-- OLD VERSION GNU `getopt`
 ## GNU `getopt`
 ### 1. Verifying installation
 The current version of `abtab` requires GNU `getopt` 2.40.2 or higher. To verify whether GNU `getopt` is installed and meets the minimum required version, run (macOS)
@@ -311,6 +316,7 @@ To ensure that GNU `getopt` is available in the CLI, confirm that the installati
 If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
 **Verify that GNU `getopt` is now installed correctly by repeating Step 1 above.**
+-->
 
 ## Python
 ### 1. Verifying installation
