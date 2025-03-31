@@ -148,7 +148,7 @@ Check if the path has been added to the system `PATH`.
     $ echo $PATH
 
 > [!NOTE]
-> **Note for Windows users** On Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
+> **For Windows users** On Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
 
 ## Replace CRLF line endings
 If `source`ing a file or running a Bash script returns one or more errors similar to `-bash: $'\r': command not found`, the file or script in question contains Windows-style CRLF line endings (`\r\n`) that must be replaced by Unix-style LF line endings (`\n`). To achieve this, run
@@ -203,7 +203,7 @@ If the output shows a version that is too old, or an error like `bash: command n
 
 ### 2. Installing and updating
 > [!NOTE]
-> **Note** Keep track of the installation path during installation, as you may need to add it to the system `PATH`.
+> Keep track of the installation path during installation, as you may need to add it to the system `PATH`.
 
 #### macOS
 To install or update Bash, run
@@ -260,7 +260,7 @@ If it is not, you must add it -- see [Adding an installation path to the system 
 ## GNU `getopt`
 ### 1. Verifying installation
 > [!NOTE]
-> **Note for macOS users** macOS comes with its own default version of `getopt`, BSD `getopt`, which will be called when using the `getopt` command. To call GNU `getopt`, you must prepend the full path to the GNU `getopt` installation directory with the `bin/` directory added to it. You can find the full path to the installation directory (`<gnu_getopt_path>`) by running 
+> **For macOS users** macOS comes with its own default version of `getopt`, BSD `getopt`, which will be called when using the `getopt` command. To call GNU `getopt`, you must prepend the full path to the GNU `getopt` installation directory with the `bin/` directory added to it. You can find the full path to the installation directory (`<gnu_getopt_path>`) by running 
 >    ```
 >    $ brew --prefix gnu-getopt
 >    ```
