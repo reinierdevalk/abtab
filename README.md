@@ -196,8 +196,7 @@ You should see output similar to
 
     GNU bash, version x.y.z ...
 
-If the output shows a version that is too old, or an error like `bash: command not found` (indicating that Bash is not installed), 
-proceed to Step 2.
+If the output shows a version that is too old, or an error like `bash: command not found` (indicating that Bash is not installed), proceed to Step 2.
 
 ### 2. Installing and updating
 > [!NOTE]
@@ -257,9 +256,21 @@ If it is not, you must add it -- see [Adding an installation path to the system 
 
 ## GNU `getopt`
 ### 1. Verifying installation
+The current version of `abtab` requires GNU `getopt` 2.40.2 or higher. To verify whether GNU `getopt` is installed and meets the minimum required version, run
 
 
-<!-- OLD VERSION GNU `getopt`
+
+    $ getopt --version ()
+
+You should see output similar to
+
+    getopt from util-linux x.y.z
+
+If the output shows a version that is too old, or an error like `getopt: command not found` (indicating that GNU `getopt` is not installed), proceed to Step 2.
+
+### 2. Installing and updating GNU `getopt`
+
+
 ## GNU `getopt`
 ### 1. Verifying installation
 The current version of `abtab` requires GNU `getopt` 2.40.2 or higher. To verify whether GNU `getopt` is installed and meets the minimum required version, run (macOS)
@@ -316,7 +327,7 @@ To ensure that GNU `getopt` is available in the CLI, confirm that the installati
 If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
 **Verify that GNU `getopt` is now installed correctly by repeating Step 1 above.**
--->
+
 
 ## Python
 ### 1. Verifying installation
