@@ -46,8 +46,8 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
 
    If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
 
-> [!NOTE]
-> **For Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note**).
+   > [!NOTE]
+   > **For Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note**).
 
 4. Run the installation script, `install`, from `<root_path>`.
     ```
