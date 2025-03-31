@@ -199,8 +199,7 @@ You should see output similar to
 If the output shows a version that is too old, or an error like `bash: command not found` (indicating that Bash is not installed), proceed to Step 2.
 
 ### 2. Installing and updating
-> [!NOTE]
-> Keep track of the installation path during installation, as you may need to add it to the system $PATH.
+> **Note** Keep track of the installation path during installation, as you may need to add it to the system `PATH`.
 
 #### macOS
 To install or update Bash, run
