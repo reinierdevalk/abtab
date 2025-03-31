@@ -255,9 +255,9 @@ If it is not, you must add it -- see [Adding an installation path to the system 
 
 ## GNU `getopt`
 ### 1. Verifying installation
-> **Note for macOS users** macOS comes with its own default version of `getopt`, BSD `getopt`, which will be called when using the `getopt` command. To call GNU `getopt`, you must instead use `<GNU_getopt_path>/bin/getopt`. To find `GNU_getopt_path>`, run 
-
-    $ brew --prefix gnu-getopt
+> **Note for macOS users** macOS comes with its own default version of `getopt`, BSD `getopt`, which will be called when using the `getopt` command. To call GNU `getopt`, you must instead use `<GNU_getopt_path>/bin/getopt`. To find `<GNU_getopt_path>`, run 
+>
+>    $ brew --prefix gnu-getopt
 
 The current version of `abtab` requires GNU `getopt` 2.40.2 or higher. To verify whether GNU `getopt` is installed and meets the minimum required version, run (macOS)
 
