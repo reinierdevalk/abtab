@@ -211,7 +211,7 @@ To install or update Bash, run
 ## Windows
 To install or update Bash, run the Cygwin `setup` tool.
 
-## Confirming installation
+# 3. Confirming installation
 Once Bash is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system $PATH -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)
 
 <!-- OLD VERSION 
