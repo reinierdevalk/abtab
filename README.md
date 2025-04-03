@@ -207,7 +207,7 @@ You should see output similar to
 If the output shows a version that is too old, or an error like `bash: command not found`, indicating that Bash is not installed, proceed to Step 2.
 
 ### 2. Installing and updating
-:warning: **Note** Keep track of the installation path during installation, as you may need to add it to the system `PATH`.
+:warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
 
 #### macOS
 To install or update Bash, run
@@ -218,7 +218,7 @@ To install or update Bash, run
 To install or update Bash, run the Cygwin `setup` tool.
 
 ### 3. Confirming installation
-Once Bash is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (see [Creating a symlink](#creating-a-symlink)).
+Once Bash is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option -- see [Creating a symlink](#creating-a-symlink)).
 
 ## GNU `getopt`
 ### 1. Verifying installation
@@ -241,8 +241,7 @@ You should see output similar to
 If the output shows a version that is too old, or an error like `Error: No available formula with the name "gnu-getopt"` (macOS) or `bash: getopt: command not found` (Windows), indicating that GNU `getopt` is not installed, proceed to Step 2.
 
 ### 2. Installing and updating
-:warning: **Note**
-Keep track of the installation path during installation, as you may need to add it to the system `PATH`.
+:warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
 
 #### macOS
 To install or update GNU `getopt`, run
@@ -253,7 +252,7 @@ To install or update GNU `getopt`, run
 To install or update GNU `getopt`, run the Cygwin `setup` tool.
 
 ### 3. Confirming installation
-Once GNU `getopt` is installed, repeat Step 1. On Windows, if the output does not show the version you just installed, you must add the installation path to the system `PATH` (see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (see [Creating a symlink](#creating-a-symlink)). On macOS, it is recommended not to do this: if GNU `getopt` is made the default `getopt` by adding it to the system `PATH`, scripts that rely on BSD `getopt` may not work anymore on your machine. `abtab` has a built-in mechanism that selects the `getopt` version based on the operating system that it detects, and that ensures that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt`.
+Once GNU `getopt` is installed, repeat Step 1. **On Windows**, if the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option -- see [Creating a symlink](#creating-a-symlink)). **On macOS**, it is recommended not to do this: if GNU `getopt` is made the default `getopt` by adding it to the system `PATH`, scripts that rely on BSD `getopt` may not work anymore on your machine. `abtab` has a built-in mechanism that selects the `getopt` version based on the operating system that it detects, and that ensures that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt`.
 
 :warning: **Note for macOS users**
 In the unlikely case where `brew --prefix gnu-getopt` returns a path that is neither `/opt/homebrew/opt/gnu-getopt` nor `/usr/local/opt/gnu-getopt` (the typical installation paths), you must note it down -- you will need it again during the installation of `abtab`. 
@@ -275,6 +274,8 @@ You should see output similar to
 Alternatively, you can just use `python` (and not `python3`) in your commands.
 
 ### 2. Installing and updating
+:warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
+
 #### macOS
 To install or update Python, run
 
@@ -288,7 +289,7 @@ To install or update Python, download and install [Python](https://www.python.or
 **Note** Installing and updating Python can be done using a command-line package manager, but to avoid compatibility issues and ensure better integration with Windows, manual installation is preferred.
 
 ### 3. Confirming installation
-Once Python is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (see [Creating a symlink](#creating-a-symlink)).
+Once Python is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option -- see [Creating a symlink](#creating-a-symlink)).
 
 ## Java
 ### 1. Verifying installation
@@ -305,58 +306,22 @@ or (Windows)
     java version "x.y.z" ...
 
 ### 2. Installing and updating
+:warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
+
 #### macOS
 To install or update Java, run
 
     $ brew install openjdk
-    $ brew link --force openjdk
-
-In case the `brew link` command returns a message that it was not successful, you can ignore it -- this case is dealt with below.
 
 To install or update to a specific version rather than the latest, add `@x.y.z` -- e.g., `openjdk@11.0.1`.
 
 #### Windows
-To install or update Java, run the Cygwin `setup` tool.
+To install or update Java, download and install [Java](https://www.oracle.com/java/technologies/downloads/) manually.
 
-**Note** Installing and updating Java can be done using a command-line package manager, but it generally not a bad idea to download and install [Java](https://www.oracle.com/java/technologies/downloads/) manually.
+**Note** Installing and updating Java can be done using a command-line package manager, but to avoid compatibility issues and ensure better integration with Windows, manual installation is preferred.
 
-### 3. Locating the installation path
-#### macOS, using Homebrew
-Homebrew installs Java in `/usr/local/opt/`. To confirm the installation path, run
-
-    $ brew --prefix openjdk
-
-Homebrew does not automatically add a symlink to the Java executable in `/usr/local/bin/`; that is why the additional `brew link` command (see above) is needed. `/usr/local/bin/` is the installation path to be added to the system `PATH`.
-
-**Note** In case the `brew link` command returns a message that it was not successful, no symlink has been created -- in which case `/usr/local/opt/` is the installation path to be added to the system `PATH`.  
-
-#### macOS, other cases
-If Java is installed through another package manager or manually, its installation path can vary. Common Java installation paths are `/Library/Java/JavaVirtualMachines/` or `/usr/local/opt/`. To locate the installation path, run
-
-    $ which java
-
-If this does not work, or the executable is not symlinked, you can check the typical installation paths as mentioned above manually, or you can use the `find` or `locate` commands.
-
-#### Windows, using Cygwin
-Cygwin installs Java in its own installation directory, `C:/cygwin64/bin/` or `C:/cygwin/bin/`. To confirm the installation path, run
-
-    $ which java
-
-#### Windows, other cases
-If Java is installed through another package manager or manually, its installation path can vary. A common Java installation path is `C:/Program Files/Java/jdk-<version>/bin/`. To locate the installation path, run
-
-    $ which java
-
-If this does not work, or the executable is not symlinked, you can check the typical installation path as mentioned above manually, or you can use the `find` or `locate` commands.
-
-### 4. Adding the installation path to the system `PATH`
-To ensure that Java is available in the CLI, confirm that the installation path is on the system `PATH` by running 
-
-    $ echo $PATH
-
-If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
-
-**Verify that Java is now installed correctly by repeating Step 1 above.**
+### 3. Confirming installation
+Once Java is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option -- see [Creating a symlink](#creating-a-symlink)).
 
 # Installing project-specific Python packages in the virtual environment
 ## `music21`
@@ -379,7 +344,8 @@ To install or update `music21`, run
 
     $ pip3 install --upgrade music21
 
-**Verify that `music21` is now installed correctly by repeating Step 1 above.**
+### 3. Confirming installation
+Once `music21` is installed, repeat Step 1.
 
 <!-- OLD VERSION BASH
 ## Bash
