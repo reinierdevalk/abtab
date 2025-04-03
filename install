@@ -101,7 +101,7 @@ else
     sed -i "" "s|$rp_placeholder|$root_path|g" "$abtab"
     sed -i "" "s|$lp_placeholder|$lib_path|g" "$abtab"
     # Replace Windows shebang
-    win_shebang=$(sed -n '1p' "$0") # "#!/usr/bin/env bash"
+    win_shebang=$(sed -n '1p' "$0") # first line of this script, i.e., "#!/usr/bin/env bash"
 #    win_shebang="#!/usr/bin/bash"
     mac_shebang="#!""$(which bash)"
 #    mac_shebang="!/usr/local/bin/bash"

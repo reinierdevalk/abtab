@@ -721,7 +721,6 @@ else
 		GETOPT_CMD="$GETOPT_PATH_""bin/getopt"
 	fi
 fi
-#ARGS=$($GETOPT_CMD -o hvl: -l help,verbose,logfile: -- "$@")
 
 # 3. Check first argument provided, which must be -h/--help or a valid tool
 check_first_arg "$@"
