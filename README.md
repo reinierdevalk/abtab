@@ -46,9 +46,9 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
     $ echo $PATH
     ```
 
-   If it is not, you must add it -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH).
+   If it is not, you must add it (see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)).
 
-   :warning: **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see also [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for Windows users**).
+   :warning: **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for Windows users**).
 
 4. Run the installation script, `install`, from `<root_path>`.
     ```
@@ -90,7 +90,7 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
 
    You can see that the virtual environment is activated when your CLI terminal prompt has changed to something similar to `(venv)`. 
 
-   Once the virtual environment is activated, you must install all project-specific Python packages in it -- see [Installing project-specific Python packages in the virtual environment](#installing-project-specific-Python-packages-in-the-virtual-environment).
+   Once the virtual environment is activated, you must install all project-specific Python packages in it (see [Installing project-specific Python packages in the virtual environment](#installing-project-specific-Python-packages-in-the-virtual-environment)).
 
    To deactivate the virtual environment, run
     ```
@@ -164,7 +164,7 @@ To install or update Bash, run
 To install or update Bash, run the Cygwin `setup` tool.
 
 ### 3. Confirming installation
-Once Bash is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option -- see [Creating a symlink](#creating-a-symlink)).
+Once Bash is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred; see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option; see [Creating a symlink](#creating-a-symlink)).
 
 ## GNU `getopt`
 ### 1. Verifying installation
@@ -198,7 +198,7 @@ To install or update GNU `getopt`, run
 To install or update GNU `getopt`, run the Cygwin `setup` tool.
 
 ### 3. Confirming installation
-Once GNU `getopt` is installed, repeat Step 1. **On Windows**, if the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option -- see [Creating a symlink](#creating-a-symlink)). **On macOS**, it is recommended not to do this: if GNU `getopt` is made the default `getopt` by adding it to the system `PATH`, scripts that rely on BSD `getopt` may not work anymore on your machine. `abtab` has a built-in mechanism that selects the `getopt` version based on the operating system that it detects, and that ensures that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt`.
+Once GNU `getopt` is installed, repeat Step 1. **On Windows**, if the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred; see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option; see [Creating a symlink](#creating-a-symlink)). **On macOS**, it is recommended not to do this: if GNU `getopt` is made the default `getopt` by adding it to the system `PATH`, scripts that rely on BSD `getopt` may not work anymore on your machine. `abtab` has a built-in mechanism that selects the `getopt` version based on the operating system that it detects, and that ensures that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt`.
 
 :warning: **Note for macOS users**
 In the unlikely case where `brew --prefix gnu-getopt` returns a path that is neither `/opt/homebrew/opt/gnu-getopt` nor `/usr/local/opt/gnu-getopt` (the typical installation paths), you must note it down -- you will need it again during the installation of `abtab`. 
@@ -235,7 +235,7 @@ To install or update Python, download and install [Python](https://www.python.or
 **Note** Installing and updating Python can be done using a command-line package manager, but to avoid compatibility issues and ensure better integration with Windows, manual installation is preferred.
 
 ### 3. Confirming installation
-Once Python is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option -- see [Creating a symlink](#creating-a-symlink)).
+Once Python is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred; see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option; see [Creating a symlink](#creating-a-symlink)).
 
 ## Java
 ### 1. Verifying installation
@@ -267,7 +267,7 @@ To install or update Java, download and install [Java](https://www.oracle.com/ja
 **Note** Installing and updating Java can be done using a command-line package manager, but to avoid compatibility issues and ensure better integration with Windows, manual installation is preferred.
 
 ### 3. Confirming installation
-Once Java is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred -- see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option -- see [Creating a symlink](#creating-a-symlink)).
+Once Java is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred; see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option; see [Creating a symlink](#creating-a-symlink)).
 
 # Installing project-specific Python packages in the virtual environment
 ## `music21`
@@ -329,7 +329,7 @@ Finally, save `.bash_profile` and `source` it to apply the changes. Alternativel
 
     $ source ~/.bash_profile
 
-If the `source` command results in one or more errors similar to `-bash: $'\r': command not found`, `.bash_profile` contains Windows-style line endings. You must replace these before retrying -- see [Replace CRLF line endings](#replace-CRLFline-endings).
+If the `source` command results in one or more errors similar to `-bash: $'\r': command not found`, `.bash_profile` contains Windows-style line endings. You must replace these before retrying (see [Replace CRLF line endings](#replace-CRLFline-endings)).
 
 Check if the path has been added to the system `PATH`.
 
