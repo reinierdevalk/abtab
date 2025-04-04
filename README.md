@@ -172,6 +172,8 @@ Once Bash is installed, repeat Step 1. If the output does not show the version y
 
     $ brew --prefix gnu-getopt
 
+If the output shows an error like `Error: No available formula with the name "gnu-getopt"`, indicating that GNU `getopt` is not installed, proceed to Step 2.
+
 The current version of `abtab` requires GNU `getopt` 2.40.2 or higher. To verify whether GNU `getopt` is installed and meets the minimum required version, run (macOS)
 
     $ <gnu_getopt_path>/bin/getopt --version
@@ -184,7 +186,7 @@ You should see output similar to
 
     getopt from util-linux x.y.z
 
-If the output shows a version that is too old, or an error like `Error: No available formula with the name "gnu-getopt"` (macOS) or `bash: getopt: command not found` (Windows), indicating that GNU `getopt` is not installed, proceed to Step 2.
+If the output shows a version that is too old, or an error like `bash: getopt: command not found`, indicating that GNU `getopt` is not installed (Windows), proceed to Step 2.
 
 ### 2. Installing and updating
 :warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
@@ -212,6 +214,8 @@ The current version of `abtab` requires Python 3.12.0 or higher. To verify wheth
 You should see output similar to
 
     Python 3.x.y
+
+If the output shows a version that is too old, or an error like `bash: python3: command not found`, indicating that Python is not installed, proceed to Step 2.
 
 **Note for Windows users** If the command `python3 --version` returns a `command not found error`, try running `python --version` instead. If you see the expected output (`Python3.x.y`), Python3 has been installed, but no symlink to it has been created. To create the symlink, run
 
@@ -251,6 +255,8 @@ or (Windows)
 
     java version "x.y.z" ...
 
+If the output shows a version that is too old, or an error like `bash: java: command not found`, indicating that Java is not installed, proceed to Step 2.
+
 ### 2. Installing and updating
 :warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
 
@@ -284,6 +290,8 @@ The current version of `abtab` requires `music21` 9.1.0 or higher. To verify whe
 You should see output similar to
 
     9.1.0
+
+If the output shows a version that is too old, or an error like `ModuleNotFoundError: No module named 'music21'`, indicating that `music21` is not installed, proceed to Step 2.
 
 ### 2. Installing and updating
 To install or update `music21`, run
