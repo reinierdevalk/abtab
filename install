@@ -268,21 +268,17 @@ for repo in $repos; do
     if [[ ! -d "$repo" ]]; then
         echo "    ... cloning $repo_url ..."
         git clone "$repo_url"
-        # Remove unnecessary items
-        directory="./$repo"
+        echo "    ... removing superfluous items ..."
         # Iterate over all contents of the directory, including hidden files and folders
+        directory="./$repo"
         for item in "$directory"/.* "$directory"/*; do
-            # Skip '.' and '..' (current and parent directories)
+            # Skip '.' and '..' (current and parent folder)
             if [[ "$item" == "$directory/." || "$item" == "$directory/.." ]]; then
                 continue
             fi
 
-            # Get basename and check against list
             item_name=$(basename "$item")
-            echo $item_name
-            echo $item
             if [[ " ${to_remove[@]} " =~ " ${item_name} " ]]; then
-                echo "Removing $item_name"
                 rm -rf "$item"
             fi
         done
@@ -291,25 +287,25 @@ for repo in $repos; do
     fi
 done
 
-## 7. Install abtab
-#echo "... installing abtab ..."
-## Move executable to exe_path
-#cp "$abtab" "$exe_path" && rm "$abtab" # NB use cp ... && rm ...; mv gives permissions error
-## Move code contents of pwd into lib_path
-#skip=("models" "templates" "data")
-## If lib_path and exe_path are on root_path (i.e., if lib/abtab/ and bin/ are in pwd), do not 
-## move them into lib_path
-#if [[ "$lib_path" == "$root_path"* ]]; then
-#    skip+=("lib")
-#fi
-#if [[ "$exe_path" == "$root_path"* ]]; then
-#    skip+=("bin")
-#fi
-#for item in *; do
-#    # Move only files/folders that are not in skip
-#    if [[ ! " ${skip[@]} " =~ " ${item} " ]]; then # the spaces around skip/item avoid partial match
-#        cp -r "$item" "$lib_path" && rm -rf "$item" # NB use cp && rm; mv gives permissions error
-#    fi
-#done
+# 7. Install abtab
+echo "... installing abtab ..."
+# Move executable to exe_path
+cp "$abtab" "$exe_path" && rm "$abtab" # NB use cp ... && rm ...; mv gives permissions error
+# Move code contents of pwd into lib_path
+skip=("models" "templates" "data")
+# If lib_path and exe_path are on root_path (i.e., if lib/abtab/ and bin/ are in pwd), do not 
+# move them into lib_path
+if [[ "$lib_path" == "$root_path"* ]]; then
+    skip+=("lib")
+fi
+if [[ "$exe_path" == "$root_path"* ]]; then
+    skip+=("bin")
+fi
+for item in *; do
+    # Move only files/folders that are not in skip
+    if [[ ! " ${skip[@]} " =~ " ${item} " ]]; then # the spaces around skip/item avoid partial match
+        cp -r "$item" "$lib_path" && rm -rf "$item" # NB use cp && rm; mv gives permissions error
+    fi
+done
 
 echo "... installation complete!"
