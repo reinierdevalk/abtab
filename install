@@ -280,6 +280,7 @@ for repo in $repos; do
             # Get basename and check against list
             item_name=$(basename "$item")
             echo $item_name
+            echo $item
             if [[ " ${to_remove[@]} " =~ " ${item_name} " ]]; then
                 echo "Removing $item_name"
 #                rm -rf "$item"
