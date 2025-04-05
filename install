@@ -259,40 +259,56 @@ while IFS= read -r line || [[ -n $line ]]; do
         repos+="${trimmed_line%%/*}"
     fi
 done < "$repositories"
-## a. Add repos that go on the class path (listed in repos)
-## Extract parts before first slash | exclude items starting with a dot | sort | get unique values 
-#repos=$(cut -d '/' -f 1 "$repos" | grep -v '^\.' | sort | uniq)
-## b. Add repos that do not go on the class path (listed in config)
-#repos="${repos} ${add_repos}" # add_repos is from config
+to_remove=(
+           "src" "test" ".git" ".settings" # folders 
+           ".classpath" ".project" ".gitignore" # files
+      )
 for repo in $repos; do
     repo_url="https://github.com/reinierdevalk/$repo.git"
     if [[ ! -d "$repo" ]]; then
         echo "    ... cloning $repo_url ..."
         git clone "$repo_url"
+        # Remove unnecessary items
+        directory="./$repo"
+        # Iterate over all contents of the directory, including hidden files and folders
+        for item in "$directory"/.* "$directory"/*; do
+            # Skip '.' and '..' (current and parent directories)
+            if [[ "$item" == "$directory/." || "$item" == "$directory/.." ]]; then
+                continue
+            fi
+
+            # Get basename and check against list
+            item_name=$(basename "$item")
+            echo $item_name
+            if [[ " ${to_remove[@]} " =~ " ${item_name} " ]]; then
+                echo "Removing $item_name"
+#                rm -rf "$item"
+            fi
+        done
     else
         echo "    ... cloning $repo_url -- repository already exists ..."
     fi
 done
 
-# 7. Install abtab
-echo "... installing abtab ..."
-# Move executable to exe_path
-cp "$abtab" "$exe_path" && rm "$abtab" # NB use cp ... && rm ...; mv gives permissions error
-# Move code contents of pwd into lib_path
-skip=("models" "templates" "data")
-# If lib_path and exe_path are on root_path (i.e., if lib/abtab/ and bin/ are in pwd), do not 
-# move them into lib_path
-if [[ "$lib_path" == "$root_path"* ]]; then
-    skip+=("lib")
-fi
-if [[ "$exe_path" == "$root_path"* ]]; then
-    skip+=("bin")
-fi
-for item in *; do
-    # Move only files/folders that are not in skip
-    if [[ ! " ${skip[@]} " =~ " ${item} " ]]; then # the spaces around skip/item avoid partial match
-        cp -r "$item" "$lib_path" && rm -rf "$item" # NB use cp && rm; mv gives permissions error
-    fi
-done
+## 7. Install abtab
+#echo "... installing abtab ..."
+## Move executable to exe_path
+#cp "$abtab" "$exe_path" && rm "$abtab" # NB use cp ... && rm ...; mv gives permissions error
+## Move code contents of pwd into lib_path
+#skip=("models" "templates" "data")
+## If lib_path and exe_path are on root_path (i.e., if lib/abtab/ and bin/ are in pwd), do not 
+## move them into lib_path
+#if [[ "$lib_path" == "$root_path"* ]]; then
+#    skip+=("lib")
+#fi
+#if [[ "$exe_path" == "$root_path"* ]]; then
+#    skip+=("bin")
+#fi
+#for item in *; do
+#    # Move only files/folders that are not in skip
+#    if [[ ! " ${skip[@]} " =~ " ${item} " ]]; then # the spaces around skip/item avoid partial match
+#        cp -r "$item" "$lib_path" && rm -rf "$item" # NB use cp && rm; mv gives permissions error
+#    fi
+#done
 
 echo "... installation complete!"
