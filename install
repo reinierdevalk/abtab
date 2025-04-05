@@ -283,7 +283,7 @@ for repo in $repos; do
             echo $item
             if [[ " ${to_remove[@]} " =~ " ${item_name} " ]]; then
                 echo "Removing $item_name"
-#                rm -rf "$item"
+                rm -rf "$item"
             fi
         done
     else
