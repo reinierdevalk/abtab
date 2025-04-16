@@ -27,6 +27,8 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
     $ git clone https://github.com/reinierdevalk/abtab.git .
     ```
 
+   If you do not have `git` installed, you can simply download the repository manually from `https://github.com/reinierdevalk/abtab/` by clicking the drop-down arrow on the green 'Code' button, and then clicking 'Download ZIP'.
+
 3. Open `config.cfg` and adapt the paths. Always use Unix-style forward slashes (`/`) as separators.
    - Replace the default value of the `ROOT_PATH` variable with `<root_path>`; **make sure it ends with a `/`**. 
    - Replace the default value of the `LIB_PATH` variable with `<lib_path>`; **make sure it ends with a `/`**. `<lib_path>` is the location where the installation script places the code. Recommended locations are
