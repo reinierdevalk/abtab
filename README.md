@@ -236,7 +236,7 @@ To install or update to a specific version rather than the latest, add `@x.y.z` 
 #### Windows
 To install or update Python, download and install [Python](https://www.python.org/downloads/) manually.
 
-**Note** Installing and updating Python can be done using a command-line package manager, but to avoid compatibility issues and ensure better integration with Windows, manual installation is preferred.
+:warning: **Note** Installing and updating Python can be done using a command-line package manager, but to avoid compatibility issues and ensure better integration with Windows, manual installation is preferred.
 
 ### 3. Confirming installation
 Once Python is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred; see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option; see [Creating a symlink](#creating-a-symlink)).
@@ -270,7 +270,7 @@ To install or update to a specific version rather than the latest, add `@x.y.z` 
 #### Windows
 To install or update Java, download and install [Java](https://www.oracle.com/java/technologies/downloads/) manually.
 
-**Note** Installing and updating Java can be done using a command-line package manager, but to avoid compatibility issues and ensure better integration with Windows, manual installation is preferred.
+:warning: **Note** Installing and updating Java can be done using a command-line package manager, but to avoid compatibility issues and ensure better integration with Windows, manual installation is preferred.
 
 ### 3. Confirming installation
 Once Java is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred; see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option; see [Creating a symlink](#creating-a-symlink)).
