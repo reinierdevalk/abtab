@@ -85,9 +85,14 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
  
    This creates a fourth directory, called `venv`, in `<root_dir>`. 
 
-   To activate the virtual environment, run
+   To activate the virtual environment, run (macOS)
     ```
     $ source <root_path>/venv/bin/activate
+    ```
+
+   or (Windows)
+    ```
+    $ source <root_path>/venv/Scripts/activate
     ```
 
    You can see that the virtual environment is activated when your CLI terminal prompt has changed to something similar to `(venv)`. 
@@ -278,9 +283,13 @@ Once Java is installed, repeat Step 1. If the output does not show the version y
 # Installing project-specific Python packages in the virtual environment
 ## `music21`
 ### 0. Activating the virtual environment
-To activate the virtual environment, run
+To activate the virtual environment, run (macOS)
 
     $ source <root_path>/venv/bin/activate
+
+or (Windows)
+
+    $ source <root_path>/venv/Scripts/activate
 
 ### 1. Verifying installation
 The current version of `abtab` requires `music21` 9.1.0 or higher. To verify whether `music21` is installed and meets the minimum required version, run
