@@ -40,7 +40,7 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
     
    If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installation script.
 
-   :warning: **Note for macOS users** If your GNU `getopt` installation path deviates from its typical installation paths (see [3. Confirming installation](#3-confirming-installation-1), **Note for macOS users**), replace the default value of the `GETOPT_PATH` variable with the path that you noted down; **make sure it ends with a `/`**.  
+   >:warning: **Note for macOS users** If your GNU `getopt` installation path deviates from its typical installation paths (see [3. Confirming installation](#3-confirming-installation-1), **Note for macOS users**), replace the default value of the `GETOPT_PATH` variable with the path that you noted down; **make sure it ends with a `/`**.  
 
    To ensure that `abtab` is available in the CLI, confirm that `<exe_path>` is on the system `PATH` by running 
 
@@ -50,7 +50,7 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
 
    If it is not, you must add it (see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)).
 
-   :warning: **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for Windows users**).
+   >:warning: **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for Windows users**).
 
 4. Run the installation script, `install`, from `<root_path>`.
     ```
@@ -155,7 +155,7 @@ You should see output similar to
 If the output shows a version that is too old, or an error like `bash: command not found`, indicating that Bash is not installed, proceed to Steps 2 and 3.
 
 ### 2. Installing and updating
-:warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
+>:warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
 
 #### macOS
 To install or update Bash, run
@@ -170,7 +170,7 @@ Once Bash is installed, repeat Step 1. If the output does not show the version y
 
 ## GNU `getopt`
 ### 1. Verifying installation
-:warning: **Note for macOS users** macOS comes with its own default version of `getopt`, BSD `getopt`, which will be called when using the `getopt` command. To call GNU `getopt`, you must prepend the full path to the `bin/` directory in the GNU `getopt` installation directory. You can find the full path to the installation directory (`<gnu_getopt_path>`) by running 
+>:warning: **Note for macOS users** macOS comes with its own default version of `getopt`, BSD `getopt`, which will be called when using the `getopt` command. To call GNU `getopt`, you must prepend the full path to the `bin/` directory in the GNU `getopt` installation directory. You can find the full path to the installation directory (`<gnu_getopt_path>`) by running 
 
     $ brew --prefix gnu-getopt
 
@@ -191,7 +191,7 @@ You should see output similar to
 If the output shows a version that is too old, or an error like `bash: getopt: command not found`, indicating that GNU `getopt` is not installed (Windows), proceed to Steps 2 and 3.
 
 ### 2. Installing and updating
-:warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
+>:warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
 
 #### macOS
 To install or update GNU `getopt`, run
@@ -204,7 +204,7 @@ To install or update GNU `getopt`, run the Cygwin `setup` tool.
 ### 3. Confirming installation
 Once GNU `getopt` is installed, repeat Step 1. **On Windows**, if the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred; see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option; see [Creating a symlink](#creating-a-symlink)). **On macOS**, it is recommended not to do this: if GNU `getopt` is made the default `getopt` by adding it to the system `PATH`, scripts that rely on BSD `getopt` may not work anymore on your machine. `abtab` has a built-in mechanism that selects the `getopt` version based on the operating system that it detects, and that ensures that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt`.
 
-:warning: **Note for macOS users**
+>:warning: **Note for macOS users**
 In the unlikely case where `brew --prefix gnu-getopt` returns a path that is neither `/opt/homebrew/opt/gnu-getopt` nor `/usr/local/opt/gnu-getopt` (the typical installation paths), you must note it down -- you will need it again during the installation of `abtab`. 
 
 ## Python
@@ -219,12 +219,12 @@ You should see output similar to
 
 If the output shows a version that is too old, or an error like `bash: python3: command not found`, indicating that Python is not installed, proceed to Steps 2 and 3. If you are a Windows user, first read the note below.
 
-:warning: **Note for Windows users** If the command `python3 --version` returns a `command not found error`, try running `python --version` instead. If you see the expected output (`Python3.x.y`), Python3 has been installed, but no symlink to it has been created. You can either just use `python` (and not `python3`) in your commands, or create a symlink. To create the symlink, run
+>:warning: **Note for Windows users** If the command `python3 --version` returns a `command not found error`, try running `python --version` instead. If you see the expected output (`Python3.x.y`), Python3 has been installed, but no symlink to it has been created. You can either just use `python` (and not `python3`) in your commands, or create a symlink. To create the symlink, run
 
     $ ln -s $(which python) /usr/bin/python3
 
 ### 2. Installing and updating
-:warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
+>:warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
 
 #### macOS
 To install or update Python, run
@@ -236,7 +236,7 @@ To install or update to a specific version rather than the latest, add `@x.y.z` 
 #### Windows
 To install or update Python, download and install [Python](https://www.python.org/downloads/) manually.
 
-:warning: **Note** Installing and updating Python can be done using a command-line package manager, but to avoid compatibility issues and ensure better integration with Windows, manual installation is preferred.
+>:warning: **Note** Installing and updating Python can be done using a command-line package manager, but to avoid compatibility issues and ensure better integration with Windows, manual installation is preferred.
 
 ### 3. Confirming installation
 Once Python is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred; see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option; see [Creating a symlink](#creating-a-symlink)).
@@ -258,7 +258,7 @@ or (Windows)
 If the output shows a version that is too old, or an error like `bash: java: command not found`, indicating that Java is not installed, proceed to Step 2.
 
 ### 2. Installing and updating
-:warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
+>:warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
 
 #### macOS
 To install or update Java, run
@@ -270,7 +270,7 @@ To install or update to a specific version rather than the latest, add `@x.y.z` 
 #### Windows
 To install or update Java, download and install [Java](https://www.oracle.com/java/technologies/downloads/) manually.
 
-:warning: **Note** Installing and updating Java can be done using a command-line package manager, but to avoid compatibility issues and ensure better integration with Windows, manual installation is preferred.
+>:warning: **Note** Installing and updating Java can be done using a command-line package manager, but to avoid compatibility issues and ensure better integration with Windows, manual installation is preferred.
 
 ### 3. Confirming installation
 Once Java is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred; see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option; see [Creating a symlink](#creating-a-symlink)).
@@ -343,7 +343,7 @@ Check if the path has been added to the system `PATH`.
 
     $ echo $PATH
 
-:warning: **Note for Windows users** On Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
+>:warning: **Note for Windows users** On Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
 
 ## Creating a symlink
 As an alternative to adding an installation path to the system `PATH`, to ensure that a software application is available system-wide in the CLI, you can create a symbolic link (symlink) to its executable. To do so, identify the installation path of the executable (`<installation_path>`), as well as a path that is already on the system $PATH (`<PATH_path>`), and run
