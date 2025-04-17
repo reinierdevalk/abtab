@@ -152,7 +152,7 @@ You should see output similar to
 
     GNU bash, version x.y.z ...
 
-If the output shows a version that is too old, or an error like `bash: command not found`, indicating that Bash is not installed, proceed to Step 2.
+If the output shows a version that is too old, or an error like `bash: command not found`, indicating that Bash is not installed, proceed to Steps 2 and 3.
 
 ### 2. Installing and updating
 :warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
@@ -188,7 +188,7 @@ You should see output similar to
 
     getopt from util-linux x.y.z
 
-If the output shows a version that is too old, or an error like `bash: getopt: command not found`, indicating that GNU `getopt` is not installed (Windows), proceed to Step 2.
+If the output shows a version that is too old, or an error like `bash: getopt: command not found`, indicating that GNU `getopt` is not installed (Windows), proceed to Steps 2 and 3.
 
 ### 2. Installing and updating
 :warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
@@ -217,9 +217,9 @@ You should see output similar to
 
     Python 3.x.y
 
-If the output shows a version that is too old, or an error like `bash: python3: command not found`, indicating that Python is not installed, proceed to Step 2.
+If the output shows a version that is too old, or an error like `bash: python3: command not found`, indicating that Python is not installed, proceed to Steps 2 and 3.
 
-**Note for Windows users** If the command `python3 --version` returns a `command not found error`, try running `python --version` instead. If you see the expected output (`Python3.x.y`), Python3 has been installed, but no symlink to it has been created. To create the symlink, run
+:warning: **Note for Windows users** If the command `python3 --version` returns a `command not found error`, try running `python --version` instead. If you see the expected output (`Python3.x.y`), Python3 has been installed, but no symlink to it has been created. To create the symlink, run
 
     $ ln -s $(which python) /usr/bin/python3
 
