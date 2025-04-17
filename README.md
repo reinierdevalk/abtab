@@ -174,7 +174,7 @@ Once Bash is installed, repeat Step 1. If the output does not show the version y
 
     $ brew --prefix gnu-getopt
 
->If the output shows an error like `Error: No available formula with the name "gnu-getopt"`, indicating that GNU `getopt` is not installed, proceed to Step 2.
+>If the output shows an error like `Error: No available formula with the name "gnu-getopt"`, indicating that GNU `getopt` is not installed, proceed to Steps 2 and 3.
 
 The current version of `abtab` requires GNU `getopt` 2.40.2 or higher. To verify whether GNU `getopt` is installed and meets the minimum required version, run (macOS)
 
@@ -255,7 +255,7 @@ or (Windows)
 
     java version "x.y.z" ...
 
-If the output shows a version that is too old, or an error like `bash: java: command not found`, indicating that Java is not installed, proceed to Step 2.
+If the output shows a version that is too old, or an error like `bash: java: command not found`, indicating that Java is not installed, proceed to Steps 2 and 3.
 
 ### 2. Installing and updating
 >:warning: **Note** Keep track of the installation path during installation, as you may need it in Step 3.
@@ -291,7 +291,7 @@ You should see output similar to
 
     9.1.0
 
-If the output shows a version that is too old, or an error like `ModuleNotFoundError: No module named 'music21'`, indicating that `music21` is not installed, proceed to Step 2.
+If the output shows a version that is too old, or an error like `ModuleNotFoundError: No module named 'music21'`, indicating that `music21` is not installed, proceed to Steps 2 and 3.
 
 ### 2. Installing and updating
 To install or update `music21`, run
