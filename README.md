@@ -174,7 +174,7 @@ Once Bash is installed, repeat Step 1. If the output does not show the version y
 
     $ brew --prefix gnu-getopt
 
-If the output shows an error like `Error: No available formula with the name "gnu-getopt"`, indicating that GNU `getopt` is not installed, proceed to Step 2.
+>If the output shows an error like `Error: No available formula with the name "gnu-getopt"`, indicating that GNU `getopt` is not installed, proceed to Step 2.
 
 The current version of `abtab` requires GNU `getopt` 2.40.2 or higher. To verify whether GNU `getopt` is installed and meets the minimum required version, run (macOS)
 
