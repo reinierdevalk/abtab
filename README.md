@@ -40,7 +40,7 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
     
    If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installation script.
 
-   >:warning: **Note for macOS users** If your GNU `getopt` installation path deviates from its typical installation paths (see [3. Confirming installation](#3-confirming-installation-1), **Note for macOS users**), replace the default value of the `GETOPT_PATH` variable with the path that you noted down; **make sure it ends with a `/`**.  
+   >:warning: **Note for macOS users** If your GNU `getopt` installation path deviates from its typical installation paths (see [3. Confirming installation](#3-confirming-installation-1), Note for macOS users), replace the default value of the `GETOPT_PATH` variable with the path that you noted down; **make sure it ends with a `/`**.  
 
    To ensure that `abtab` is available in the CLI, confirm that `<exe_path>` is on the system `PATH` by running 
 
@@ -50,7 +50,7 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
 
    If it is not, you must add it (see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)).
 
-   >:warning: **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), **Note for Windows users**).
+   >:warning: **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), Note for Windows users).
 
 4. Run the installation script, `install`, from `<root_path>`.
     ```
@@ -280,7 +280,7 @@ To install or update Java, download and install [Java](https://www.oracle.com/ja
 ### 3. Confirming installation
 Once Java is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred; see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option; see [Creating a symlink](#creating-a-symlink)).
 
-[[BACK TO TOP]](#installing-abtab)
+[[BACK TO DEPENDENCIES]](#dependencies)
 
 # Installing project-specific Python packages in the virtual environment
 ## `music21`
