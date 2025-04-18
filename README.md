@@ -222,7 +222,7 @@ You should see output similar to
 
     Python 3.x.y
 
-If the output shows a version that is too old, or an error like `bash: python3: command not found`, indicating that Python is not installed, proceed to Steps 2 and 3. If you are a Windows user, first read the note below.
+If the output shows a version that is too old, or an error like `bash: python3: command not found`, indicating that Python is not installed, proceed to Steps 2 and 3. On Windows, first read the note below.
 
 >:warning: **Note for Windows users** If the command `python3 --version` returns a `command not found error`, try running `python --version` instead. If you see the expected output (`Python3.x.y`), Python3 has been installed, but no symlink to it has been created. You can either just use `python` (and not `python3`) in your commands, or create a symlink. To create the symlink, run
 
@@ -280,6 +280,8 @@ To install or update Java, download and install [Java](https://www.oracle.com/ja
 ### 3. Confirming installation
 Once Java is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred; see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option; see [Creating a symlink](#creating-a-symlink)).
 
+[BACK TO TOP](#installing-abtab)
+
 # Installing project-specific Python packages in the virtual environment
 ## `music21`
 ### 0. Activating the virtual environment
@@ -310,6 +312,8 @@ To install or update `music21`, run
 ### 3. Confirming installation
 Once `music21` is installed, repeat Step 1.
 
+[BACK TO TOP](#installing-abtab)
+
 # Troubleshooting
 ## Execute permission issues
 If you encounter execute permission issues when running a script, ensure that Git tracks file permissions by running
@@ -323,6 +327,8 @@ If the above command does not resolve the issues, you can manually set execute p
     $ chmod +x install classpath.sh abtab
 
 Note that you may need to run this command after each `git pull` or `git clone` if the execute permissions are not preserved.
+
+[BACK TO TOP](#installing-abtab)
 
 ## Adding an installation path to the system `PATH`
 To ensure that a software application is available system-wide in the CLI, you can add its installation path to the system `PATH`. To check whether an installation path is on the system `PATH`, run
@@ -354,16 +360,21 @@ Check if the path has been added to the system `PATH`.
 
 >:warning: **Note for Windows users** On Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
 
+[BACK TO TOP](#installing-abtab)
+
 ## Creating a symlink
 As an alternative to adding an installation path to the system `PATH`, to ensure that a software application is available system-wide in the CLI, you can create a symbolic link (symlink) to its executable. To do so, identify the installation path of the executable (`<installation_path>`), as well as a path that is already on the system $PATH (`<PATH_path>`), and run
 
     $ ln -s <installation_path>/<executable> <PATH_path>/<executable>
+
+[BACK TO TOP](#installing-abtab)
 
 ## Replacing CRLF line endings
 If `source`ing a file or running a Bash script returns one or more errors similar to `-bash: $'\r': command not found`, the file or script in question contains Windows-style CRLF line endings (`\r\n`) that must be replaced by Unix-style LF line endings (`\n`). To achieve this, run
 
     $ sed -i 's/\r//' <file>
 
+[BACK TO TOP](#installing-abtab)
 
 <!-- OLD VERSION BASH
 ## Bash
