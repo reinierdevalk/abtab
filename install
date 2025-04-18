@@ -285,6 +285,8 @@ for repo in $repos; do
     else
         echo "    ... cloning $repo_url -- repository already exists ..."
     fi
+    # Remove main .git file
+    rm -rf ".git"
 done
 
 # 7. Install abtab
