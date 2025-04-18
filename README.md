@@ -280,7 +280,7 @@ To install or update Java, download and install [Java](https://www.oracle.com/ja
 ### 3. Confirming installation
 Once Java is installed, repeat Step 1. If the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred; see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option; see [Creating a symlink](#creating-a-symlink)).
 
-[[BACK TO DEPENDENCIES]](#dependencies)
+[[Back to Dependencies]](#dependencies)
 
 # Installing project-specific Python packages in the virtual environment
 ## `music21`
@@ -312,7 +312,7 @@ To install or update `music21`, run
 ### 3. Confirming installation
 Once `music21` is installed, repeat Step 1.
 
-[BACK TO TOP](#installing-abtab)
+[[Back to Installing `abtab`]](#installing-abtab)
 
 # Troubleshooting
 ## Execute permission issues
