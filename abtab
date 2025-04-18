@@ -675,13 +675,21 @@ create_cli_args() {
 	echo $args
 }
 
-encode_arg() {
-	# Returns "__EMPTY__" if the given argument is an empty string. 
-	if [[ -z "$1" ]]; then
-    	echo "__EMPTY__"
-	else
-    	echo "$1"
-	fi
+encode_args() {
+	# Replaces all empty strings in the given list with __EMPTY__; returns a string
+	# consisting of all list elements joined with a '|'
+
+	local result=()
+	for arg in "$@"; do
+		if [[ -z "$arg" ]]; then
+			result+=( "__EMPTY__" )
+		else
+			result+=( "$arg" )
+		fi
+	done
+
+	local IFS='|'
+	echo "${result[*]}"
 }
 
 
@@ -772,12 +780,9 @@ elif [ "$TOOL" == "converter" ]; then
 	dest_file="$2"
 	store="true"
 	java_args=("$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java" "$store" "$source_file" "$dest_file")
-	encoded_java_args=()
-	for arg in "${java_args[@]}"; do
-  		encoded_java_args+=( "$(encode_arg "$arg")" )
-	done
+	encoded_java_args_str=$(encode_args "${java_args[@]}")
+	IFS='|' read -r -a encoded_java_args <<< "$encoded_java_args_str" # split str into array
 	java -cp "$class_path" tbp.editor.Editor "${encoded_java_args[@]}"
-#	java -cp "$class_path" tbp.editor.Editor "$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java" "$store" "$source_file" "$dest_file"
 elif [ "$TOOL" == "tabmapper" ]; then
 	ignore_opts=("")
 	user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)

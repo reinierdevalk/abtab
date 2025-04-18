@@ -260,7 +260,7 @@ while IFS= read -r line || [[ -n $line ]]; do
     fi
 done < "$repositories"
 to_remove=(
-           "test" ".git" ".settings" # folders 
+           "src" "test" ".git" ".settings" # folders 
            ".classpath" ".project" ".gitignore" # files
       )
 for repo in $repos; do
