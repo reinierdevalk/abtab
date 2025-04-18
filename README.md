@@ -360,7 +360,7 @@ Check if the path has been added to the system `PATH`.
 
 >:warning: **Note for Windows users** On Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
 
-[[Back to Installing `abtab`, Step 3]](#installing-abtab)
+[[Back to Installing `abtab`, Step 3]](#installing-abtab)<br>
 [[Back to Installing external software dependencies]](#installing-external-software-dependencies)
 
 ## Creating a symlink
