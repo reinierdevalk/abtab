@@ -675,7 +675,19 @@ create_cli_args() {
 	echo $args
 }
 
-encode_args() {
+run_java() {
+	local class="$1"; shift
+	local java_args=("$@")
+	local encoded_java_args_str
+	local encoded_args=()
+
+	encoded_java_args_str=$(_encode_args "${java_args[@]}")
+	IFS='|' read -r -a encoded_java_args <<< "$encoded_java_args_str" # split str into array 
+
+	java -cp "$class_path" "$class" "${encoded_java_args[@]}"
+}
+
+_encode_args() {
 	# Replaces all empty strings in the given list with __EMPTY__; returns a string
 	# consisting of all list elements joined with a '|'
 
@@ -771,7 +783,12 @@ if [ "$TOOL" == "analyser" ]; then
 	ignore_opts=("")
 	user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
 	model_id="N-bwd-thesis-int-4vv"
-	java -cp "$class_path" analysis.Analyser "$DEV" $model_id $user_opts_vals_java
+	java_args=("$DEV" $model_id $user_opts_vals_java) # TODO sequence fixed as in NB above?
+	run_java analysis.Analyser "${java_args[@]}"
+#	encoded_java_args_str=$(encode_args "${java_args[@]}")
+#	IFS='|' read -r -a encoded_java_args <<< "$encoded_java_args_str" # split str into array
+#	java -cp "$class_path" analysis.Analyser "${encoded_java_args[@]}"
+#	java -cp "$class_path" analysis.Analyser "$DEV" $model_id $user_opts_vals_java
 elif [ "$TOOL" == "converter" ]; then
 	ignore_opts=("")
 	user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
@@ -780,13 +797,19 @@ elif [ "$TOOL" == "converter" ]; then
 	dest_file="$2"
 	store="true"
 	java_args=("$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java" "$store" "$source_file" "$dest_file")
-	encoded_java_args_str=$(encode_args "${java_args[@]}")
-	IFS='|' read -r -a encoded_java_args <<< "$encoded_java_args_str" # split str into array
-	java -cp "$class_path" tbp.editor.Editor "${encoded_java_args[@]}"
+	run_java tbp.editor.Editor "${java_args[@]}"
+#	encoded_java_args_str=$(encode_args "${java_args[@]}")
+#	IFS='|' read -r -a encoded_java_args <<< "$encoded_java_args_str" # split str into array
+#	java -cp "$class_path" tbp.editor.Editor "${encoded_java_args[@]}"
 elif [ "$TOOL" == "tabmapper" ]; then
 	ignore_opts=("")
 	user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
-	java -cp "$class_path" tabmapper.TabMapper "$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java"
+	java_args=("$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java")
+	run_java tabmapper.TabMapper "${java_args[@]}"
+#	encoded_java_args_str=$(encode_args "${java_args[@]}")
+#	IFS='|' read -r -a encoded_java_args <<< "$encoded_java_args_str" # split str into array
+#	java -cp "$class_path" tabmapper.TabMapper "${encoded_java_args[@]}"
+#	java -cp "$class_path" tabmapper.TabMapper "$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java"
 elif [ "$TOOL" == "transcriber" ]; then
 	ignore_opts=("-l")
 	is_diplomatic=false
@@ -804,6 +827,11 @@ elif [ "$TOOL" == "transcriber" ]; then
 	# Polyphonic
 	else
 		user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
-		java -cp "$class_path" ui.UI "$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java"
+		java_args=("$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java")
+		run_java ui.UI "${java_args[@]}"
+#		encoded_java_args_str=$(encode_args "${java_args[@]}")
+#		IFS='|' read -r -a encoded_java_args <<< "$encoded_java_args_str" # split str into array
+#		java -cp "$class_path" ui.UI "${encoded_java_args[@]}"
+#		java -cp "$class_path" ui.UI "$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java"
 	fi
 fi
