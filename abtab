@@ -675,7 +675,9 @@ create_cli_args() {
 	echo $args
 }
 
-run_java() {
+call_java() {
+	# Calls the given Java class with the given arguments.
+
 	local class="$1"; shift
 	local java_args=("$@")
 	local encoded_java_args_str
@@ -784,7 +786,7 @@ if [ "$TOOL" == "analyser" ]; then
 	user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
 	model_id="N-bwd-thesis-int-4vv"
 	java_args=("$DEV" $model_id $user_opts_vals_java) # TODO sequence fixed as in NB above?
-	run_java analysis.Analyser "${java_args[@]}"
+	call_java analysis.Analyser "${java_args[@]}"
 #	encoded_java_args_str=$(encode_args "${java_args[@]}")
 #	IFS='|' read -r -a encoded_java_args <<< "$encoded_java_args_str" # split str into array
 #	java -cp "$class_path" analysis.Analyser "${encoded_java_args[@]}"
@@ -797,7 +799,7 @@ elif [ "$TOOL" == "converter" ]; then
 	dest_file="$2"
 	store="true"
 	java_args=("$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java" "$store" "$source_file" "$dest_file")
-	run_java tbp.editor.Editor "${java_args[@]}"
+	call_java tbp.editor.Editor "${java_args[@]}"
 #	encoded_java_args_str=$(encode_args "${java_args[@]}")
 #	IFS='|' read -r -a encoded_java_args <<< "$encoded_java_args_str" # split str into array
 #	java -cp "$class_path" tbp.editor.Editor "${encoded_java_args[@]}"
@@ -805,7 +807,7 @@ elif [ "$TOOL" == "tabmapper" ]; then
 	ignore_opts=("")
 	user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
 	java_args=("$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java")
-	run_java tabmapper.TabMapper "${java_args[@]}"
+	call_java tabmapper.TabMapper "${java_args[@]}"
 #	encoded_java_args_str=$(encode_args "${java_args[@]}")
 #	IFS='|' read -r -a encoded_java_args <<< "$encoded_java_args_str" # split str into array
 #	java -cp "$class_path" tabmapper.TabMapper "${encoded_java_args[@]}"
@@ -828,7 +830,7 @@ elif [ "$TOOL" == "transcriber" ]; then
 	else
 		user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
 		java_args=("$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java")
-		run_java ui.UI "${java_args[@]}"
+		call_java ui.UI "${java_args[@]}"
 #		encoded_java_args_str=$(encode_args "${java_args[@]}")
 #		IFS='|' read -r -a encoded_java_args <<< "$encoded_java_args_str" # split str into array
 #		java -cp "$class_path" ui.UI "${encoded_java_args[@]}"

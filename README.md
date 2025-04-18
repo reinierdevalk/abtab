@@ -181,7 +181,7 @@ Once Bash is installed, repeat Step 1. If the output does not show the version y
 
 >If the output shows an error like `Error: No available formula with the name "gnu-getopt"`, indicating that GNU `getopt` is not installed, proceed to Steps 2 and 3.
 
-The current version of `abtab` requires GNU `getopt` 2.40.2 or higher. To verify whether GNU `getopt` is installed and meets the minimum required version, run (macOS)
+The current version of `abtab` requires GNU `getopt` 2.35.2 or higher. To verify whether GNU `getopt` is installed and meets the minimum required version, run (macOS)
 
     $ <gnu_getopt_path>/bin/getopt --version
 
@@ -222,7 +222,7 @@ You should see output similar to
 
     Python 3.x.y
 
-If the output shows a version that is too old, or an error like `bash: python3: command not found`, indicating that Python is not installed, proceed to Steps 2 and 3. On Windows, first read the note below.
+If the output shows a version that is too old, or an error like `bash: python3: command not found`, indicating that Python is not installed, proceed to Steps 2 and 3. If you are on Windows, first read the note below.
 
 >:warning: **Note for Windows users** If the command `python3 --version` returns a `command not found error`, try running `python --version` instead. If you see the expected output (`Python3.x.y`), Python3 has been installed, but no symlink to it has been created. You can either just use `python` (and not `python3`) in your commands, or create a symlink. To create the symlink, run
 
