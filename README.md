@@ -317,21 +317,6 @@ Once `music21` is installed, repeat Step 1.
 [[Back to Installing `abtab`]](#installing-abtab)
 
 # Appendix III: Troubleshooting
-## Execute permission issues
-If you encounter execute permission issues when running a script, ensure that Git tracks file permissions by running
-
-    $ git config --global core.fileMode true
-
-This is a one-time configuration that makes Git preserve file permissions across `clone`s and `pull`s. If you have already set this up, you do not need to do it again.
-
-If the above command does not resolve the issues, you can manually set execute permissions for all scripts (`install`, `classpath.sh`, and `abtab`) by running
-
-    $ chmod +x install classpath.sh abtab
-
-Note that you may need to run this command after each `git pull` or `git clone` if the execute permissions are not preserved.
-
-[[Back to Installing `abtab`]](#installing-abtab)
-
 ## Adding an installation path to the system `PATH`
 To ensure that a software application is available system-wide in the CLI, you can add its installation path to the system `PATH`. To check whether an installation path is on the system `PATH`, run
 
@@ -365,6 +350,11 @@ Check if the path has been added to the system `PATH`.
 [[Back to Installing `abtab`]](#installing-abtab)<br>
 [[Back to Appendix I: Installing external software dependencies]](#appendix-i-installing-external-software-dependencies)
 
+## Replacing CRLF line endings
+If `source`ing a file or running a Bash script returns one or more errors similar to `-bash: $'\r': command not found`, the file or script in question contains Windows-style CRLF line endings (`\r\n`) that must be replaced by Unix-style LF line endings (`\n`). To achieve this, run
+
+    $ sed -i 's/\r//' <file>
+
 ## Creating a symlink
 As an alternative to adding an installation path to the system `PATH`, to ensure that a software application is available system-wide in the CLI, you can create a symbolic link (symlink) to its executable. To do so, identify the installation path of the executable (`<installation_path>`), as well as a path that is already on the system $PATH (`<PATH_path>`), and run
 
@@ -372,10 +362,20 @@ As an alternative to adding an installation path to the system `PATH`, to ensure
 
 [[Back to Appendix I: Installing external software dependencies]](#appendix-i-installing-external-software-dependencies)
 
-## Replacing CRLF line endings
-If `source`ing a file or running a Bash script returns one or more errors similar to `-bash: $'\r': command not found`, the file or script in question contains Windows-style CRLF line endings (`\r\n`) that must be replaced by Unix-style LF line endings (`\n`). To achieve this, run
+## Execute permission issues
+If you encounter execute permission issues when running a script, ensure that Git tracks file permissions by running
 
-    $ sed -i 's/\r//' <file>
+    $ git config --global core.fileMode true
+
+This is a one-time configuration that makes Git preserve file permissions across `clone`s and `pull`s. If you have already set this up, you do not need to do it again.
+
+If the above command does not resolve the issues, you can manually set execute permissions for all scripts (`install`, `classpath.sh`, and `abtab`) by running
+
+    $ chmod +x install classpath.sh abtab
+
+Note that you may need to run this command after each `git pull` or `git clone` if the execute permissions are not preserved.
+
+[[Back to Installing `abtab`]](#installing-abtab)
 
 <!-- OLD VERSION BASH
 ## Bash
