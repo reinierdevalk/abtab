@@ -13,7 +13,7 @@ Common native command-line package managers for macOS are [Homebrew](https://bre
 Native command-line package managers for Windows, such as [Chocolatey](https://chocolatey.org/) or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/), cannot be run from a Unix-emulating CLI -- so on Windows, you are restricted to the built-in package manager of your Unix-emulating CLI. Git Bash and MSYS2, for example, provide access to `pacman`, and Cygwin uses its own [`setup`](https://www.cygwin.com/install.html) tool, a package manager that is run independently of the CLI.
 
 ## External software dependencies
-The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to be installed on your system. Before proceeding to [Installing `abtab`](#installing-abtab), you must make sure that you have the mimimum required version of each of these installed. For detailed instructions on how to do that, see [Appendix I: Installing external software dependencies](#appendix-i-installing-external-software-dependencies).
+The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to be installed on your system. Before proceeding to [Installing `abtab`](#installing-abtab), complete [Appendix I: Installing external software dependencies](#appendix-i-installing-external-software-dependencies) to make sure that you have the mimimum required version of each of these installed. Once completed, return here.  
 
 >:warning: **Note**
 Project-specific Python packages (such as `music21`) are not installed system-wide, but in a virtual environment; this is covered in [Installing `abtab`](#installing-abtab). 
@@ -40,7 +40,7 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
     
    If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installation script.
 
-   >:warning: **Note for macOS users** If your GNU `getopt` installation path deviates from its typical installation paths (see [3. Confirming installation](#3-confirming-installation-1), Note for macOS users), replace the default value of the `GETOPT_PATH` variable with the path that you noted down; **make sure it ends with a `/`**.  
+   >:warning: **Note for macOS users** If your GNU `getopt` installation path deviates from its typical installation paths (see [GNU `getopt`](#gnu-getopt), 3. Confirming installation, Note for macOS users), replace the default value of the `GETOPT_PATH` variable with the path that you noted down; **make sure it ends with a `/`**.  
 
    To ensure that `abtab` is available in the CLI, confirm that `<exe_path>` is on the system `PATH` by running 
 
@@ -99,7 +99,7 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
 
    You can see that the virtual environment is activated when your CLI terminal prompt has changed to something similar to `(venv)`. 
 
-   Once the virtual environment is activated, you must install all project-specific Python packages in it (see [Appendix II: Installing project-specific Python packages in the virtual environment](#appendix-ii-installing-project-specific-Python-packages-in-the-virtual-environment)).
+   Once the virtual environment is activated, complete [Appendix II: Installing project-specific Python packages in the virtual environment](#appendix-ii-installing-project-specific-Python-packages-in-the-virtual-environment) to install all project-specific Python packages in it. Once completed, return here.
 
    To deactivate the virtual environment, run
     ```
@@ -347,20 +347,10 @@ Check if the path has been added to the system `PATH`.
 
 >:warning: **Note for Windows users** On Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
 
-[[Back to Installing `abtab`]](#installing-abtab)<br>
-[[Back to Appendix I: Installing external software dependencies]](#appendix-i-installing-external-software-dependencies)
-
-## Replacing CRLF line endings
-If `source`ing a file or running a Bash script returns one or more errors similar to `-bash: $'\r': command not found`, the file or script in question contains Windows-style CRLF line endings (`\r\n`) that must be replaced by Unix-style LF line endings (`\n`). To achieve this, run
-
-    $ sed -i 's/\r//' <file>
-
 ## Creating a symlink
 As an alternative to adding an installation path to the system `PATH`, to ensure that a software application is available system-wide in the CLI, you can create a symbolic link (symlink) to its executable. To do so, identify the installation path of the executable (`<installation_path>`), as well as a path that is already on the system $PATH (`<PATH_path>`), and run
 
     $ ln -s <installation_path>/<executable> <PATH_path>/<executable>
-
-[[Back to Appendix I: Installing external software dependencies]](#appendix-i-installing-external-software-dependencies)
 
 ## Execute permission issues
 If you encounter execute permission issues when running a script, ensure that Git tracks file permissions by running
@@ -375,7 +365,10 @@ If the above command does not resolve the issues, you can manually set execute p
 
 Note that you may need to run this command after each `git pull` or `git clone` if the execute permissions are not preserved.
 
-[[Back to Installing `abtab`]](#installing-abtab)
+## Replacing CRLF line endings
+If `source`ing a file or running a Bash script returns one or more errors similar to `-bash: $'\r': command not found`, the file or script in question contains Windows-style CRLF line endings (`\r\n`) that must be replaced by Unix-style LF line endings (`\n`). To achieve this, run
+
+    $ sed -i 's/\r//' <file>
 
 <!-- OLD VERSION BASH
 ## Bash
