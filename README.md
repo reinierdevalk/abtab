@@ -13,7 +13,7 @@ Common native command-line package managers for macOS are [Homebrew](https://bre
 Native command-line package managers for Windows, such as [Chocolatey](https://chocolatey.org/) or [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/), cannot be run from a Unix-emulating CLI -- so on Windows, you are restricted to the built-in package manager of your Unix-emulating CLI. Git Bash and MSYS2, for example, provide access to `pacman`, and Cygwin uses its own [`setup`](https://www.cygwin.com/install.html) tool, a package manager that is run independently of the CLI.
 
 ## External software dependencies
-The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to be installed on your system. Before proceeding to [Installing `abtab`](#installing-abtab), complete [Appendix I: Installing external software dependencies](#appendix-i-installing-external-software-dependencies) to make sure that you have the mimimum required version of each of these installed. Once completed, return here.  
+The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to be installed on your system. Before proceeding to [Installing `abtab`](#installing-abtab), complete [Appendix I: Installing external software dependencies](#appendix-i-installing-external-software-dependencies) to make sure that you have the mimimum required version of each of these installed. Once you have completed Appendix I, return here by following the link at the end of it.  
 
 >:warning: **Note**
 Project-specific Python packages (such as `music21`) are not installed system-wide, but in a virtual environment; this is covered in [Installing `abtab`](#installing-abtab). 
@@ -99,7 +99,7 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
 
    You can see that the virtual environment is activated when your CLI terminal prompt has changed to something similar to `(venv)`. 
 
-   Once the virtual environment is activated, complete [Appendix II: Installing project-specific Python packages in the virtual environment](#appendix-ii-installing-project-specific-Python-packages-in-the-virtual-environment) to install all project-specific Python packages in it. Once completed, return here.
+   Once the virtual environment is activated, complete [Appendix II: Installing project-specific Python packages in the virtual environment](#appendix-ii-installing-project-specific-Python-packages-in-the-virtual-environment) to install all project-specific Python packages in it. Once you have completed Appendix II, return here by following the link at the end of it.
 
    To deactivate the virtual environment, run
     ```
