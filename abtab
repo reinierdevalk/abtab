@@ -111,6 +111,7 @@ TABMAPPER_OPTS_VALS=(
 TRANSCRIBER_OPTS_VALS=(
 	# Content
 	"-k|--key|-5 -4 -3 -2 -1 0 1 2 3 4 5 i||i|key|Key; options|If i, calculated from the input file"
+	"-x|--accidentals|y n||n||+ Show all accidentals|"
 	"-m|--mode|0 1|major minor|0||Mode; options|"
 	"-l|--style|p d|polyphonic diplomatic|p||Transcription style; options|"
 	# Layout
@@ -361,6 +362,7 @@ _show_help() {
 		done
 		if [[ "$TOOL" == "transcriber" ]]; then
 			echo "* Applies only if transcription style is polyphonic"
+			echo "+ Applies only if transcription style is diplomatic"
 		fi
     fi
 }
@@ -815,6 +817,7 @@ elif [ "$TOOL" == "tabmapper" ]; then
 elif [ "$TOOL" == "transcriber" ]; then
 	ignore_opts=("-l")
 	is_diplomatic=false
+
 	for i in "${!options_used[@]}"; do
 		if [[ "${options_used[i]}" == "-l" && "${values_used[i]}" == d* ]]; then
 			is_diplomatic=true
