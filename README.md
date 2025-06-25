@@ -319,7 +319,7 @@ To ensure that a software application is available system-wide in the CLI, you c
 
     $ echo $PATH
 
-If the installation path is not on the `PATH`, you can it them by adding it to the `.bash_profile` file. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this by running
+If the installation path is not on the `PATH`, you can add it by adding it to the `.bash_profile` file. `.bash_profile` is usually located in your `HOME` directory (`~/`); you can check this by running
 
     $ cd ~/
     $ ls -a
