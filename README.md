@@ -336,7 +336,7 @@ Finally, save `.bash_profile` and `source` it to apply the changes. Alternativel
 
     $ source ~/.bash_profile
 
-If the `source` command results in one or more errors similar to `-bash: $'\r': command not found`, `.bash_profile` contains Windows-style line endings. You must replace these before retrying (see [Replacing CRLF line endings](#replacing-CRLFline-endings)).
+If the `source` command results in one or more errors similar to `-bash: $'\r': command not found`, `.bash_profile` contains Windows-style line endings. You must replace these before retrying (see [Replacing CRLF line endings](#replacing-CRLF-line-endings)).
 
 Check if the path has been added to the system `PATH`.
 
