@@ -65,7 +65,7 @@ score="-s|--score|s d v|single-staff double-staff vocal|d|score|Score type; opti
 tablature="-t|--tablature|y n||y||Include tablature|"
 type="-y|--type|FLT ILT SLT GLT i||i|type|Tablature type; options|If i, taken from the input file"
 placement="-p|--placement|t b|top bottom|b||Tablature placement; options|"
-file="-f|--file|*.mei *.tab *.tbp *.tc *.xml||n/a|file|Process only the given file; options|"
+file="-f|--file|*.mei *.tab *.tbp *.tc *.txt *.xml||n/a|file|Process only the given file(s); options|If *.txt, taken from files.txt"
 all="-a|--all|t n|tablature non-tablature|t||Process all files in the given format; options|"
 help="-h|--help|||n/a||Display this help message|"
 OPTS_WITHOUT_VAL=("-h" "--help")
@@ -102,6 +102,7 @@ TABMAPPER_OPTS_VALS=(
 	"$placement"
 	# Input
 	"$file"
+
 	"$all"
 	#
 	"$help"
