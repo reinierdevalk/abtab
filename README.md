@@ -293,9 +293,11 @@ or (Windows)
     $ source <root_path>/venv/Scripts/activate
 
 ### 1. Verifying installation
-The current version of `abtab` requires `music21` 9.1.0 or higher. To verify whether `music21` is installed and meets the minimum required version, run
+The current version of `abtab` requires `music21` 9.1.0 or higher. To verify whether `music21` is installed in the virtual environment and meets the minimum required version, run
 
-    $ python3 -c "import music21; print(music21.__version__)"
+    $ python -c "import music21; print(music21.__version__)"
+
+>:warning: **Note** Always use `python` (and not `python3`) in the command above. Inside a virtual environment, `python` always points to the environment's own Python interpreter, which only detects packages installed **inside that environment** (and not global or system packages).
 
 You should see output similar to
 
@@ -306,7 +308,9 @@ If the output shows a version that is too old, or an error like `ModuleNotFoundE
 ### 2. Installing and updating
 To install or update `music21`, run
 
-    $ pip3 install --upgrade music21
+    $ pip install --upgrade music21
+
+>:warning: **Note** Always use `pip` (and not `pip3`) in the command above -- see the warning in Step 1. 
 
 ### 3. Confirming installation
 Once `music21` is installed, repeat Step 1.
