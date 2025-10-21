@@ -310,7 +310,7 @@ To install or update `music21`, run
 
     $ pip install --upgrade music21
 
->:warning: **Note** Always use `pip` (and not `pip3`) in the command above -- see the warning in Step 1. 
+>:warning: **Note** Always use `pip` (and not `pip3`) in the command above -- see the note in Step 1. 
 
 ### 3. Confirming installation
 Once `music21` is installed, repeat Step 1.
