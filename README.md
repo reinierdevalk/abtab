@@ -29,7 +29,7 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
 
    If you do not have `git` installed, you can simply download the repository manually by clicking the drop-down arrow on the green 'Code' button at the top of this page, and then clicking 'Download ZIP'.
 
-3. Open `config.cfg` and adapt the paths. Always use Unix-style forward slashes (`/`) as separators.
+3. Open `config.cfg` and adapt the paths. Always use Unix-style forward slashes (`/`) as separators. On Windows, all paths must **start with a capital drive letter followed by a colon and a forward slash** (e.g., `C:/`). 
    - Replace the default value of the `ROOT_PATH` variable with `<root_path>`; **make sure it ends with a `/`**. 
    - Replace the default value of the `LIB_PATH` variable with `<lib_path>`; **make sure it ends with a `/`**. `<lib_path>` is the location where the installation script places the code. Recommended locations are
      - On Windows: `C:/Users/<Username>/lib/abtab/` . 
@@ -328,7 +328,11 @@ If the installation path is not on the `PATH`, you can add it by adding it to th
     $ cd ~/
     $ ls -a
 
-If the file does not appear in the items listed, you must create it.
+>:warning: **Note for macOS users** If your default shell is `zsh` rather than `bash`, it is the `.zprofile` file, also located in your `HOME` directory, that must be adapted. In this case, replace `.bash_profile` with `.zprofile` in all commands below. You can check which shell you are using by running
+
+    $ echo $SHELL 
+
+If `.bash_profile` does not appear in the items listed under the `HOME` directory, you must create it.
 
     $ touch ~/.bash_profile
 

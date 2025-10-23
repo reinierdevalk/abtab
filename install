@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Script that installs `abtab`. It must be called from the same
-# folder that folds config.cfg, classpath.sh, repositories.txt, 
+# folder that holds config.cfg, classpath.sh, repositories.txt, 
 # abtab, and paths.json.
 #
 # NB: When editing this file with Sublime, set the line endings to Unix: 
