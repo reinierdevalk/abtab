@@ -262,7 +262,10 @@ done < "$repositories"
 to_remove=(
            "src" "test" ".git" ".settings" # folders 
            ".classpath" ".project" ".gitignore" # files
-      )
+          )
+models_to_keep=(
+                "N-fwd-thesis-int-4vv" "N-bwd-thesis-int-4vv" "D-bwd-thesis-int-4vv"
+               )
 for repo in $repos; do
     repo_url="https://github.com/reinierdevalk/$repo.git"
     if [[ ! -d "$repo" ]]; then
@@ -278,15 +281,30 @@ for repo in $repos; do
             fi
 
             item_name=$(basename "$item")
-            if [[ " ${to_remove[@]} " =~ " ${item_name} " ]]; then
-                rm -rf "$item"
+            # Special case: models/ repo TODO
+            if [[ "$repo" == "models" ]]; then
+                keep=false
+                for keep_item in "${models_to_keep[@]}"; do
+                    if [[ "$item_name" == "$keep_item" ]]; then
+                        keep=true
+                        break
+                    fi
+                done
+                if ! $keep; then
+                    rm -rf "$item"
+                fi
+            # Other repos
+            else
+                if [[ " ${to_remove[@]} " =~ " ${item_name} " ]]; then
+                    rm -rf "$item"
+                fi
             fi
         done
     else
         echo "    ... cloning $repo_url -- repository already exists ..."
     fi
-    # Remove main .git file
-    rm -rf ".git"
+    # Remove main .git folder
+    rm -rf "$repo/.git"
 done
 
 # 7. Install abtab

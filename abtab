@@ -124,7 +124,7 @@ TRANSCRIBER_OPTS_VALS=(
 	# Other
 	"-c|--custom|dlaute plaute user||n/a|custom|Use customised, pre-defined set of options; options|\
 Overwrites any provided options already in the customised set"
-	"-o|--model|N-bwd-thesis-int-4vv N-fwd-thesis-int-4vv N-bwd-thesis-int-3vv||N-bwd-thesis-int-4vv|model|\
+	"-o|--model|N-bwd-thesis-int-4vv N-fwd-thesis-int-4vv D-bwd-thesis-int-4vv||N-bwd-thesis-int-4vv|model|\
 * Trained model; options|"
 	"-v|--verbose|y n||n||* Verbose|"
 	# Input
