@@ -258,7 +258,7 @@ The current version of `abtab` requires Java 11.0.1 or higher. To verify whether
 
 You should see output similar to (macOS)
 
-    openjdk version "x.y.z" ...
+    openjdk version "x.y.z" yyyy-mm-dd
 
 or (Windows)
 
