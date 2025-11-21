@@ -254,15 +254,15 @@ Once Python is installed, repeat Step 1. If the output does not show the version
 ### 1. Verifying installation
 The current version of `abtab` requires Java 11.0.1 or higher. To verify whether Java is installed and meets the minimum required version, run
 
-    $ java -version
+    $ java --version
 
 You should see output similar to (macOS)
 
-    openjdk version "x.y.z" yyyy-mm-dd
+    openjdk x.y.z yyyy-mm-dd
 
 or (Windows)
 
-    java version "x.y.z" ...
+    java x.y.z yyyy-mm-dd ...
 
 If the output shows a version that is too old, or an error like `bash: java: command not found`, indicating that Java is not installed, proceed to Steps 2 and 3.
 
