@@ -262,6 +262,8 @@ done < "$repositories"
 to_remove=(
            "src" "test" ".git" ".settings" # folders 
            ".classpath" ".project" ".gitignore" # files
+           "template-params-B.json" "template-params-C.json" "template-params-D.json"
+           "template-params-H.json" "template-params-N.json" # TODO fix nicer
           )
 models_to_keep=(
                 "N-fwd-thesis-int-4vv" "N-bwd-thesis-int-4vv" "D-bwd-thesis-int-4vv"
