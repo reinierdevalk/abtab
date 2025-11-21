@@ -745,12 +745,12 @@ if "$IS_WIN"; then
 	GETOPT_CMD="getopt" # Cygwin and Linux
 else
 	# Ensure that GNU getopt is called (and not the default BSD getopt)
-	usr_path="/usr/local/opt/gnu-getopt/"
 	opt_path="/opt/homebrew/opt/gnu-getopt/"
-	if [ -d $usr_path ]; then
-		GETOPT_CMD="$usr_path""bin/getopt"
-	elif [ -d $opt_path ]; then
+	usr_path="/usr/local/opt/gnu-getopt/"
+	if [ -d $opt_path ]; then
 		GETOPT_CMD="$opt_path""bin/getopt"
+	elif [ -d $usr_path ]; then
+		GETOPT_CMD="$usr_path""bin/getopt"
 	else
 		GETOPT_CMD="$GETOPT_PATH_""bin/getopt"
 	fi
