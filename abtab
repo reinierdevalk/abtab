@@ -38,6 +38,7 @@
 # 0. GLOBAL VARIABLES
 config="config.cfg"
 classpath="classpath.sh"
+version="VERSION"
 pythonpath="transcriber/py/"
 
 # a. Set manually
@@ -68,7 +69,7 @@ placement="-p|--placement|t b|top bottom|b||Tablature placement; options|"
 file="-f|--file|*.mei *.tab *.tbp *.tc *.txt *.xml||n/a|file|Process only the given file(s); options|If *.txt, taken from files.txt"
 all="-a|--all|t n|tablature non-tablature|t||Process all files in the given format; options|"
 help="-h|--help|||n/a||Display this help message|"
-OPTS_WITHOUT_VAL=("-h" "--help")
+OPTS_WITHOUT_VAL=("-h" "--help" "-v" "--version")
 # Opts that per tool always have their default values and
 # are not shown in --help
 OPTS_ALWAYS_DEFAULT=(
@@ -405,12 +406,16 @@ source_filtered() {
 
 check_first_arg() {
 	# Checks the first argument given to the script, which should be
-	# '-h', '--help', or a valid tool.
+	# '-h', '--help', '-v', '--version', or a valid tool.
 
 	# No args provided or -h/--help
 	if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help" ]]; then
 		_show_help "all"
 	    exit 1
+	# -v/--version
+	elif [[ "$1" == "-v" || "$1" == "--version" ]]; then
+	    echo "$TOOLBOX $(cat "${LIB_PATH_}$version")"
+		exit 0
 	# Invalid tool
 	elif ! _array_contains "$1" $(_get_column 0 "${TOOLS_DESC[@]}"); then
 		echo "$TOOLBOX: unknown tool -- $1"
@@ -483,7 +488,7 @@ _make_options_str() {
 	# Creates a string of all options in the given list. By default, all options
 	# are followed by a colon (indicating that they require a value); only those
 	# in OPTS_WITHOUT_VAL are not. Long options (but not the last) are separated 
-	# separated by a comma.
+	# by a comma.
 	#
 	# Example inputs and outputs
 	# -a -b -c -h --> a:b:c:h
