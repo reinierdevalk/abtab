@@ -36,9 +36,9 @@
 
 
 # 0. GLOBAL VARIABLES
-config="config.cfg"
-classpath="classpath.sh"
-version="VERSION"
+configfile="config.cfg"
+classpathfile="classpath.sh"
+versionfile="VERSION"
 pythonpath="transcriber/py/"
 
 # a. Set manually
@@ -53,7 +53,7 @@ TOOLS_DESC=(
 # [1] long opt
 # [2] values
 # [3] long values (or "") 
-# [4] default value (or "")
+# [4] default value (or n/a)
 # [5] opt values catch-all (or "")
 # [6] help text
 # [7] additional help text
@@ -69,12 +69,17 @@ placement="-p|--placement|t b|top bottom|b||Tablature placement; options|"
 file="-f|--file|*.mei *.tab *.tbp *.tc *.txt *.xml||n/a|file|Process only the given file(s); options|If *.txt, taken from files.txt"
 all="-a|--all|t n|tablature non-tablature|t||Process all files in the given format; options|"
 help="-h|--help|||n/a||Display this help message|"
+version="-v|--version|||n/a||Display version information|"
 OPTS_WITHOUT_VAL=("-h" "--help" "-v" "--version")
 # Opts that per tool always have their default values and
 # are not shown in --help
 OPTS_ALWAYS_DEFAULT=(
 	"converter -u -t -y"
 	"tabmapper -u -a"
+)
+TOOLBOX_OPTS_VALS=(
+	"$help"
+	"$version"
 )
 ANALYSER_OPTS_VALS=(
 	"-n|--analysis|VC VR VRO||n/a|analysis|Analysis; options|"
@@ -103,7 +108,6 @@ TABMAPPER_OPTS_VALS=(
 	"$placement"
 	# Input
 	"$file"
-
 	"$all"
 	#
 	"$help"
@@ -237,6 +241,16 @@ _show_help() {
 		echo "Usage:"
     	echo "  $TOOLBOX [tool] [options] <arguments>"
     	echo
+    	echo "Options:"
+    	for row in "${TOOLBOX_OPTS_VALS[@]}"; do # str
+			IFS='|' read -r -a row_array <<< "$row" # array
+			local short_opt="${row_array[0]}"
+			local long_opt="${row_array[1]}"
+			local options="  $short_opt, $long_opt"
+			local help_text="${row_array[6]}"
+			_print_help_cols "$options" "$help_text" "$max_line_len"
+		done
+    	echo 
     	echo "Tools:"
 		for i in "${!TOOLS_DESC[@]}"; do
 			printf "%-30s %-20s\n" "  ${tools[i]}" "${descs[i]}"
@@ -253,7 +267,7 @@ _show_help() {
 				IFS='|' read -r -a row_array <<< "$row" # array
 				local arg="  ${row_array[0]}"
 				local help_text="${row_array[1]}"
-				_print_help_cols "  ${row_array[0]}" "${row_array[1]}" $max_line_len
+				_print_help_cols "$arg" "$help_text" "$max_line_len"
 			done
 			echo
 		else
@@ -303,7 +317,7 @@ _show_help() {
 					fi
 				fi
 
-				# Determine options_text
+				# Determine options_text (NB the "; options" is what help_text ends with)
 				# (a) catch-all and long vals
 				#     "; options long_val1 (short_val1) or long_val2 (short_val2)"
 				#     "; options long_val1 (short_val1), long_val2 (short_val2), ..., or long_valn (short_valn)"
@@ -321,9 +335,8 @@ _show_help() {
 					if [[ (-n "$vals_catch_all" && -n "$long_vals") || (-z "$vals_catch_all" && -n "$long_vals") ]]; then
 						IFS=' ' read -r -a long_vals_arr <<< "$long_vals"
 						if (( num_vals == 2 )); then
-							options_text+=" ${long_vals_arr[0]} (${vals_arr[0]}) or ${long_vals_arr[1]} (${vals_arr[1]})"
+							options_text+="${long_vals_arr[0]} (${vals_arr[0]}) or ${long_vals_arr[1]} (${vals_arr[1]})"
 						else
-							options_text=" "
 							for ((i = 0; i < num_vals; i++)); do								
 								if (( i > 0 )); then
 									if (( i == num_vals - 1 )); then
@@ -337,7 +350,7 @@ _show_help() {
 						fi
 					# (b)
 					elif [[ -n "$vals_catch_all" && -z "$long_vals" ]]; then
-						options_text=" [$(echo "$vals" | sed 's/ /, /g')]"
+						options_text="[$(echo "$vals" | sed 's/ /, /g')]"
 					# (d)
 					elif [[ -z "$vals_catch_all" && -z "$long_vals" ]]; then
 						:
@@ -346,6 +359,10 @@ _show_help() {
 					fi
 				fi
 
+				# Prepend options_text with space
+				if [[ ! "$options_text" == "" ]]; then
+					options_text=" $options_text"
+				fi 
 				# Determine default_text
 				local default_text=""
 				if [[ -n "$default" && "$default" != "n/a" ]]; then
@@ -414,7 +431,7 @@ check_first_arg() {
 	    exit 1
 	# -v/--version
 	elif [[ "$1" == "-v" || "$1" == "--version" ]]; then
-	    echo "$TOOLBOX $(cat "${LIB_PATH_}$version")"
+	    echo "$TOOLBOX $(cat "${LIB_PATH_}$versionfile")"
 		exit 0
 	# Invalid tool
 	elif ! _array_contains "$1" $(_get_column 0 "${TOOLS_DESC[@]}"); then
@@ -721,7 +738,7 @@ _encode_args() {
 # DEV case: paths set every time this script is called (below)
 if "$DEV"; then
 	# Source config
-	source_filtered "$config"
+	source_filtered "$configfile"
 	ROOT_PATH_="$ROOT_PATH" # from config
 	LIB_PATH_="$LIB_PATH" # from config
 # Real-world case: paths added once during installation (in install.sh)
@@ -729,7 +746,7 @@ else
 	ROOT_PATH_="_RP_PLACEHOLDER_"
 	LIB_PATH_="_LP_PLACEHOLDER_"
 	# Source config 
-	source_filtered "$LIB_PATH_""$config"
+	source_filtered "$LIB_PATH_""$configfile"
 	GETOPT_PATH_="$GETOPT_PATH" # from config
 fi
 PYTHON_PATH="${LIB_PATH_}$pythonpath"
@@ -743,7 +760,7 @@ PYTHON_PATH="${LIB_PATH_}$pythonpath"
 #if [[ ! (-n "$WINDIR" || "$os_type" == "CYGWIN"* || "$os_type" == "MINGW"* || "$os_type" == "MSYS"*) ]]; then
 #    is_win=false
 #fi
-class_path=$($LIB_PATH_/$classpath $LIB_PATH_ $IS_WIN)
+class_path=$($LIB_PATH_/$classpathfile $LIB_PATH_ $IS_WIN)
 
 # 2. Set GETOPT_CMD
 if "$IS_WIN"; then
