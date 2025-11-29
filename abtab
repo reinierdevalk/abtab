@@ -2,44 +2,13 @@
 
 # Script that runs abtab.
 
-# BASH SYNTAX
-# - variable expansion
-#   - when referencing a variable var (like "$var"), you ask Bash to replace it with its value
-#   - curly braces help clarify where the variable name starts and ends
-#   - when the variable is an array, curly braces are required to correctly expand all elements
-#     - example: "${my_arr[@]}" 
-#       - expands to all (hence the '@') elements of my_arr, separating them by the  
-#         first character of the Internal Field Separator (IFS, which is a space by default)  
-#       - the double quotes ("...") ensure that each array element is treated as a single word, 
-#         preserving any spaces or special characters within the element
-#   - it is good practice to use double quotes around variables ("$my_var"), unless you
-#     specifically want to allow word splitting or glob expansion 
-# - $@ is a special variable that reflects
-#   - in the script (outside of any function): all args passed to the script via the terminal
-#   - within a function: all args passed to that function
-#     - if a shift command is used inside a function, it modifies the positional parameters ($1, $2, ...),
-#       and as a result, the value of $@ (and $*) also changes
-# - command substitution with $(...) 
-#   - the $(...) syntax captures the output of the command or function. This means that 
-#     the entire output of what is inside the parentheses is treated as a single string
-# - indirect expansion
-#   - indirect expansion allows referencing the value of a variable whose name is stored
-#     in another variable
-#     my_var="Hello, World!"
-#     varname="my_var"
-#     echo "$varname"        # direct reference; output: "my_var"
-#     echo "${!varname}"     # indirect expansion; output: "Hello, World!""
-#
-# - get full path to <file>.<ext> in pwd with "$(pwd)""/<file>.<ext>"
-# - get parent of my_path with $(dirname "$my_path")"/"
-# - print complete list with echo "${my_list[@]}"
-
 
 # 0. GLOBAL VARIABLES
 configfile="config.cfg"
 classpathfile="classpath.sh"
+commonfile="common.sh"
 versionfile="VERSION"
-pythonpath="transcriber/py/"
+pythonpath_transcriber="transcriber/py/"
 
 # a. Set manually
 TOOLS_DESC=(
@@ -147,39 +116,9 @@ provided, an editor, additionally facilitating editing and viewing of the source
 	"<destination>|Destination file (optional; must always be provided together with <source>)"
 )
 
-# b. Set automatically
-IS_WIN=false
-if [[ -n "$WINDIR" || "$os_type" == "CYGWIN"* || "$os_type" == "MINGW"* || "$os_type" == "MSYS"* ]]; then
-    IS_WIN=true
-fi
-
-PYTHON="python3"
-# If Python3 returns a "command not found" error
-if command -v python3 &> /dev/null; then
-	PYTHON="python"
-fi
-
-## Check if a version of Python2 is installed; if so, overrule
-#PYTHON="python"
-#if command -v python2 &>/dev/null; then
-#	PYTHON="python3"
-#fi
-
-## Ensure that on macOS, GNU getopt is called (and not the default BSD getopt)
-#if "$IS_WIN"; then
-#	GETOPT_CMD="getopt" # Cygwin and Linux
-#else
-#	usr_path="/usr/local/opt/gnu-getopt/"
-#	opt_path="/opt/homebrew/opt/gnu-getopt/"
-#	if [ -d $usr_path ]; then
-#		GETOPT_CMD="$usr_path""bin/getopt"
-#	elif [ -d $opt_path ]; then
-#		GETOPT_CMD="$opt_path""bin/getopt"
-#	else
-#		GETOPT_CMD="$GETOPT_PATH_""bin/getopt"
-#	fi
-#fi
-##ARGS=$($GETOPT_CMD -o hvl: -l help,verbose,logfile: -- "$@")
+# b. Set automatically (by sourcing commonfile); done once LIB_PATH_ is known
+IS_WIN=
+PYTHON=
 
 TOOLBOX=$(basename "$0")
 DEV=false
@@ -239,9 +178,9 @@ _show_help() {
 		local tools=($(_get_column 0 "${TOOLS_DESC[@]}"))
 		local descs=($(_get_column 1 "${TOOLS_DESC[@]}"))
 		echo "Usage:"
-    	echo "  $TOOLBOX [tool] [options] <arguments>"
+    	echo "  $TOOLBOX [global-options] [tool] [options] <arguments>"
     	echo
-    	echo "Options:"
+    	echo "Global options:"
     	for row in "${TOOLBOX_OPTS_VALS[@]}"; do # str
 			IFS='|' read -r -a row_array <<< "$row" # array
 			local short_opt="${row_array[0]}"
@@ -256,7 +195,7 @@ _show_help() {
 			printf "%-30s %-20s\n" "  ${tools[i]}" "${descs[i]}"
     	done
     	echo
-    	echo "Use '$TOOLBOX [tool] -h' to see options for each tool"
+    	echo "Use '$TOOLBOX [tool] -h' to see usage and options for each tool"
 	else
 		echo "Usage:"
 		if [[ "$TOOL" == "converter" ]]; then
@@ -749,17 +688,14 @@ else
 	source_filtered "$LIB_PATH_""$configfile"
 	GETOPT_PATH_="$GETOPT_PATH" # from config
 fi
-PYTHON_PATH="${LIB_PATH_}$pythonpath"
-# Create the class path
+# Source commonfile
+source "$LIB_PATH_$commonfile"
+# Create class path
 # NB Instead of creating the class path every time this script is
 # called, it can also be created once, in install.sh. However, the
 # former is more flexible as it enables addition of code to the 
 # class path after installation (and it is very fast anyway (< 0.5s)).
 ## Check OS: Windows or Linux-like
-#is_win=true
-#if [[ ! (-n "$WINDIR" || "$os_type" == "CYGWIN"* || "$os_type" == "MINGW"* || "$os_type" == "MSYS"*) ]]; then
-#    is_win=false
-#fi
 class_path=$($LIB_PATH_/$classpathfile $LIB_PATH_ $IS_WIN)
 
 # 2. Set GETOPT_CMD
@@ -851,7 +787,7 @@ elif [ "$TOOL" == "transcriber" ]; then
 	# Diplomatic
 	if [[ $is_diplomatic == true ]]; then
 		user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" true)
-		$PYTHON $PYTHON_PATH"transcriber.py" $user_opts_vals_java "$DEV" $ROOT_PATH_ $LIB_PATH_ $class_path
+		$PYTHON "$LIB_PATH_$pythonpath_transcriber""transcriber.py" $user_opts_vals_java "$DEV" $ROOT_PATH_ $LIB_PATH_ $class_path
 	# Polyphonic
 	else
 		user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)

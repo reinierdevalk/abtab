@@ -1,24 +1,30 @@
 #!/usr/bin/env bash
 
-# Script that installs `abtab`. It must be called from the same
-# folder that holds config.cfg, classpath.sh, repositories.txt, 
-# abtab, and paths.json.
+# Script that installs abtab. It must be called from the same
+# folder that holds config.cfg, classpath.sh, common.sh, 
+# repositories.txt, abtab, and paths.json.
 #
 # NB: When editing this file with Sublime, set the line endings to Unix: 
 #     View > Line endings > Unix
 
 
 # 0. GLOBAL VARIABLES
-config="config.cfg"
-repositories="repositories.txt"
+configfile="config.cfg"
+repositoriesfile="repositories.txt"
+commonfile="common.sh"
 abtab="abtab"
 ex_tab="rore-anchor_che_col_1-10.tc"
 ex_mid="rore-anchor_che_col_1-10.mid"
+venvpath_win=".venv/Scripts/activate"
+venvpath_unix=".venv/bin/activate"
 
-IS_WIN=false
-if [[ -n "$WINDIR" || "$os_type" == "CYGWIN"* || "$os_type" == "MINGW"* || "$os_type" == "MSYS"* ]]; then
-    IS_WIN=true
-fi
+# a. Set automatically (by sourcing commonfile)
+IS_WIN=
+PYTHON=
+# NB Using scriptpath ensures that no matter from which directory the user 
+#    runs the script, it will always find commonfile relative to the script
+scriptpath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)""/"
+source "$scriptpath$commonfile"
 
 
 # 1. FUNCTIONS
@@ -66,18 +72,18 @@ handle_file() {
 echo "Installation started ..."
 # 1. Handle files
 echo "... handling files ..."
-handle_file "$config" false
-handle_file "$repositories" true
+handle_file "$configfile" false
+handle_file "$repositoriesfile" true
 handle_file "$abtab" true
 
 # 2. Configure and create paths 
-# Source config (make PATHs available locally)
+# Source configfile (make PATHs available locally)
 echo "... configuring paths ... "
-source "$config"
-root_path="$ROOT_PATH"
-lib_path="$LIB_PATH"
-exe_path="$EXE_PATH"
-config_paths=("$root_path" "$lib_path" "$exe_path")
+source "$configfile"
+ROOT_PATH_="$ROOT_PATH"
+LIB_PATH_="$LIB_PATH"
+EXE_PATH_="$EXE_PATH"
+config_paths=("$ROOT_PATH_" "$LIB_PATH_" "$EXE_PATH_")
 for path in "${config_paths[@]}"; do
     if [ ! -d "$path" ]; then
         echo "    ... creating $path ..."
@@ -91,15 +97,15 @@ done
 rp_placeholder="_RP_PLACEHOLDER_"
 lp_placeholder="_LP_PLACEHOLDER_"
 if $IS_WIN; then
-    # Escape forward slashes in root_ and lib_path
-    root_path_esc=$(echo "$root_path" | sed 's/\//\\\//g')
-    lib_path_esc=$(echo "$lib_path" | sed 's/\//\\\//g')
+    # Escape forward slashes in ROOT_PATH_ and LIB_PATH_
+    root_path_esc=$(echo "$ROOT_PATH_" | sed 's/\//\\\//g')
+    lib_path_esc=$(echo "$LIB_PATH_" | sed 's/\//\\\//g')
     sed -i "s/$rp_placeholder/$root_path_esc/g" "$abtab"
     sed -i "s/$lp_placeholder/$lib_path_esc/g" "$abtab"
 else
     # dw
-    sed -i "" "s|$rp_placeholder|$root_path|g" "$abtab"
-    sed -i "" "s|$lp_placeholder|$lib_path|g" "$abtab"
+    sed -i "" "s|$rp_placeholder|$ROOT_PATH_|g" "$abtab"
+    sed -i "" "s|$lp_placeholder|$LIB_PATH_|g" "$abtab"
     # Replace Windows shebang
     win_shebang=$(sed -n '1p' "$0") # first line of this script, i.e., "#!/usr/bin/env bash"
 #    win_shebang="#!/usr/bin/bash"
@@ -113,7 +119,7 @@ else
 #    sed -i "" "s|$lp_placeholder|$lib_path_esc|g" "$abtab"
 fi
 
-## 4. If there is no ~/.bash_profile file, create it and add exe_path (added to
+## 4. If there is no ~/.bash_profile file, create it and add EXE_PATH_ (added to
 ##    $PATH) to the end of it 
 #bp_file="$HOME/.bash_profile" # ~/.bash_profile = /home/Reinier/.bash_profile
 #if [ ! -f "$bp_file" ]; then
@@ -121,9 +127,9 @@ fi
 #	# Create exe_path_nts
 #	if $IS_WIN; then
 #		# Convert Windows-style path (C:/...) into Unix-style path (/cygdrive/c/...)
-#		exe_path_nts=$(cygpath -u "$exe_path") # /cygdrive/c/Users/Reinier/bin/
+#		exe_path_nts=$(cygpath -u "$EXE_PATH_") # /cygdrive/c/Users/Reinier/bin/
 #   else
-#		exe_path_nts=$exe_path
+#		exe_path_nts=$EXE_PATH_
 #	fi
 #	# Remove trailing slash and add path to PATH 
 #	exe_path_nts=$(echo "$exe_path_nts" | sed 's:/*$::')
@@ -134,7 +140,7 @@ fi
 #    source "$bp_file"
 #fi
 
-## 4. (OLD) Add exe_path (as cygpath) to the end of ~/.bash_profile (i.e., add it to $PATH) 
+## 4. (OLD) Add EXE_PATH_ (as cygpath) to the end of ~/.bash_profile (i.e., add it to $PATH) 
 ## Create ~/.bash_profile if it doesn't exist
 ## NB On Windows using Cygwin, it is in C:/cygwin64/home/<Name>/
 #bp_file="$HOME/.bash_profile" # ~/.bash_profile
@@ -144,9 +150,9 @@ fi
 ## Create exe_path_cyg without trailing slash; if it has not been added,
 ## add to ~/.bash_profile and source ~/.bash_profile (apply the changes) 
 ## rdv
-#exe_path_cyg=$(cygpath -u "$exe_path")
+#exe_path_cyg=$(cygpath -u "$EXE_PATH_")
 ## dw
-#exe_path_cyg=$exe_path
+#exe_path_cyg=$EXE_PATH_
 #exe_path_cyg=$(echo "$exe_path_cyg" | sed 's:/*$::') # remove trailing slash
 #to_add="PATH=\$PATH:$exe_path_cyg" # PATH=$PATH:/cygdrive/c/Users/Reinier/bin
 #if ! grep -qxF "$to_add" "$bp_file"; then
@@ -156,60 +162,60 @@ fi
 
 # 4. Handle any existing version of abtab
 echo "... handling existing version of abtab ... "
-# a. Clear abtab/ folder on lib_path
-# Make sure that lib_path is set
-if [ -z "$lib_path" ]; then
-    echo "Error: lib_path is not set." >&2
+# a. Clear abtab/ folder on LIB_PATH_
+# Make sure that LIB_PATH_ is set
+if [ -z "$LIB_PATH_" ]; then
+    echo "Error: LIB_PATH_ is not set." >&2
     exit 1
 fi
-# Make sure lib_path is a valid directory
-if [ ! -d "$lib_path" ]; then
-    echo "Error: lib_path '$lib_path' is not a valid directory." >&2
+# Make sure LIB_PATH_ is a valid directory
+if [ ! -d "$LIB_PATH_" ]; then
+    echo "Error: LIB_PATH_ '$LIB_PATH_' is not a valid directory." >&2
     exit 1
 fi
-# Make sure that lib_path is not a dangerous or root directory
-if [ "$lib_path" = "/" ] || [ "$lib_path" = "/usr" ] || [ "$lib_path" = "/home" ]; then
-    echo "Error: lib_path '$lib_path' is a critical system path." >&2
+# Make sure that LIB_PATH_ is not a critical or root directory
+if [ "$LIB_PATH_" = "/" ] || [ "$LIB_PATH_" = "/usr" ] || [ "$LIB_PATH_" = "/home" ]; then
+    echo "Error: LIB_PATH_ '$LIB_PATH_' is a critical system path." >&2
     exit 1
 fi
-# If lib_path is not empty: clear abtab/ folder
-if [ "$(find "$lib_path" -mindepth 1 -print -quit)" ]; then
-	echo "    ... clearing $lib_path ..."
-	rm -rf "$lib_path"/*
+# If LIB_PATH_ is not empty: clear abtab/ folder
+if [ "$(find "$LIB_PATH_" -mindepth 1 -print -quit)" ]; then
+	echo "    ... clearing $LIB_PATH_ ..."
+	rm -rf "$LIB_PATH_"/*
 else
-    echo "    ... clearing $lib_path -- path already clear ..."
+    echo "    ... clearing $LIB_PATH_ -- path already clear ..."
 fi
-# b. Remove executable from exe_path
-# Make sure that exe_path and abtab are set
-if [ -z "$exe_path" ] || [ -z "$abtab" ]; then
-    echo "Error: exe_path or abtab is not set." >&2
+# b. Remove executable from EXE_PATH_
+# Make sure that EXE_PATH_ and abtab are set
+if [ -z "$EXE_PATH_" ] || [ -z "$abtab" ]; then
+    echo "Error: EXE_PATH_ or abtab is not set." >&2
     exit 1
 fi
-# Make sure exe_path is a valid directory
-if [ ! -d "$exe_path" ]; then
-    echo "Error: exe_path '$exe_path' is not a valid directory." >&2
+# Make sure EXE_PATH_ is a valid directory
+if [ ! -d "$EXE_PATH_" ]; then
+    echo "Error: EXE_PATH_ '$EXE_PATH_' is not a valid directory." >&2
     exit 1
 fi
 # Make sure that file_path is set
-file_path="$exe_path$abtab"
+file_path="$EXE_PATH_$abtab"
 if [ -z "$file_path" ]; then
     echo "Error: file_path is not set." >&2
     exit 1
 fi
-# Make sure that file_path starts with exe_path
-if [[ "$file_path" != "$exe_path"* ]]; then
-    echo "Error: file_path '$file_path' is outside the expected directory '$exe_path'." >&2
+# Make sure that file_path starts with EXE_PATH_
+if [[ "$file_path" != "$EXE_PATH_"* ]]; then
+    echo "Error: file_path '$file_path' is outside the expected directory '$EXE_PATH_'." >&2
     exit 1
 fi
 # If file_path exists: remove executable
 if [ -f "$file_path" ]; then
-    echo "    ... removing existing version of $abtab from $exe_path ..."
+    echo "    ... removing existing version of $abtab from $EXE_PATH_ ..."
     rm -f "$file_path" 
 else
-    echo "    ... removing existing version of $abtab from $exe_path -- no existing version found ..."
+    echo "    ... removing existing version of $abtab from $EXE_PATH_ -- no existing version found ..."
 fi
 
-# 5. Create data dirs on root_path
+# 5. Create data dirs on ROOT_PATH_
 echo "... creating data directories ..."
 paths=(
        "analyser/in/" "analyser/out/"
@@ -220,7 +226,7 @@ paths=(
       )
 data_dir="data/"
 for dir_ in "${paths[@]}"; do
-    full_dir="$root_path""$data_dir""$dir_"
+    full_dir="$ROOT_PATH_""$data_dir""$dir_"
     if [ ! -d "$full_dir" ]; then
         echo "    ... creating $data_dir$dir_ ..."
         mkdir -p "$full_dir"
@@ -229,18 +235,18 @@ for dir_ in "${paths[@]}"; do
     fi
 done
 # Copy example files; then delete them
-cp "$ex_tab" "$root_path""$data_dir""analyser/in/"
-cp "$ex_tab" "$root_path""$data_dir""converter/"
-cp "$ex_tab" "$root_path""$data_dir""tabmapper/in/tab/"
-cp "$ex_mid" "$root_path""$data_dir""tabmapper/in/MIDI/"
-cp "$ex_tab" "$root_path""$data_dir""transcriber/diplomatic/in/"
-cp "$ex_tab" "$root_path""$data_dir""transcriber/polyphonic/in/"
+cp "$ex_tab" "$ROOT_PATH_""$data_dir""analyser/in/"
+cp "$ex_tab" "$ROOT_PATH_""$data_dir""converter/"
+cp "$ex_tab" "$ROOT_PATH_""$data_dir""tabmapper/in/tab/"
+cp "$ex_mid" "$ROOT_PATH_""$data_dir""tabmapper/in/MIDI/"
+cp "$ex_tab" "$ROOT_PATH_""$data_dir""transcriber/diplomatic/in/"
+cp "$ex_tab" "$ROOT_PATH_""$data_dir""transcriber/polyphonic/in/"
 rm -f "$ex_tab"
 rm -f "$ex_mid"
 
 # 6. Clone repos into pwd
 echo "... cloning repositories ... "
-# Collect contents of repositories in repos
+# Collect contents of repositoriesfile in repos
 repos=""
 is_blank=false
 while IFS= read -r line || [[ -n $line ]]; do
@@ -258,7 +264,7 @@ while IFS= read -r line || [[ -n $line ]]; do
         [[ -n "$repos" ]] && repos+=" " # if str is non-empty, add space
         repos+="${trimmed_line%%/*}"
     fi
-done < "$repositories"
+done < "$repositoriesfile"
 to_remove=(
            "src" "test" ".git" ".settings" # folders 
            ".classpath" ".project" ".gitignore" # files
@@ -309,24 +315,37 @@ for repo in $repos; do
     rm -rf "$repo/.git"
 done
 
-# 7. Install abtab
+# 7. Create a virtual environment and install required packages in it
+echo "... creating virtual environment ..."
+$PYTHON -m venv .venv
+if $IS_WIN; then
+    source "$venvpath_win"
+else
+    source "$venvpath_unix"
+fi
+echo "... installing dependencies ..."
+pip install --upgrade pip # pip always exists in activated venv 
+pip install -r requirements.txt
+deactivate
+
+# 8. Install abtab
 echo "... installing abtab ..."
-# Move executable to exe_path
-cp "$abtab" "$exe_path" && rm "$abtab" # NB use cp ... && rm ...; mv gives permissions error
-# Move code contents of pwd into lib_path
+# Move executable to EXE_PATH_
+cp "$abtab" "$EXE_PATH_" && rm "$abtab" # NB use cp ... && rm ...; mv gives permissions error
+# Move code contents of pwd into LIB_PATH_
 skip=("models" "templates" "data")
-# If lib_path and exe_path are on root_path (i.e., if lib/abtab/ and bin/ are in pwd), do not 
-# move them into lib_path
-if [[ "$lib_path" == "$root_path"* ]]; then
+# If LIB_PATH_ and EXE_PATH_ are on ROOT_PATH_ (i.e., if lib/abtab/ and bin/ are in pwd), do not 
+# move them into LIB_PATH_
+if [[ "$LIB_PATH_" == "$ROOT_PATH_"* ]]; then
     skip+=("lib")
 fi
-if [[ "$exe_path" == "$root_path"* ]]; then
+if [[ "$EXE_PATH_" == "$ROOT_PATH_"* ]]; then
     skip+=("bin")
 fi
 for item in *; do
     # Move only files/folders that are not in skip
     if [[ ! " ${skip[@]} " =~ " ${item} " ]]; then # the spaces around skip/item avoid partial match
-        cp -r "$item" "$lib_path" && rm -rf "$item" # NB use cp && rm; mv gives permissions error
+        cp -r "$item" "$LIB_PATH_" && rm -rf "$item" # NB use cp && rm; mv gives permissions error
     fi
 done
 

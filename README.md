@@ -69,13 +69,15 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
    - Clones the required repositories from `https://github.com/reinierdevalk/` into `<root_path>`. These include
        - Code repositories, as listed in `repositories.txt` (before the empty line).
        - Non-code repositories, as listed in `repositories.txt` (after the empty line).
-   - Installs `abtab`: moves all code to `<lib_path>`, and the executable to `<exe_path>`.
+   - Creates a virtual environment and installs project-specific Python packages in it. By using a virtual environment, project-specific Python package installations are isolated from system-wide installations, ensuring a clean and conflict-free environment.
+   - Installs `abtab`: moves all code and code-adjacent files to `<lib_path>`, and the executable to `<exe_path>`.
 
    When the installation process has finished, `<root_path>` contains
    - The `data/` directory. Contains, for each tool, the directories from which the input files are read (`in/`) and to which the output files are stored (`out/`). Apart from the example files moved into them during the installation process, these directories are empty.  
    - The `models/` directory. Contains the trained machine learning models called by the `transcriber` tool.
    - The `templates/` directory. Contains a high-level template of an MEI file, whose `<header>` can be adapted at will. 
 
+<!--
 5. It is recommended to use a virtual environment to isolate project-specific Python package installations from system-wide
    installations, ensuring a clean and conflict-free environment. It is good practice to have the virtual environment for a specific project inside the project's directory -- i.e., here, inside `<root_path>`. 
 
@@ -105,10 +107,11 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
     ```
     $ deactivate 
     ```
+-->
 
-`abtab` is now installed and ready to use. It can be run from any directory on your computer -- but make sure to activate the virtual environment before you start your `abtab` session, and to deactivate it when you end your session.
+`abtab` is now installed and ready to use. It can be run from any directory on your computer.
 
-Use the help (`-h` or `--help`) option to get started; this lists all the currently available tools in the toolbox.
+Use the help (`-h` or `--help`) option to get started; among other things, this lists the currently available tools in the toolbox.
  
     $ abtab -h 
     $ abtab --help 
@@ -286,6 +289,7 @@ Once Java is installed, repeat Step 1. If the output does not show the version y
 
 [[Back to Dependencies]](#dependencies)
 
+<!--
 # Appendix II: Installing project-specific Python packages in the virtual environment
 ## `music21`
 ### 0. Activating the virtual environment
@@ -321,8 +325,9 @@ To install or update `music21`, run
 Once `music21` is installed, repeat Step 1.
 
 [[Back to Installing `abtab`]](#installing-abtab)
+-->
 
-# Appendix III: Troubleshooting
+# Appendix II: Troubleshooting
 ## Adding an installation path to the system `PATH`
 To ensure that a software application is available system-wide in the CLI, you can add its installation path to the system `PATH`. To check whether an installation path is on the system `PATH`, run
 
