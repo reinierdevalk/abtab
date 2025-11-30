@@ -5,7 +5,7 @@
 
 lib_path=$1
 is_win=$2
-repositories="repositories.txt"
+repositoriesfile="repositories.txt"
 
 # Read each line from repositories, prepend lib_path, add semicolon,
 # and append to classpath. Break as soon as an empty line  
@@ -48,7 +48,7 @@ while IFS= read -r line; do
             fi
         fi
     fi
-done < "$lib_path""$repositories"
+done < "$lib_path""$repositoriesfile"
 
 # Remove any carriage returns; remove trailing semicolon
 classpath=$(echo "$classpath" | tr -d '\r')

@@ -694,8 +694,7 @@ source "$LIB_PATH_$commonfile"
 # NB Instead of creating the class path every time this script is
 # called, it can also be created once, in install.sh. However, the
 # former is more flexible as it enables addition of code to the 
-# class path after installation (and it is very fast anyway (< 0.5s)).
-## Check OS: Windows or Linux-like
+# class path after installation (and it is very fast anyway (< 0.5s))
 class_path=$($LIB_PATH_/$classpathfile $LIB_PATH_ $IS_WIN)
 
 # 2. Set GETOPT_CMD

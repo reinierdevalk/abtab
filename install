@@ -12,18 +12,22 @@
 configfile="config.cfg"
 repositoriesfile="repositories.txt"
 commonfile="common.sh"
+requirementsfile="requirements.txt"
 abtab="abtab"
-ex_tab="rore-anchor_che_col_1-10.tc"
-ex_mid="rore-anchor_che_col_1-10.mid"
-venvpath_win=".venv/Scripts/activate"
-venvpath_unix=".venv/bin/activate"
+ex_tab_mei="judenkuenig-elslein_liebes_elslein.mei"
+ex_tab_tc="rore-anchor_che_col_1-10.tc"
+#ex_mid_mi="judenkuenig-elslein_liebes_elslein.mid"
+#ex_mid_tc="rore-anchor_che_col_1-10.mid"
+datapath="data/"
+venvpath_win=".venv/Scripts/"
+venvpath_unix=".venv/bin/"
 
 # a. Set automatically (by sourcing commonfile)
 IS_WIN=
 PYTHON=
 # NB Using scriptpath ensures that no matter from which directory the user 
 #    runs the script, it will always find commonfile relative to the script
-scriptpath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)""/"
+scriptpath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)""/" # get the absolute path of the current script
 source "$scriptpath$commonfile"
 
 
@@ -74,6 +78,7 @@ echo "Installation started ..."
 echo "... handling files ..."
 handle_file "$configfile" false
 handle_file "$repositoriesfile" true
+handle_file "$commonfile" true
 handle_file "$abtab" true
 
 # 2. Configure and create paths 
@@ -224,25 +229,26 @@ paths=(
        "transcriber/diplomatic/in/" "transcriber/diplomatic/out/"
        "transcriber/polyphonic/in/" "transcriber/polyphonic/out/"
       )
-data_dir="data/"
 for dir_ in "${paths[@]}"; do
-    full_dir="$ROOT_PATH_""$data_dir""$dir_"
+    full_dir="$ROOT_PATH_""$datapath""$dir_"
     if [ ! -d "$full_dir" ]; then
-        echo "    ... creating $data_dir$dir_ ..."
+        echo "    ... creating $datapath$dir_ ..."
         mkdir -p "$full_dir"
     else
-        echo "    ... creating $data_dir$dir_ -- directory already exists ..."
+        echo "    ... creating $datapath$dir_ -- directory already exists ..."
     fi
 done
-# Copy example files; then delete them
-cp "$ex_tab" "$ROOT_PATH_""$data_dir""analyser/in/"
-cp "$ex_tab" "$ROOT_PATH_""$data_dir""converter/"
-cp "$ex_tab" "$ROOT_PATH_""$data_dir""tabmapper/in/tab/"
-cp "$ex_mid" "$ROOT_PATH_""$data_dir""tabmapper/in/MIDI/"
-cp "$ex_tab" "$ROOT_PATH_""$data_dir""transcriber/diplomatic/in/"
-cp "$ex_tab" "$ROOT_PATH_""$data_dir""transcriber/polyphonic/in/"
-rm -f "$ex_tab"
-rm -f "$ex_mid"
+# Copy example files into directories; then delete them
+tab_examples=("$ex_tab_mei" "$ex_tab_tc")
+for ex_tab in "${tab_examples[@]}"; do
+	cp "$ex_tab" "$ROOT_PATH_""$datapath""analyser/in/"
+	cp "$ex_tab" "$ROOT_PATH_""$datapath""converter/"
+	cp "$ex_tab" "$ROOT_PATH_""$datapath""tabmapper/in/tab/"
+	cp "${ex_tab%.*}"".mid" "$ROOT_PATH_""$datapath""tabmapper/in/MIDI/"
+	cp "$ex_tab" "$ROOT_PATH_""$datapath""transcriber/diplomatic/in/"
+	cp "$ex_tab" "$ROOT_PATH_""$datapath""transcriber/polyphonic/in/"
+done
+rm -f "$ex_tab_mei" "$ex_tab_tc"
 
 # 6. Clone repos into pwd
 echo "... cloning repositories ... "
@@ -319,13 +325,13 @@ done
 echo "... creating virtual environment ..."
 $PYTHON -m venv .venv
 if $IS_WIN; then
-    source "$venvpath_win"
+    source "$venvpath_win""activate"
 else
-    source "$venvpath_unix"
+    source "$venvpath_unix""activate"
 fi
 echo "... installing dependencies ..."
 pip install --upgrade pip # pip always exists in activated venv 
-pip install -r requirements.txt
+pip install -r "$requirementsfile"
 deactivate
 
 # 8. Install abtab
@@ -342,11 +348,20 @@ fi
 if [[ "$EXE_PATH_" == "$ROOT_PATH_"* ]]; then
     skip+=("bin")
 fi
+shopt -s dotglob # ensure that filename expansion (*) includes dotfiles 
 for item in *; do
     # Move only files/folders that are not in skip
     if [[ ! " ${skip[@]} " =~ " ${item} " ]]; then # the spaces around skip/item avoid partial match
         cp -r "$item" "$LIB_PATH_" && rm -rf "$item" # NB use cp && rm; mv gives permissions error
     fi
 done
+shopt -u dotglob # unset dotglob
+# Delete .git/ and .gitignore
+if [[ -d ".git" ]]; then
+	rm -rf ".git"
+fi
+if [[ -f ".gitignore" ]]; then
+	rm ".gitignore"
+fi
 
 echo "... installation complete!"

@@ -29,6 +29,8 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
 
    If you do not have `git` installed, you can simply download the repository manually by clicking the drop-down arrow on the green 'Code' button at the top of this page, and then clicking 'Download ZIP'.
 
+>:warning: **Note** Make sure not to `cd` out of `<root_path>` during the installation process.
+
 3. Open `config.cfg` and adapt the paths. Always use Unix-style forward slashes (`/`) as separators. On Windows, all paths must **start with a capital drive letter followed by a colon and a forward slash** (e.g., `C:/`). 
    - Replace the default value of the `ROOT_PATH` variable with `<root_path>`; **make sure it ends with a `/`**. 
    - Replace the default value of the `LIB_PATH` variable with `<lib_path>`; **make sure it ends with a `/`**. `<lib_path>` is the location where the installation script places the code. Recommended locations are
@@ -40,7 +42,7 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
     
    If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installation script.
 
-   >:warning: **Note for macOS users** If your GNU `getopt` installation path deviates from its typical installation paths (see [GNU `getopt`](#gnu-getopt)), replace the default value of the `GETOPT_PATH` variable with the path that you noted down; **make sure it ends with a `/`**.  
+   >:warning: **Note for macOS users** If your GNU `getopt` installation path deviates from its typical installation paths (see [GNU `getopt`](#gnu-getopt)), replace the default value of the `GETOPT_PATH` variable with the path that you noted down; **make sure it ends with a `/`**.
 
    To ensure that `abtab` is available in the CLI, confirm that `<exe_path>` is on the system `PATH` by running 
 
@@ -70,7 +72,7 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
        - Code repositories, as listed in `repositories.txt` (before the empty line).
        - Non-code repositories, as listed in `repositories.txt` (after the empty line).
    - Creates a virtual environment and installs project-specific Python packages in it. By using a virtual environment, project-specific Python package installations are isolated from system-wide installations, ensuring a clean and conflict-free environment.
-   - Installs `abtab`: moves all code and code-adjacent files to `<lib_path>`, and the executable to `<exe_path>`.
+   - Installs `abtab`: moves all code and code-adjacent files to `<lib_path>`, moves the executable to `<exe_path>`, and cleans up unneeded files.
 
    When the installation process has finished, `<root_path>` contains
    - The `data/` directory. Contains, for each tool, the directories from which the input files are read (`in/`) and to which the output files are stored (`out/`). Apart from the example files moved into them during the installation process, these directories are empty.  
