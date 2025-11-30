@@ -184,12 +184,14 @@ if [ "$LIB_PATH_" = "/" ] || [ "$LIB_PATH_" = "/usr" ] || [ "$LIB_PATH_" = "/hom
     exit 1
 fi
 # If LIB_PATH_ is not empty: clear abtab/ folder
+shopt -s dotglob # ensure that filename expansion (*) includes dotfiles
 if [ "$(find "$LIB_PATH_" -mindepth 1 -print -quit)" ]; then
 	echo "    ... clearing $LIB_PATH_ ..."
 	rm -rf "$LIB_PATH_"/*
 else
     echo "    ... clearing $LIB_PATH_ -- path already clear ..."
 fi
+shopt -u dotglob # unset dotglob
 # b. Remove executable from EXE_PATH_
 # Make sure that EXE_PATH_ and abtab are set
 if [ -z "$EXE_PATH_" ] || [ -z "$abtab" ]; then
@@ -355,7 +357,7 @@ fi
 if [[ "$EXE_PATH_" == "$ROOT_PATH_"* ]]; then
     skip+=("bin")
 fi
-shopt -s dotglob # ensure that filename expansion (*) includes dotfiles 
+shopt -s dotglob # ensure that filename expansion (*) includes dotfiles
 for item in *; do
     # Move only files/folders that are not in skip
     if [[ ! " ${skip[@]} " =~ " ${item} " ]]; then # the spaces around skip/item avoid partial match
