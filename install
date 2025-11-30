@@ -336,6 +336,13 @@ deactivate
 
 # 8. Install abtab
 echo "... installing abtab ..."
+# Delete .git/ and .gitignore
+if [[ -d ".git" ]]; then
+	rm -rf ".git"
+fi
+if [[ -f ".gitignore" ]]; then
+	rm ".gitignore"
+fi
 # Move executable to EXE_PATH_
 cp "$abtab" "$EXE_PATH_" && rm "$abtab" # NB use cp ... && rm ...; mv gives permissions error
 # Move code contents of pwd into LIB_PATH_
@@ -356,12 +363,5 @@ for item in *; do
     fi
 done
 shopt -u dotglob # unset dotglob
-# Delete .git/ and .gitignore
-if [[ -d ".git" ]]; then
-	rm -rf ".git"
-fi
-if [[ -f ".gitignore" ]]; then
-	rm ".gitignore"
-fi
 
 echo "... installation complete!"

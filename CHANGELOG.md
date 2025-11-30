@@ -5,14 +5,20 @@ All notable changes to this project will be documented in this file. The format 
 - Automatic update of `abtab` using `abtab --update`.
 - Install TensorFlow (1.6.0?) in the virtual environment.
 
+## [0.2.2] - 2025-11-30
+### Fixed
+- `.git` and `.gitignore` are deleted instead of moved to `LIB_PATH` (now correctly).
+- Name fix of `venv` paths (`PythonInterface`).
+- Updated `README`.
+
 ## [0.2.1] - 2025-11-30
 ### Fixed
 - Copying of both example files into `data/` directory structure.
-- `.git` and .gitignore` are now deleted.
+- `.git` and `.gitignore` are deleted instead of moved to `LIB_PATH`.
 - Copying of `.venv` into `LIB_PATH`.
 - Removed TensorFlow dependency from `requirements.txt` (too old; gives 'could not find a version error').
-- Cleanup of `venv` paths (in `abtab` and in `PythonInterface`) and some minor refactoring/cleanup.
-
+- Cleanup of `venv` paths (`abtab` and `PythonInterface`) and some minor refactoring/cleanup.
+- Updated `README`.
 
 ## [0.2.0] - 2025-11-29
 ### Added 
