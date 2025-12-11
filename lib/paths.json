@@ -31,7 +31,7 @@
         // toolbox case
         "ANALYSIS_PYTHON_PATH":         "lib/analysis/py/", // (Analyser)
         "FORMATS_PYTHON_PATH":          "lib/formats/py/", // (TabImport)
-        "VENV_PATH:"                    "lib/.venv/" // (Editor, Tabmapper, UI)
+        "VENV_PATH":                    "lib/.venv/" // (Editor, Tabmapper, UI)
     },
     "files": {
         "MEI2TBP_SCRIPT":               "mei2tbp.py",
