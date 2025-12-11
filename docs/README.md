@@ -27,9 +27,9 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
     $ git clone https://github.com/reinierdevalk/abtab.git .
     ```
 
-   If you do not have `git` installed, you can simply download the repository manually by clicking the drop-down arrow on the green 'Code' button at the top of this page, and then clicking 'Download ZIP'.
-
    >:warning: **Note** Make sure not to `cd` out of `<root_path>` during the installation process.
+
+   If you do not have `git` installed, you can simply download the repository manually by clicking the drop-down arrow on the green 'Code' button at the top of this page, and then clicking 'Download ZIP'.
 
 3. Open `lib/config.cfg` and adapt the paths.
 
@@ -67,7 +67,7 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
    If you encounter execute permission issues when running the script, see [Execute permission issues](#execute-permission-issues).  
     
    The installation script 
-   - Checks whether `lib_path` and `exe_path` exist. If not, it creates them; if so, it handles any previously installed version of `abtab`: it clears `<lib_path>` and removes any old `abtab` executable from `<exe_path>`. 
+   - Checks whether `lib_path` and `exe_path` exist. If not, creates them; if so, it handles any previously installed version of `abtab`: clears `<lib_path>` and removes any old `abtab` executable from `<exe_path>`. 
    - Creates, in `<root_path>`, the `data/` directory structure, and moves the example files in the `examples/` directory into the appropriate `data/<tool>/` subdirectories.
    - Clones the required repositories from `https://github.com/reinierdevalk/`. These include
        - Code repositories, as listed in `lib/repositories.txt` (before the empty line); these are cloned into `<lib_path>`'s `lib/` directory.

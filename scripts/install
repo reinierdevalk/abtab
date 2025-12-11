@@ -333,7 +333,7 @@ if [[ "$ROOT_PATH_" != "$repo_path" ]]; then
 	      directory '$repo_path'. ROOT_PATH is currently set to $ROOT_PATH_." >&2
 	exit 1
 fi
-# b. Create LIB_PATH_ and EXE_PATH_
+# b. Create LIB_PATH_ and EXE_PATH_; create LIB_PATH_LIB
 #    - initial abtab installation: paths may exist
 #    - abtab update: paths exist
 #    If path does not exist: create it
@@ -384,10 +384,8 @@ for pathvar in LIB_PATH_ EXE_PATH_; do
 		fi 
 	fi
 done
-# Recreate the lib/ dir on LIB_PATH_ (so that LIB_PATH_LIB exists again)
-# NB Recreating the entire LIB_PATH_LIB throws a permission error 
-mkdir -p "$LIB_PATH_""$LIB_DIR"
-# c. Create DATA_PATH_ROOT subdirectories (in DATA_PATH_ROOT)
+mkdir -p "$LIB_PATH_LIB"
+# c. Create DATA_PATH_ROOT subdirectories and move example files into them
 #    - initial abtab installation: subdirectories do not exist
 #    - abtab update: subdirectories exist (NB it is possible that some are missing)
 #    If subdirectory does not exist: create it and copy example files into it
@@ -424,6 +422,9 @@ for subdir in "${DATA_SUBDIRS[@]}"; do
 		echo "    ... $subdir_path already exists ..."
 	fi
 done
+for item in "$EXAMPLES_PATH_ROOT"*; do
+	rm -f "$item"
+done
 
 ## c. Data directory and subdirectories on ROOT_PATH_
 #for subdir in "${DATA_SUBDIRS[@]}"; do
@@ -452,7 +453,7 @@ done
 #done
 
 
-# 4. Clone GitHub repositories (in LIB_PATH_ROOT)
+# 4. Clone GitHub repositories
 #    - initial abtab installation: do not exist
 #    - abtab update: do not exist  
 echo "... cloning repositories ... "
@@ -618,7 +619,6 @@ fi
 # a. To EXE_PATH_
 mv "$abtabfile" "$EXE_PATH_"
 #cp "$abtabfile" "$EXE_PATH_"
-rm -rf "$BIN_PATH_ROOT"
 
 # b. To LIB_PATH_
 #for item in "$configfile" "$pathsfile" "$repositoriesfile" "$versionfile"; do
@@ -632,13 +632,16 @@ for item in "$LIB_PATH_ROOT"*; do
 		mv "$item" "$LIB_PATH_"
 	fi
 done
-rm -rf "$LIB_PATH_ROOT"
 mv "$SCRIPTS_PATH_ROOT" "$LIB_PATH_"
 mv "$DOCS_PATH_ROOT" "$LIB_PATH_"
-# Delete unneeded
-rm -rf "$EXAMPLES_PATH_ROOT"
+
+# Clean up
 rm -rf "$GIT_PATH_ROOT"
+rm -rf "$BIN_PATH_ROOT" # now empty
+rm -rf "$EXAMPLES_PATH_ROOT" # now empty
+rm -rf "$LIB_PATH_ROOT" # now empty
 rm -f "$gitignorefile"
+
 echo "... installation complete!"
 
 
