@@ -365,8 +365,6 @@ for pathvar in LIB_PATH_ EXE_PATH_; do
         	rm -rf "$path"*
 #			fi
 			shopt -u nullglob dotglob # unset nullglob and dotglob
-			# Recreate LIB_PATH_LIB
-			mkdir -p "$LIB_PATH_LIB"
 		# EXE_PATH_ case: remove executable from EXE_PATH_
 		else
 #		if [[ "$path" == "$EXE_PATH_" ]]; then
@@ -386,6 +384,8 @@ for pathvar in LIB_PATH_ EXE_PATH_; do
 		fi 
 	fi
 done
+# Recreate LIB_PATH_LIB
+mkdir -p "$LIB_PATH_LIB"
 # c. Create DATA_PATH_ROOT subdirectories (in DATA_PATH_ROOT)
 #    - initial abtab installation: subdirectories do not exist
 #    - abtab update: subdirectories exist (NB it is possible that some are missing)
