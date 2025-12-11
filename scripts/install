@@ -353,7 +353,7 @@ for pathvar in LIB_PATH_ EXE_PATH_; do
     else 
         echo "    ... $pathvar $path already exists ..."
         echo "    ... handling existing version of $abtabname ... "
-		# LIB_PATH_ case: clear last directory in LIB_PATH_ (abtab/); recreate LIB_PATH_LIB
+		# LIB_PATH_ case: clear last directory in LIB_PATH_ (abtab/)
 		if [[ "$path" == "$LIB_PATH_" ]]; then
 			shopt -s nullglob dotglob # ensure that filename expansion (*) includes dotfiles; avoid literal globs
 #			contents=("$path"*)
@@ -384,8 +384,9 @@ for pathvar in LIB_PATH_ EXE_PATH_; do
 		fi 
 	fi
 done
-# Recreate LIB_PATH_LIB
-mkdir -p "$LIB_PATH_LIB"
+# Recreate the lib/ dir on LIB_PATH_ (so that LIB_PATH_LIB exists again)
+# NB Recreating the entire LIB_PATH_LIB throws a permission error 
+mkdir -p "$LIB_PATH_""$LIB_DIR"
 # c. Create DATA_PATH_ROOT subdirectories (in DATA_PATH_ROOT)
 #    - initial abtab installation: subdirectories do not exist
 #    - abtab update: subdirectories exist (NB it is possible that some are missing)
