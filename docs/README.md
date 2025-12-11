@@ -33,7 +33,7 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
 
 3. Open `lib/config.cfg` and adapt the paths.
 
-   >:warning: **Note** On Windows, all paths must be Windows-style absolute paths **starting with a drive letter and using Unix-style forward slashes (`/`)**; on macOS, all paths must be POSIX-style absolute paths **starting with a forward slash** (see examples below). Always make sure that a path **ends with a forward slash**.
+   >:warning: **Note** On Windows, all paths must be Windows-style absolute paths **starting with an uppercase drive letter and using Unix-style forward slashes (`/`)**; on macOS, all paths must be POSIX-style absolute paths **starting with a forward slash** (see examples below). Always make sure that a path **ends with a forward slash**.
 
    - Replace the default value of the `ROOT_PATH` variable with `<root_path>`; **make sure it ends with a `/`**. 
    - Replace the default value of the `LIB_PATH` variable with `<lib_path>`; **make sure it ends with a `/`**. `<lib_path>` is the location where the installation script places the code. Recommended locations are
@@ -68,11 +68,7 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
     
    The installation script 
    - Checks whether `lib_path` and `exe_path` exist. If not, it creates them; if so, it handles any previously installed version of `abtab`: it clears `<lib_path>` and removes any old `abtab` executable from `<exe_path>`. 
-   (- Checks whether `lib_path` and `exe_path` exist, and creates them if they do not.)
-   (- Sets `root_path` and `lib_path` in the executable.)
-   (- Handles any previously installed version of `abtab`: removes any old executable from `<exe_path>`, and clears `<lib_path>`.)
-   (- Creates, in `<root_path>`, the `data/` directory structure, and moves the example files in the `examples/` directory into the `data/<tool>/in/` subdirectories.)
-    - Creates, in `<root_path>`, the `data/` directory structure, and moves the example files in the `examples/` directory into the appropriate `data/<tool>/` subdirectories.
+   - Creates, in `<root_path>`, the `data/` directory structure, and moves the example files in the `examples/` directory into the appropriate `data/<tool>/` subdirectories.
    - Clones the required repositories from `https://github.com/reinierdevalk/`. These include
        - Code repositories, as listed in `lib/repositories.txt` (before the empty line); these are cloned into `<lib_path>`'s `lib/` directory.
        - Non-code repositories, as listed in `lib/repositories.txt` (after the empty line); these are cloned into `<root_path>`. 

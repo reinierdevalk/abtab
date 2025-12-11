@@ -296,34 +296,27 @@ requirementsfile="$SCRIPTS_PATH_ROOT""$requirementsfile"
 abtabfile="$BIN_PATH_ROOT""$abtabfile"
 gitignorefile="$ROOT_PATH""$gitignorefile"
 
-echo "SCRIPT_PATH:        " $SCRIPT_PATH
-echo "REPO_PATH:          " $REPO_PATH
-echo
-#echo "BIN_PATH_REPO:      " $BIN_PATH_REPO
-#echo "LIB_PATH_REPO:      " $LIB_PATH_REPO
-#echo "SCRIPTS_PATH_REPO:  " $SCRIPTS_PATH_REPO
-#echo "DOCS_PATH_REPO:     " $DOCS_PATH_REPO 
-#echo "EXAMPLES_PATH_REPO: " $EXAMPLES_PATH_REPO
+#echo "SCRIPT_PATH:        " $SCRIPT_PATH
+#echo "REPO_PATH:          " $REPO_PATH
 #echo
-echo "ROOT_PATH_:         " $ROOT_PATH_
-echo "LIB_PATH_:          " $LIB_PATH_
-echo "EXE_PATH_:          " $EXE_PATH_
-echo "GETOPT_PATH_:       " $GETOPT_PATH_
-echo "BIN_PATH_ROOT:      " $BIN_PATH_ROOT
-echo "LIB_PATH_ROOT:      " $LIB_PATH_ROOT
-echo "SCRIPTS_PATH_ROOT:  " $SCRIPTS_PATH_ROOT
-echo "EXAMPLES_PATH_ROOT: " $EXAMPLES_PATH_ROOT
-echo "DATA_PATH_ROOT:     " $DATA_PATH_ROOT
-#echo "VENV_PATH_ROOT:     " $VENV_PATH_ROOT
-echo
-echo "classpathfile:      " $classpathfile 
-echo "commonfile:         " $commonfile
-echo "configfile:         " $configfile
-echo "pathsfile:          " $pathsfile
-echo "repositoriesfile:   " $repositoriesfile
-echo "versionfile:        " $versionfile
-echo "requirementsfile:   " $requirementsfile
-echo "abtabfile:          " $abtabfile
+#echo "ROOT_PATH_:         " $ROOT_PATH_
+#echo "LIB_PATH_:          " $LIB_PATH_
+#echo "EXE_PATH_:          " $EXE_PATH_
+#echo "GETOPT_PATH_:       " $GETOPT_PATH_
+#echo "BIN_PATH_ROOT:      " $BIN_PATH_ROOT
+#echo "LIB_PATH_ROOT:      " $LIB_PATH_ROOT
+#echo "SCRIPTS_PATH_ROOT:  " $SCRIPTS_PATH_ROOT
+#echo "EXAMPLES_PATH_ROOT: " $EXAMPLES_PATH_ROOT
+#echo "DATA_PATH_ROOT:     " $DATA_PATH_ROOT
+#echo
+#echo "classpathfile:      " $classpathfile 
+#echo "commonfile:         " $commonfile
+#echo "configfile:         " $configfile
+#echo "pathsfile:          " $pathsfile
+#echo "repositoriesfile:   " $repositoriesfile
+#echo "versionfile:        " $versionfile
+#echo "requirementsfile:   " $requirementsfile
+#echo "abtabfile:          " $abtabfile
 
 
 # 3. Create directories
