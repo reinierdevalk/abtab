@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file. The format 
 - Automatic update of `abtab` using `abtab --update`.
 - Install TensorFlow (1.6.0?) in the virtual environment.
 
+## [0.2.4] - 2025-12-11
+### Changed
+- Restructured `abtab` repository. 
+- Adapted `install` script and `abtab` executable accordingly.
+- Updated `README`.
+
 ## [0.2.3] - 2025-11-30
 ### Fixed
 - `.venv` is deleted when emptying `LIB_PATH` during installation.

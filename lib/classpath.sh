@@ -4,10 +4,11 @@
 # script is called by abtab every time it is run.
 
 lib_path=$1
-is_win=$2
-repositoriesfile="repositories.txt"
+repositoriesfile=$2
+is_win=$3
 
-# Read each line from repositories, prepend lib_path, add semicolon,
+
+# Read each line from repositoriesfile, prepend lib_path, add semicolon,
 # and append to classpath. Break as soon as an empty line  
 # (dividing classpath- and non-classpath repos) is encountered 
 # NB: for the last line to be read, cp.txt must end with
@@ -23,7 +24,7 @@ while IFS= read -r line; do
     # If not: add to classpath 
     else
         # Windows case
-        if "$is_win"; then
+        if [[ "$is_win" == "true" ]]; then
             # If line is a dot (i.e., starts with a dot)
             if [[ "$clean_line" == .* ]]; then
                 # First make cygpath; then add dot (is removed by cygpath)
@@ -48,7 +49,7 @@ while IFS= read -r line; do
             fi
         fi
     fi
-done < "$lib_path""$repositoriesfile"
+done < "$repositoriesfile"
 
 # Remove any carriage returns; remove trailing semicolon
 classpath=$(echo "$classpath" | tr -d '\r')

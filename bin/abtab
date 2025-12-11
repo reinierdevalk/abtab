@@ -1,14 +1,24 @@
 #!/usr/bin/env bash
 
 # Script that runs abtab.
-
+#
+# NB: When editing this file with Sublime, set the line endings to Unix: 
+#     View > Line endings > Unix
 
 # 0. GLOBAL VARIABLES
-configfile="config.cfg"
-classpathfile="classpath.sh"
-commonfile="common.sh"
-versionfile="VERSION"
-pythonpath_transcriber="transcriber/py/"
+classpathfile="classpath.sh" # OK for dev case
+configfile="config.cfg" # OK
+commonfile="common.sh" # OK for dev case
+repositoriesfile="repositories.txt"
+versionfile="VERSION" # OK 
+
+PYTHON_DIR_TRANSCRIBER="transcriber/py/"
+LIB_DIR="lib/"
+
+# Must be the same as in install
+RP_PLACEHOLDER="_RP_PLACEHOLDER_"
+LP_PLACEHOLDER="_LP_PLACEHOLDER_"
+GP_PLACEHOLDER="_GP_PLACEHOLDER_"
 
 # a. Set manually
 TOOLS_DESC=(
@@ -116,9 +126,17 @@ provided, an editor, additionally facilitating editing and viewing of the source
 	"<destination>|Destination file (optional; must always be provided together with <source>)"
 )
 
-# b. Set automatically (by sourcing commonfile); done once LIB_PATH_ is known
-IS_WIN=
-PYTHON=
+# b. Set automatically
+# From configfile
+ROOT_PATH_=
+LIB_PATH_=	
+GETOPT_PATH_=
+# From commonfile
+IS_WIN_=
+PYTHON_=
+# Created
+LIB_PATH_LIB= # is the same as LIB_PATH_ in DEV case, where there is a flat code structure (all code in LIB_PATH_; no lib/ dir)
+CLASS_PATH_STR=
 
 TOOLBOX=$(basename "$0")
 DEV=false
@@ -645,12 +663,12 @@ call_java() {
 	local class="$1"; shift
 	local java_args=("$@")
 	local encoded_java_args_str
-	local encoded_args=()
+#	local encoded_args=()
 
 	encoded_java_args_str=$(_encode_args "${java_args[@]}")
 	IFS='|' read -r -a encoded_java_args <<< "$encoded_java_args_str" # split str into array 
 
-	java -cp "$class_path" "$class" "${encoded_java_args[@]}"
+	java -cp "$CLASS_PATH_STR" "$class" "${encoded_java_args[@]}"
 }
 
 _encode_args() {
@@ -672,33 +690,40 @@ _encode_args() {
 
 
 # 2. SCRIPT CODE
-# 1. Set paths
+# 1. Set paths; source files
 # Paths (unix-style) are read from config 
-# DEV case: paths set every time this script is called (below)
+# DEV case: paths set every time this script is called (below);
+# config is in same directory as abtab and can be sourced immediately
 if "$DEV"; then
-	# Source config
 	source_filtered "$configfile"
 	ROOT_PATH_="$ROOT_PATH" # from config
 	LIB_PATH_="$LIB_PATH" # from config
-# Real-world case: paths added once during installation (in install.sh)
-else
-	ROOT_PATH_="_RP_PLACEHOLDER_"
-	LIB_PATH_="_LP_PLACEHOLDER_"
-	# Source config 
-	source_filtered "$LIB_PATH_""$configfile"
 	GETOPT_PATH_="$GETOPT_PATH" # from config
+	LIB_PATH_LIB="$LIB_PATH_"
+# Real-world case: paths added once during installation (in install.sh);
+# config is in LIB_PATH_ and can only be sourced once that is known
+else
+	ROOT_PATH_="$RP_PLACEHOLDER" # from config via install
+	LIB_PATH_="$LP_PLACEHOLDER" # from config via install
+	GETOPT_PATH_="$GETOPT_PATH" # from config via install
+	LIB_PATH_LIB="$LIB_PATH_""$LIB_DIR"
+	source_filtered "$LIB_PATH_""$configfile"
+#	GETOPT_PATH_="$GETOPT_PATH" # from config
 fi
 # Source commonfile
-source "$LIB_PATH_$commonfile"
-# Create class path
+source_filtered "$LIB_PATH_LIB$commonfile"
+IS_WIN_="$IS_WIN"
+PYTHON_="$PYTHON"
+
+# Create class path string
 # NB Instead of creating the class path every time this script is
 # called, it can also be created once, in install.sh. However, the
 # former is more flexible as it enables addition of code to the 
 # class path after installation (and it is very fast anyway (< 0.5s))
-class_path=$($LIB_PATH_/$classpathfile $LIB_PATH_ $IS_WIN)
+CLASS_PATH_STR=$("$LIB_PATH_LIB$classpathfile" "$LIB_PATH_LIB" "$LIB_PATH_$repositoriesfile" "$IS_WIN_")
 
 # 2. Set GETOPT_CMD
-if "$IS_WIN"; then
+if [[ "$IS_WIN_" == "true" ]]; then
 	GETOPT_CMD="getopt" # Cygwin and Linux
 else
 	# Ensure that GNU getopt is called (and not the default BSD getopt)
@@ -745,12 +770,12 @@ if [ "$TOOL" == "analyser" ]; then
 	ignore_opts=("")
 	user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
 	model_id="N-bwd-thesis-int-4vv"
-	java_args=("$DEV" $model_id $user_opts_vals_java) # TODO sequence fixed as in NB above?
+	java_args=("$DEV" "$model_id" "$user_opts_vals_java") # TODO sequence fixed as in NB above?
 	call_java analysis.Analyser "${java_args[@]}"
 #	encoded_java_args_str=$(encode_args "${java_args[@]}")
 #	IFS='|' read -r -a encoded_java_args <<< "$encoded_java_args_str" # split str into array
-#	java -cp "$class_path" analysis.Analyser "${encoded_java_args[@]}"
-#	java -cp "$class_path" analysis.Analyser "$DEV" $model_id $user_opts_vals_java
+#	java -cp "$CLASS_PATH_STR" analysis.Analyser "${encoded_java_args[@]}"
+#	java -cp "$CLASS_PATH_STR" analysis.Analyser "$DEV" $model_id $user_opts_vals_java
 elif [ "$TOOL" == "converter" ]; then
 	ignore_opts=("")
 	user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
@@ -762,7 +787,7 @@ elif [ "$TOOL" == "converter" ]; then
 	call_java tbp.editor.Editor "${java_args[@]}"
 #	encoded_java_args_str=$(encode_args "${java_args[@]}")
 #	IFS='|' read -r -a encoded_java_args <<< "$encoded_java_args_str" # split str into array
-#	java -cp "$class_path" tbp.editor.Editor "${encoded_java_args[@]}"
+#	java -cp "$CLASS_PATH_STR" tbp.editor.Editor "${encoded_java_args[@]}"
 elif [ "$TOOL" == "tabmapper" ]; then
 	ignore_opts=("")
 	user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
@@ -770,8 +795,8 @@ elif [ "$TOOL" == "tabmapper" ]; then
 	call_java tabmapper.TabMapper "${java_args[@]}"
 #	encoded_java_args_str=$(encode_args "${java_args[@]}")
 #	IFS='|' read -r -a encoded_java_args <<< "$encoded_java_args_str" # split str into array
-#	java -cp "$class_path" tabmapper.TabMapper "${encoded_java_args[@]}"
-#	java -cp "$class_path" tabmapper.TabMapper "$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java"
+#	java -cp "$CLASS_PATH_STR" tabmapper.TabMapper "${encoded_java_args[@]}"
+#	java -cp "$CLASS_PATH_STR" tabmapper.TabMapper "$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java"
 elif [ "$TOOL" == "transcriber" ]; then
 	ignore_opts=("-l")
 	is_diplomatic=false
@@ -786,7 +811,7 @@ elif [ "$TOOL" == "transcriber" ]; then
 	# Diplomatic
 	if [[ $is_diplomatic == true ]]; then
 		user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" true)
-		$PYTHON "$LIB_PATH_$pythonpath_transcriber""transcriber.py" $user_opts_vals_java "$DEV" $ROOT_PATH_ $LIB_PATH_ $class_path
+		$PYTHON_ "$LIB_PATH_LIB$PYTHON_DIR_TRANSCRIBER""transcriber.py" $user_opts_vals_java "$DEV" "$ROOT_PATH_" "$LIB_PATH_" "$CLASS_PATH_STR"
 	# Polyphonic
 	else
 		user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
@@ -794,7 +819,7 @@ elif [ "$TOOL" == "transcriber" ]; then
 		call_java ui.UI "${java_args[@]}"
 #		encoded_java_args_str=$(encode_args "${java_args[@]}")
 #		IFS='|' read -r -a encoded_java_args <<< "$encoded_java_args_str" # split str into array
-#		java -cp "$class_path" ui.UI "${encoded_java_args[@]}"
-#		java -cp "$class_path" ui.UI "$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java"
+#		java -cp "$CLASS_PATH_STR" ui.UI "${encoded_java_args[@]}"
+#		java -cp "$CLASS_PATH_STR" ui.UI "$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java"
 	fi
 fi

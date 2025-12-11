@@ -1,0 +1,711 @@
+#!/usr/bin/env bash
+
+# Script that installs abtab. It must be called from the abtab project folder (.../abtab/).
+#
+# NB: When editing this file with Sublime, set the line endings to Unix: 
+#     View > Line endings > Unix
+
+
+# Always use double [[ ... ]]
+# Use `shopt -s nullglob dotglob`` before using * if hidden files/folders (but not . or ..) are to be included
+# the also ensures safe expansion (*), meaning that `rm -rf`` can be used safely
+# NO Use guard when using a glob with a for-loop:
+# NO $ shopt -s nullglob dotglob
+# NO $ for item in "$dir_"*; do
+# NO $     [[ -e "$item" ]] || continue # guard: if item does not exist
+# NO `rm -rf` is safe even on non-existant paths; but inside a glob, make sure to use the guard  
+
+# 0. GLOBAL VARIABLES
+BIN_DIR="bin/"
+LIB_DIR="lib/"
+SCRIPTS_DIR="scripts/"
+EXAMPLES_DIR="examples/"
+DOCS_DIR="docs/"
+DATA_DIR="data/"
+VENV_DIR=".venv/"
+GIT_DIR=".git/"
+
+# a. Deduced
+SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)""/" # the absolute path of the current script (.../scripts/)
+REPO_PATH="$(cd "$SCRIPT_PATH/.." && pwd)""/" # the path holding scripts/  
+
+# b. Set manually
+# All "*_REPO" paths are paths from the cloned repo
+#BIN_PATH_REPO="$REPO_PATH""$BIN_DIR" # executable moved to EXE_PATH_ --> dir deleted
+#LIB_PATH_REPO="$REPO_PATH""$LIB_DIR" # non-.sh files moved to LIB_PATH_, .sh files moved to LIB_PATH_ROOT --> dir deleted
+#SCRIPTS_PATH_REPO="$REPO_PATH""$SCRIPTS_DIR" # --> dir moved to LIB_PATH_ 
+#DOCS_PATH_REPO="$REPO_PATH""docs/" # --> dir moved to LIB_PATH_
+#EXAMPLES_PATH_REPO="$REPO_PATH""$EXAMPLES_DIR" # all files moved to DATA_PATH_ROOT --> dir deleted
+
+DATA_SUBDIRS=(
+	"analyser/in/" "analyser/out/" 
+	"converter/" 
+	"tabmapper/in/tab/" "tabmapper/in/MIDI/" "tabmapper/out/" 
+	"transcriber/diplomatic/in/" "transcriber/polyphonic/in/" 
+	"transcriber/diplomatic/out/" "transcriber/polyphonic/out/"
+)
+
+REPO_URL="https://github.com/reinierdevalk/"
+REMOVE_FROM_REPO=(
+	"src" "test" ".git" ".settings" # folders 
+    ".classpath" ".project" ".gitignore" # files
+)
+TEMPLATE_PATTERN="template-params-"
+MODELS=(
+	"N-fwd-thesis-int-4vv" 
+	"N-bwd-thesis-int-4vv" 
+	"D-bwd-thesis-int-4vv"
+)
+
+# Must be the same as in abtab
+RP_PLACEHOLDER="_RP_PLACEHOLDER_"
+LP_PLACEHOLDER="_LP_PLACEHOLDER_"
+GP_PLACEHOLDER="_GP_PLACEHOLDER_"
+abtabname="abtab"
+
+classpathfile="classpath.sh"
+commonfile="common.sh"
+configfile="config.cfg"
+pathsfile="paths.json"
+repositoriesfile="repositories.txt"
+versionfile="VERSION"
+requirementsfile="requirements.txt"
+abtabfile="$abtabname"
+gitignorefile=".gitignore"
+
+#classpathfile="$LIB_PATH_REPO""classpath.sh"
+#commonfile="$LIB_PATH_REPO""common.sh"
+#configfile="$LIB_PATH_REPO""config.cfg"
+#pathsfile="$LIB_PATH_REPO""paths.json"
+#repositoriesfile="$LIB_PATH_REPO""repositories.txt"
+#versionfile="$LIB_PATH_REPO""VERSION"
+#requirementsfile="$SCRIPTS_PATH_REPO""requirements.txt"
+#abtab="$BIN_PATH_REPO""$abtabname"
+
+# c. Set automatically 
+# From configfile
+ROOT_PATH_=
+LIB_PATH_=
+EXE_PATH_=
+GETOPT_PATH_=
+# From commonfile
+IS_WIN_=
+PYTHON_=
+# Created
+BIN_PATH_ROOT=
+LIB_PATH_ROOT=
+SCRIPTS_PATH_ROOT=
+EXAMPLES_PATH_ROOT=
+DOCS_PATH_ROOT=
+DATA_PATH_ROOT=
+LIB_PATH_LIB=
+VENV_PATH_LIB=
+
+# 1. FUNCTIONS
+convert_win_path() {
+    #Normalizes a filesystem path for consistent cross-platform comparison.
+    #
+    # Parameters:
+    # p (string): The input path to normalise. Can be in one of the following forms:
+    # - macOS/Linux POSIX path: "/Users/<name>/dir_x/"
+    # - Windows path: "C:/Users/<name>/dir_x/" or "C:\Users\<name>\dir_x\"
+    # - Cygwin path: "/cygdrive/c/Users/<name>/dir_x/"
+    #
+    # Behavior:
+    # - Converts backslashes (\) to forward slashes (/).
+    # - Removes duplicate consecutive slashes.
+    # - Ensures the path ends with a single trailing slash.
+    # - On Cygwin, converts POSIX-style (/cygdrive/<drive>/) paths to Windows-style
+    #   drive paths (e.g., "F:/path") using cygpath -m.
+    #
+    # Returns:
+    # Normalised path as a string suitable for reliable string comparison.
+    #
+    # Example:
+    # $ FILE_PATH_RAW="/cygdrive/f/research/computation/software/"
+    # $ FILE_PATH=$(normalize_path "$FILE_PATH_RAW")
+    # $ echo "$FILE_PATH"  # Output: "F:/research/computation/software/"
+
+    local p="$1"
+    cygpath -m "$p" 2>/dev/null || echo "$p"
+}
+
+handle_file() {
+    local file="$1"
+    local make_executable="$2"
+    # If the file exists, handle it
+    if [[ -f "$file" ]]; then
+        # Remove any carriage returns
+        # All line endings in a script called by bash must be Unix style ('\n') 
+        # and not Windows style ('\r\n'), which cause the following error:
+        # 
+        #   ./<my_script>.sh: line <n>: $'\r': command not found
+        #    
+        # Any carriage returns ('\r') must therefore be removed.
+        #
+        # NB: Carriage returns can be avoided by creating the file in Sublime 4,
+        # after adding the following in the right field at Preferences > Settings:
+        #
+        #   {
+        #    "default_line_ending": "unix"
+        #   }
+        remove_carriage_returns "$file"
+
+        # Make executable (if applicable)
+        if [[ "$make_executable" == "true" ]]; then
+            chmod +x "$file"
+        fi
+    # If not, return error
+    else
+        echo "File not found: $file."
+        exit 1
+    fi
+}
+
+remove_carriage_returns() {
+    local file="$1"
+    if grep -q $'\r' "$file"; then
+        tr -d '\r' <"$file" >file.new && mv file.new "$file"
+    fi
+}
+
+check_pathname() {
+	# Checks that the given path name is not unset/empty, 
+	# and that it ends with a slash.
+	
+	local pathname="$1"
+	declare -n ref="$pathname" # nameref to the actual variable
+
+	# Check that variable is set and non-empty
+	if [[ -z "$ref" ]]; then
+		echo "Error: $pathname is not set or empty." >&2
+		exit 1
+	fi
+
+	# Ensure that variable ends with a slash
+	if [[ "${ref: -1}" != "/" ]]; then
+		ref="${ref}/"
+	fi
+}
+
+is_critical_path() {
+	local path="$1"
+
+	# Empty or root
+	[[ -z "$path" || "$path" == "/" ]] && return 0
+
+	# Unix critical directories: start with /bin, /usr, /etc, /lib, /home
+	if [[ "$path" == /bin* || "$path" == /sbin* || "$path" == /usr* || \
+		  "$path" == /etc* || "$path" == /lib* || "$path" == /home* ]]; then
+		return 0
+	fi
+
+	# Windows (Cygwin/Git Bash) critical directories: anything under /cygdrive/c
+	if [[ "$path" == /cygdrive/c* ]]; then
+		return 0
+	fi
+
+	return 1
+}
+
+read_reposfile() {
+	# Reads a text file and returns an array containing its individual 
+	# lines (including any trailing slash). Empty lines are skipped.
+	# Usage:
+	#   read_repos "$repositoriesfile" repo_list 
+	local file="$1"
+	local -n out_array="$2"   # nameref to caller's array
+	out_array=()              # ensure empty
+
+	local line trimmed
+	while IFS= read -r line || [[ -n $line ]]; do
+		# Trim whitespace
+		trimmed=$(echo "$line" | xargs)
+
+		# Skip empty line
+		[[ -z "$trimmed" ]] && continue
+
+		# Skip line starting with a dot
+		[[ $trimmed == .* ]] && continue
+
+		out_array+=("$trimmed")
+	done < "$file"
+}
+
+
+# 2. SCRIPT CODE
+echo "Installation started ..."
+# 1. Handle files
+echo "... handling files ..."
+handle_file "$REPO_PATH""$LIB_DIR""$classpathfile" true
+handle_file "$REPO_PATH""$LIB_DIR""$commonfile" true
+handle_file "$REPO_PATH""$BIN_DIR""$abtabfile" true
+handle_file "$REPO_PATH""$LIB_DIR""$configfile" false
+handle_file "$REPO_PATH""$LIB_DIR""$pathsfile" false
+handle_file "$REPO_PATH""$LIB_DIR""$repositoriesfile" false
+handle_file "$REPO_PATH""$SCRIPTS_DIR""$requirementsfile" false
+handle_file "$REPO_PATH""$LIB_DIR""$versionfile" false
+#
+source "$REPO_PATH""$LIB_DIR""$configfile"
+ROOT_PATH_="$ROOT_PATH" 
+LIB_PATH_="$LIB_PATH"
+EXE_PATH_="$EXE_PATH"
+GETOPT_PATH_="$GETOPT_PATH"
+source "$REPO_PATH""$LIB_DIR""$commonfile"
+IS_WIN_="$IS_WIN"
+PYTHON_="$PYTHON"
+
+# 2. Configure paths
+echo "... configuring paths ... "
+check_pathname ROOT_PATH_
+check_pathname LIB_PATH_
+check_pathname EXE_PATH_
+if [[ -n "$GETOPT_PATH_" ]]; then # if non-empty
+	check_pathname GETOPT_PATH_
+fi
+# All "*_ROOT" paths are paths newly created in ROOT_PATH. All paths
+# are normalised by constructing them from the paths in config.cfg
+BIN_PATH_ROOT="$ROOT_PATH_""$BIN_DIR"
+check_pathname BIN_PATH_ROOT
+LIB_PATH_ROOT="$ROOT_PATH_""$LIB_DIR"
+check_pathname LIB_PATH_ROOT
+SCRIPTS_PATH_ROOT="$ROOT_PATH_""$SCRIPTS_DIR"
+check_pathname SCRIPTS_PATH_ROOT
+EXAMPLES_PATH_ROOT="$ROOT_PATH_""$EXAMPLES_DIR"
+check_pathname EXAMPLES_PATH_ROOT
+DOCS_PATH_ROOT="$ROOT_PATH_""$DOCS_DIR"
+check_pathname DOCS_PATH_ROOT
+DATA_PATH_ROOT="$ROOT_PATH_""$DATA_DIR"
+check_pathname DATA_PATH_ROOT
+#VENV_PATH_ROOT="$LIB_PATH_ROOT""$VENV_DIR"
+#check_pathname VENV_PATH_ROOT
+GIT_PATH_ROOT="$ROOT_PATH_""$GIT_DIR"
+check_pathname GIT_PATH_ROOT
+LIB_PATH_LIB="$LIB_PATH_""$LIB_DIR"
+check_pathname LIB_PATH_LIB
+VENV_PATH_LIB="$LIB_PATH_LIB""$VENV_DIR"
+check_pathname VENV_PATH_LIB
+
+classpathfile="$LIB_PATH_ROOT""$classpathfile"
+commonfile="$LIB_PATH_ROOT""$commonfile"
+configfile="$LIB_PATH_ROOT""$configfile"
+pathsfile="$LIB_PATH_ROOT""$pathsfile"
+repositoriesfile="$LIB_PATH_ROOT""$repositoriesfile"
+versionfile="$LIB_PATH_ROOT""$versionfile"
+requirementsfile="$SCRIPTS_PATH_ROOT""$requirementsfile"
+abtabfile="$BIN_PATH_ROOT""$abtabfile"
+gitignorefile="$ROOT_PATH""$gitignorefile"
+
+echo "SCRIPT_PATH:        " $SCRIPT_PATH
+echo "REPO_PATH:          " $REPO_PATH
+echo
+#echo "BIN_PATH_REPO:      " $BIN_PATH_REPO
+#echo "LIB_PATH_REPO:      " $LIB_PATH_REPO
+#echo "SCRIPTS_PATH_REPO:  " $SCRIPTS_PATH_REPO
+#echo "DOCS_PATH_REPO:     " $DOCS_PATH_REPO 
+#echo "EXAMPLES_PATH_REPO: " $EXAMPLES_PATH_REPO
+#echo
+echo "ROOT_PATH_:         " $ROOT_PATH_
+echo "LIB_PATH_:          " $LIB_PATH_
+echo "EXE_PATH_:          " $EXE_PATH_
+echo "GETOPT_PATH_:       " $GETOPT_PATH_
+echo "BIN_PATH_ROOT:      " $BIN_PATH_ROOT
+echo "LIB_PATH_ROOT:      " $LIB_PATH_ROOT
+echo "SCRIPTS_PATH_ROOT:  " $SCRIPTS_PATH_ROOT
+echo "EXAMPLES_PATH_ROOT: " $EXAMPLES_PATH_ROOT
+echo "DATA_PATH_ROOT:     " $DATA_PATH_ROOT
+#echo "VENV_PATH_ROOT:     " $VENV_PATH_ROOT
+echo
+echo "classpathfile:      " $classpathfile 
+echo "commonfile:         " $commonfile
+echo "configfile:         " $configfile
+echo "pathsfile:          " $pathsfile
+echo "repositoriesfile:   " $repositoriesfile
+echo "versionfile:        " $versionfile
+echo "requirementsfile:   " $requirementsfile
+echo "abtabfile:          " $abtabfile
+
+
+# 3. Create directories
+echo "... creating directories ... "
+# a. Check ROOT_PATH_ 
+#    ROOT_PATH_ must be the same as the current working directory, i.e., REPO_PATH
+if [[ "$IS_WIN_" == "true" ]]; then
+    repo_path="$(convert_win_path "$REPO_PATH")"
+else
+    repo_path=$REPO_PATH
+fi
+if [[ "$ROOT_PATH_" != "$repo_path" ]]; then
+	echo "Error: As per the README, ROOT_PATH in config.cfg must be set to the current working \
+	      directory '$repo_path'. ROOT_PATH is currently set to $ROOT_PATH_." >&2
+	exit 1
+fi
+# b. Create LIB_PATH_ and EXE_PATH_
+#    - initial abtab installation: paths may exist
+#    - abtab update: paths exist
+#    If path does not exist: create it
+#    If paths exists: remove any existing version(s) of abtab
+for pathvar in LIB_PATH_ EXE_PATH_; do
+	path="${!pathvar}" # indirect expansion (!) to get the value of the variable pathvar
+
+	# Make sure that path is not a critical system path
+	if is_critical_path "$path"; then
+		echo "Error: $pathvar $path is a critical system path." >&2
+		exit 1
+	fi
+
+    if [[ ! -d "$path" ]]; then
+        echo "    ... creating $pathvar $path ..."
+        mkdir -p "$path"
+    else 
+        echo "    ... $pathvar $path already exists ..."
+        echo "    ... handling existing version of $abtabname ... "
+		# LIB_PATH_ case: clear last directory in LIB_PATH_ (abtab/); recreate LIB_PATH_LIB
+		if [[ "$path" == "$LIB_PATH_" ]]; then
+			shopt -s nullglob dotglob # ensure that filename expansion (*) includes dotfiles; avoid literal globs
+#			contents=("$path"*)
+#			if (( ${#contents[@]} == 0 )); then
+#    			echo "    ... $pathvar $path is already clear ..."
+#			else
+			echo "    ... clearing $pathvar $path ..."
+#			rm -rf "$path"* "$path".* 2>/dev/null # remove all files, including dotfiles, but not '.' and '..' # CHECKED
+        	rm -rf "$path"*
+#			fi
+			shopt -u nullglob dotglob # unset nullglob and dotglob
+			# Recreate LIB_PATH_LIB
+			mkdir -p "$LIB_PATH_LIB"
+		# EXE_PATH_ case: remove executable from EXE_PATH_
+		else
+#		if [[ "$path" == "$EXE_PATH_" ]]; then
+			file_path="$path$abtabname"
+			# Make sure that file_path starts with EXE_PATH_
+			if [[ "$file_path" != "$path"* ]]; then
+				echo "Error: $file_path is outside the expected path $pathvar $path." >&2
+				exit 1
+			fi
+			# Remove executable
+#			if [[ -f "$file_path" ]]; then
+			echo "    ... removing any existing version of $abtabname from $pathvar $path ..."
+			rm -f "$file_path" # CHECKED not needed
+#			else
+#				echo "    ... no existing version of $abtabname found on $pathvar $path ..."
+#			fi
+		fi 
+	fi
+done
+# c. Create DATA_PATH_ROOT subdirectories (in DATA_PATH_ROOT)
+#    - initial abtab installation: subdirectories do not exist
+#    - abtab update: subdirectories exist (NB it is possible that some are missing)
+#    If subdirectory does not exist: create it and copy example files into it
+#    If subdirectory exists: keep as-is
+for subdir in "${DATA_SUBDIRS[@]}"; do
+	subdir_path="$DATA_PATH_ROOT""$subdir"
+	if [[ ! -d "$subdir_path" ]]; then
+		echo "    ... creating $subdir_path ..."
+		mkdir -p "$subdir_path"
+		# Copy example files into subdirectory
+		# NB Do not use `mv` because of multiple iterations over EXAMPLES_PATH_ROOT 
+		shopt -s nullglob dotglob # ensure that filename expansion (*) includes dotfiles
+		for ex_tab in "$EXAMPLES_PATH_ROOT"*; do
+#			[[ -e "$ex_tab" ]] || continue # if ex_tab does not exist
+
+			copy_ex=false
+			if [[ "$ex_tab" == *".mid" ]]; then
+				 [[ "$subdir" == *"in/MIDI/"* ]] && copy_ex=true
+			else
+				[[ "$subdir" != *"out/"* && "$subdir" != *"in/MIDI/"*  ]] && copy_ex=true
+			fi
+#			$copy_ex && mv "$ex_tab" "$subdir_path"
+			$copy_ex && cp "$ex_tab" "$subdir_path"
+
+#			if [[ "$ex_tab" == *".mid" && "$subdir" == *"in/MIDI/"* ]]; then
+#				cp "$ex_tab" "$data_path"
+##				cp "${ex_tab%.*}"".mid" "$data_path"
+#			elif [[ "$ex_tab" != *".mid" && ("$subdir" == *"in/"* || "$subdir" == "converter/") ]]; then
+#				cp "$ex_tab" "$data_path"
+#			fi
+		done
+		shopt -u nullglob dotglob # unset dotglob
+	else
+		echo "    ... $subdir_path already exists ..."
+	fi
+done
+
+## c. Data directory and subdirectories on ROOT_PATH_
+#for subdir in "${DATA_SUBDIRS[@]}"; do
+#    data_path="$DATA_PATH_ROOT""$subdir"
+#    if [[ ! -d "$data_path" ]]; then
+#        echo "    ... creating $data_path ..."
+#        mkdir -p "$data_path"
+#    else
+#        echo "    ... $data_path already exists ..."
+#    fi
+#done
+#
+## 4. Copy example files into data/.../in/.../ subdirectories
+#echo "... copying example files ..."
+#for ex_tab in "$EXAMPLES_PATH_REPO"*; do
+#	[[ -e "$ex_tab" ]] || continue # if ex_tab does not exist
+#
+#	for subdir in "${DATA_SUBDIRS[@]}"; do
+#		data_path="$DATA_PATH_ROOT""$subdir"
+#		if [[ "$subdir" == *"in/MIDI/"* ]]; then
+#			cp "${ex_tab%.*}"".mid" "$data_path"
+#		elif [[ "$subdir" == *"in/"* || "$subdir" == "converter/" ]]; then
+#			cp "$ex_tab" "$data_path"
+#		fi		
+#	done
+#done
+
+
+# 4. Clone GitHub repositories (in LIB_PATH_ROOT)
+#    - initial abtab installation: do not exist
+#    - abtab update: do not exist  
+echo "... cloning repositories ... "
+declare -a repos
+read_reposfile "$repositoriesfile" repos
+
+## Collect contents of repositoriesfile in repos
+#repos=""
+#while IFS= read -r line || [[ -n $line ]]; do
+#    # Trim leading and trailing whitespace
+#    trimmed_line=$(echo "$line" | xargs)
+#
+#    # Skip emtpy line (which divides cp- and non-cp repos)
+#    if [[ -z "$trimmed_line" ]]; then
+#        continue
+#    fi
+#
+#    # If the trimmed line does not start with a dot: add the 
+#    # part before the first slash
+#    if [[ ! $trimmed_line == .* ]]; then
+#        [[ -n "$repos" ]] && repos+=" " # if str is non-empty, add space
+#        repos+="${trimmed_line%%/*}"
+#    fi
+#done < "$repositoriesfile"
+
+for repo in "${repos[@]}"; do
+	repo_url="$REPO_URL${repo%/}.git" # without trailing slash
+
+	if [[ "$repo" == "models/" || "$repo" == "templates/" ]]; then
+		repo_path="$ROOT_PATH_$repo"
+	else
+		repo_path="$LIB_PATH_LIB$repo"
+	fi
+
+#    if [[ ! -d "$ROOT_PATH_""$repo" ]]; then
+	echo "    ... cloning $repo_url ..."
+	git clone "$repo_url" "${repo_path%/}" # without trailing slash
+#	git clone "$repo_url"
+	
+#	repo_path="$ROOT_PATH_$repo"
+	echo "    ... cleaning $repo_path ..."
+	shopt -s nullglob dotglob # ensure that filename expansion (*) includes dotfiles
+#	directory="./$repo"
+	for item in "$repo_path"*; do
+#	for item in "$directory"*; do
+#	for item in "$directory"/.* "$directory"/*; do
+#		[[ -e "$item" ]] || continue # if item does not exist
+        
+        item_name=$(basename "$item")
+
+#		# Skip '.' and '..' (current and parent folder)
+#		if [[ "$item" == "$directory/." || "$item" == "$directory/.." ]]; then
+#		    continue
+#		fi
+
+		# models/ repo
+		if [[ "$repo" == "models/" ]]; then
+			if [[ ! " ${MODELS[*]} " =~ " $item_name " ]]; then # spaces around vars ensure exact word matching
+#				if [[ -d "$item" || -f "$item" ]]; then
+				rm -rf "$item" # no need to wrap in `if [[ -d || -f ]]` check because of `[[ -e ]]` check # CHECKED   
+#				fi
+			fi
+
+#			keep=false
+#			for keep_item in "${models_to_keep[@]}"; do
+##				[[ -e "$keep_item" ]] || continue # if keep_item does not exist
+#				if [[ "$item_name" == "$keep_item" ]]; then
+#					keep=true
+#					break
+#				fi
+#			done
+#			if ! $keep; then
+#				if [[ -d "$item" || -f "$item" ]]; then
+#					rm -rf "$item"
+#				fi
+#			fi
+		# Other repos
+		else
+			if [[ " ${REMOVE_FROM_REPO[*]} " =~ " ${item_name} " ]] \
+			   || [[ "${item_name}" == "$TEMPLATE_PATTERN"*".json" ]]; then # spaces around vars ensure exact word matching 
+#				if [[ -d "$item" || -f "$item" ]]; then
+				rm -rf "$item" # no need to wrap in `if [[ -d || -f ]]` check because of `[[ -e ]]` check # CHECKED
+#				fi
+			fi
+		fi
+	done
+	shopt -u nullglob dotglob # unset dotglob
+#    else
+#        echo "    ... "$ROOT_PATH_""$repo" already exists ..."
+#	fi
+    # Remove main .git folder
+#    if [[ -d "$repo_path.git" ]]; then
+	rm -rf "$repo_path.git" # CHECKED not needed
+#    fi
+done
+
+
+# 5. Create virtual environment (in LIB_PATH_LIB); install required packages
+echo "... creating virtual environment ..."
+"$PYTHON_" -m venv "$VENV_PATH_LIB" || {
+#"$PYTHON_" -m venv "$VENV_PATH_ROOT" || {
+	echo "Failed to created venv"
+	exit 1
+}
+if [[ "$IS_WIN_" == "true" ]]; then
+	source "$VENV_PATH_LIB""Scripts/activate"
+#	source "$VENV_PATH_ROOT""Scripts/activate"
+else
+    source "$VENV_PATH_LIB""bin/activate"
+#	source "$VENV_PATH_ROOT""bin/activate"
+fi
+echo "    ... installing dependencies ..."
+pip install --upgrade pip # pip always exists in activated venv 
+pip install -r "$requirementsfile"
+deactivate
+
+# 6. Install abtab
+echo "... installing $abtabname ..."
+
+
+# Set ROOT_PATH_ and LIB_PATH_ in executable
+#rp_placeholder="$RP_PLACEHOLDER"
+#lp_placeholder="$LP_PLACEHOLDER"
+if [[ "$IS_WIN_" == "true" ]]; then
+	sed -i "s|$RP_PLACEHOLDER|$ROOT_PATH_|g" "$abtabfile"
+	sed -i "s|$LP_PLACEHOLDER|$LIB_PATH_|g" "$abtabfile"
+	sed -i "s|$GP_PLACEHOLDER|$GETOPT_PATH_|g" "$abtabfile"
+#	# Escape forward slashes in ROOT_PATH_ and LIB_PATH_
+#	root_path_esc=$(echo "$ROOT_PATH_" | sed 's/\//\\\//g')
+#	lib_path_esc=$(echo "$LIB_PATH_" | sed 's/\//\\\//g')
+#	sed -i "s/$rp_placeholder/$root_path_esc/g" "$abtab"
+#	sed -i "s/$lp_placeholder/$lib_path_esc/g" "$abtab"
+else
+	sed -i "" "s|$RP_PLACEHOLDER|$ROOT_PATH_|g" "$abtabfile"
+	sed -i "" "s|$LP_PLACEHOLDER|$LIB_PATH_|g" "$abtabfile"
+	sed -i "" "s|$GP_PLACEHOLDER|$GETOPT_PATH_|g" "$abtabfile"
+#	# Replace Windows shebang
+#	win_shebang=$(sed -n '1p' "$0") # first line of this script, i.e., "#!/usr/bin/env bash"
+##	win_shebang="#!/usr/bin/bash"
+#	mac_shebang="#!""$(which bash)"
+##	mac_shebang="!/usr/local/bin/bash"
+#	sed -i "" "s|$win_shebang|$mac_shebang|g" "$abtab"
+fi
+
+
+# OK move bin/abtab to EXE_PATH_
+# OK delete bin/
+# OK move docs/ to LIB_PATH
+# OK delete docs/
+# OK delete examples/
+# OK move   lib/config.cfg, lib/paths.json, lib/repositories.txt, lib/VERSION to LIB_PATH --> check calls to these in abtab/java 
+# OK delete lib/config.cfg, lib/paths.json, lib/repositories.txt, lib/VERSION
+# OK move lib/ (containing common.sh, classpath.sh, all repos, venv) to LIB_PATH --> check calls to these in abtab/java
+# OK delete lib/
+# OK move scripts/ to LIB_PATH
+# OK delete scripts/
+# OK delete .git
+# OK delete .gitignore
+# staying: data/, models/, templates/
+
+# Move files and dirs from ROOT_PATH_
+# NB Use `cp` && `rm`; `mv` gives permissions error
+# a. To EXE_PATH_
+mv "$abtabfile" "$EXE_PATH_"
+#cp "$abtabfile" "$EXE_PATH_"
+rm -rf "$BIN_PATH_ROOT"
+
+# b. To LIB_PATH_
+#for item in "$configfile" "$pathsfile" "$repositoriesfile" "$versionfile"; do
+#	mv "$item" "$LIB_PATH_"
+#	cp "$item" "$LIB_PATH"
+#	rm -rf "$item"
+for item in "$LIB_PATH_ROOT"*; do 
+	if [[ "$item" == *".sh" ]]; then
+		mv "$item" "$LIB_PATH_LIB"
+	else
+		mv "$item" "$LIB_PATH_"
+	fi
+done
+rm -rf "$LIB_PATH_ROOT"
+mv "$SCRIPTS_PATH_ROOT" "$LIB_PATH_"
+mv "$DOCS_PATH_ROOT" "$LIB_PATH_"
+# Delete unneeded
+rm -rf "$EXAMPLES_PATH_ROOT"
+rm -rf "$GIT_PATH_ROOT"
+rm -f "$gitignorefile"
+echo "... installation complete!"
+
+
+#cp "$LIB_PATH_ROOT" "$LIB_PATH_"
+#rm -rf "$LIB_PATH_ROOT"
+#cp "$SCRIPTS_PATH_REPO" "$LIB_PATH_"
+#rm -rf "$SCRIPTS_PATH_REPO"
+#cp "$DOCS_PATH_REPO" "$LIB_PATH_"
+#rm -rf "$DOCS_PATH_REPO"
+#for item in "$LIB_PATH_ROOT" "$SCRIPTS_PATH_ROOT" "$DOCS_PATH_ROOT"; do
+#	mv "$item" "$LIB_PATH_"
+#	cp -r "$item" "$LIB_PATH_"
+#	rm -rf "$item"
+#done
+
+#to_lib_path=(
+#	"$DOCS_PATH_REPO" "$SCRIPTS_PATH_REPO" # dirs in ROOT_PATH
+#	"$configfile" "$pathsfile" "$repositoriesfile" "$versionfile" # files in LIB_PATH_REPO
+#)
+#for item in "${to_lib_path[@]}"; do
+#	cp "$item" "$LIB_PATH_ROOT"
+#	rm -rf "$item"
+#done
+
+
+
+
+
+## 7. Complete installation: first move everything, then delete everything
+####echo "... installing $abtabname ..."
+## Delete .git/ and .gitignore
+##if [[ -d ".git" ]]; then
+#rm -rf ".git"
+##fi
+##if [[ -f ".gitignore" ]]; then
+#rm -f ".gitignore"
+##fi
+#
+## Move code contents of ROOT_PATH_ into LIB_PATH_
+#skip=("models" "templates" "data")
+## If LIB_PATH_ and EXE_PATH_ are on ROOT_PATH_ (i.e., if lib/abtab/ and bin/ are in pwd), do not 
+## move them into LIB_PATH_
+#if [[ "$LIB_PATH_" == "$ROOT_PATH_"* ]]; then
+#    skip+=("lib")
+#fi
+#if [[ "$EXE_PATH_" == "$ROOT_PATH_"* ]]; then
+#    skip+=("bin")
+#fi
+#shopt -s nullglob dotglob # ensure that filename expansion (*) includes dotfiles
+#for item in *; do
+##	[[ -e "$item" ]] || continue # if item does not exist
+# 
+#    # Move only files/folders that are not in skip
+#    if [[ ! " ${skip[@]} " =~ " ${item} " ]]; then # spaces around vars ensure exact word matching
+#        # NB use cp && rm; mv gives permissions error
+#        cp -r "$item" "$LIB_PATH_"
+##		if [[ -d "$item" || -f "$item" ]]; then
+#		rm -rf "$item" # no need to wrap in `if [[ -d || -f ]]` check because of `[[ -e ]]` check # CHECKED
+##		fi
+#    fi
+#done
+#shopt -u nullglob dotglob # unset dotglob
+#
+#echo "... installation complete!"

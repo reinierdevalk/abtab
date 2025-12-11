@@ -25,12 +25,13 @@
         
         // Paths on CODE_PATH
         // model-dev and toolbox case
-        "UTILS_PYTHON_PATH":            "utils/py/", // (UI), (TabMapper, UI) 
-        "VOICE_SEP_PYTHON_PATH":        "voice_separation/py/", // (TrainingManager, TestManager), (TestManager)
-        "VOICE_SEP_MATLAB_PATH":        "voice_separation/m/", // (TestManager), (TestManager)
+        "UTILS_PYTHON_PATH":            "lib/utils/py/", // (UI), (TabMapper, UI) 
+        "VOICE_SEP_PYTHON_PATH":        "lib/voice_separation/py/", // (TrainingManager, TestManager), (TestManager)
+        "VOICE_SEP_MATLAB_PATH":        "lib/voice_separation/m/", // (TestManager), (TestManager)
         // toolbox case
-        "ANALYSIS_PYTHON_PATH":         "analysis/py/", // (Analyser)
-        "FORMATS_PYTHON_PATH":          "formats/py/" // (TabImport)
+        "ANALYSIS_PYTHON_PATH":         "lib/analysis/py/", // (Analyser)
+        "FORMATS_PYTHON_PATH":          "lib/formats/py/", // (TabImport)
+        "VENV_PATH:"                    "lib/.venv/" // (Editor, Tabmapper, UI)
     },
     "files": {
         "MEI2TBP_SCRIPT":               "mei2tbp.py",

@@ -31,7 +31,10 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
 
    >:warning: **Note** Make sure not to `cd` out of `<root_path>` during the installation process.
 
-3. Open `config.cfg` and adapt the paths. Always use Unix-style forward slashes (`/`) as separators. On Windows, all paths must **start with a capital drive letter followed by a colon and a forward slash** (e.g., `C:/`). 
+3. Open `lib/config.cfg` and adapt the paths.
+
+   >:warning: **Note** On Windows, all paths must be Windows-style absolute paths **starting with a drive letter and using Unix-style forward slashes (`/`)**; on macOS, all paths must be POSIX-style absolute paths **starting with a forward slash** (see examples below). Always make sure that a path **ends with a forward slash**.
+
    - Replace the default value of the `ROOT_PATH` variable with `<root_path>`; **make sure it ends with a `/`**. 
    - Replace the default value of the `LIB_PATH` variable with `<lib_path>`; **make sure it ends with a `/`**. `<lib_path>` is the location where the installation script places the code. Recommended locations are
      - On Windows: `C:/Users/<Username>/lib/abtab/` . 
@@ -40,7 +43,7 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
      - On Windows: `C:/Users/<Username>/bin/`.
      - On Unix: `/Users/<Username>/.local/bin/`.
     
-   If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the directories will be created by the installation script.
+   If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the missing directories will be created by the installation script.
 
    >:warning: **Note for macOS users** If your GNU `getopt` installation path deviates from its typical installation paths (see [GNU `getopt`](#gnu-getopt)), replace the default value of the `GETOPT_PATH` variable with the path that you noted down; **make sure it ends with a `/`**.
 
@@ -56,26 +59,28 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
    >:warning: **Note for Windows users** On Windows, `<exe_path>` must be aptly formatted, i.e., it must be adapted to the Unix-style format that the CLI understands (see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH), Note for Windows users).
 -->
 
-4. Run the installation script, `install`, from `<root_path>`.
+4. Run the installation script, `scripts/install`, from `<root_path>`.
     ```
-    $ ./install
+    $ ./scripts/install
     ```
 
    If you encounter execute permission issues when running the script, see [Execute permission issues](#execute-permission-issues).  
     
    The installation script 
-   - Checks whether `lib_path` and `exe_path` exist, and creates them if they do not.
-   - Sets `root_path` and `lib_path` in the executable.
-   - Handles any previously installed version of `abtab`: removes any old executable from `<exe_path>`, and clears `<lib_path>`.
-   - Creates, in `<root_path>`, the `data/` directory structure, and moves the example `.tc` and `.mid` files into the `data/<tool>/in/` subdirectories.
-   - Clones the required repositories from `https://github.com/reinierdevalk/` into `<root_path>`. These include
-       - Code repositories, as listed in `repositories.txt` (before the empty line).
-       - Non-code repositories, as listed in `repositories.txt` (after the empty line).
-   - Creates a virtual environment and installs project-specific Python packages in it. By using a virtual environment, project-specific Python package installations are isolated from system-wide installations, ensuring a clean and conflict-free environment.
-   - Installs `abtab`: moves all code and code-adjacent files to `<lib_path>`, moves the executable to `<exe_path>`, and cleans up unneeded files.
+   - Checks whether `lib_path` and `exe_path` exist. If not, it creates them; if so, it handles any previously installed version of `abtab`: it clears `<lib_path>` and removes any old `abtab` executable from `<exe_path>`. 
+   (- Checks whether `lib_path` and `exe_path` exist, and creates them if they do not.)
+   (- Sets `root_path` and `lib_path` in the executable.)
+   (- Handles any previously installed version of `abtab`: removes any old executable from `<exe_path>`, and clears `<lib_path>`.)
+   (- Creates, in `<root_path>`, the `data/` directory structure, and moves the example files in the `examples/` directory into the `data/<tool>/in/` subdirectories.)
+    - Creates, in `<root_path>`, the `data/` directory structure, and moves the example files in the `examples/` directory into the appropriate `data/<tool>/` subdirectories.
+   - Clones the required repositories from `https://github.com/reinierdevalk/`. These include
+       - Code repositories, as listed in `lib/repositories.txt` (before the empty line); these are cloned into `<lib_path>`'s `lib/` directory.
+       - Non-code repositories, as listed in `lib/repositories.txt` (after the empty line); these are cloned into `<root_path>`. 
+   - Creates, in `<lib_path>`'s `lib/` directory, a virtual environment, and installs project-specific Python packages in it. By using a virtual environment, project-specific Python package installations are isolated from system-wide installations, ensuring a clean and conflict-free environment.
+   - Installs `abtab`: moves the executable in `bin/` to `<exe_path>`; moves all files in the `lib/` directory to `<lib_path>` and its `lib/` directory; moves the `docs/` and  `scripts/` directories to `<lib_path>`, and cleans up `<root_path>`.
 
    When the installation process has finished, `<root_path>` contains
-   - The `data/` directory. Contains, for each tool, the directories from which the input files are read (`in/`) and to which the output files are stored (`out/`). Apart from the example files moved into them during the installation process, these directories are empty.  
+   - The `data/` directory. Contains, for each tool, the directories from which the input files are read (`in/`) and to which the output files are stored (`out/`). Apart from the example files moved into them during the installation process, these directories are empty. NB: the `converter` tool does not have the `in/` and `out/` subdirectories.  
    - The `models/` directory. Contains the trained machine learning models called by the `transcriber` tool.
    - The `templates/` directory. Contains a high-level template of an MEI file, whose `<header>` can be adapted at will. 
 
@@ -156,7 +161,7 @@ Alternatively, if both a source and a destination file are provided when `conver
 # Appendix I: Installing external software dependencies
 ## Bash
 ### 1. Verifying installation
-The current version of `abtab` requires Bash 4.2 or higher. To verify whether Bash is installed and meets the minimum required version, run
+The current version of `abtab` requires Bash 4.3 or higher. To verify whether Bash is installed and meets the minimum required version, run
 
     $ bash --version
 
