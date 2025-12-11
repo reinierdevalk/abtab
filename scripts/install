@@ -24,6 +24,8 @@ DOCS_DIR="docs/"
 DATA_DIR="data/"
 VENV_DIR=".venv/"
 GIT_DIR=".git/"
+VENV_SUBDIR_WIN="Scripts/"
+VENV_SUBDIR_UNIX="bin/"
 
 # a. Deduced
 SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)""/" # the absolute path of the current script (.../scripts/)
@@ -559,10 +561,10 @@ echo "... creating virtual environment ..."
 	exit 1
 }
 if [[ "$IS_WIN_" == "true" ]]; then
-	source "$VENV_PATH_LIB""Scripts/activate"
+	source "$VENV_PATH_LIB""$VENV_SUBDIR_WIN""activate"
 #	source "$VENV_PATH_ROOT""Scripts/activate"
 else
-    source "$VENV_PATH_LIB""bin/activate"
+    source "$VENV_PATH_LIB""$VENV_SUBDIR_UNIX""activate"
 #	source "$VENV_PATH_ROOT""bin/activate"
 fi
 echo "    ... installing dependencies ..."
