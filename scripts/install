@@ -54,6 +54,7 @@ DATA_SUBDIRS=(
 	"transcriber/diplomatic/out/" "transcriber/polyphonic/out/"
 )
 
+ABTABNAME="abtab"
 classpathfile="classpath.sh"
 commonfile="common.sh"
 configfile="config.cfg"
@@ -61,12 +62,11 @@ pathsfile="paths.json"
 repositoriesfile="repositories.txt"
 versionfile="VERSION"
 requirementsfile="requirements.txt"
-abtabfile="$abtabname"
+abtabfile="$ABTABNAME"
 gitignorefile=".gitignore"
 
 REPO_URL="https://github.com/reinierdevalk/"
 TEMPLATE_PATTERN="template-params-"
-ABTABNAME="abtab"
 # Placeholders must be the same as in abtab
 RP_PLACEHOLDER="_RP_PLACEHOLDER_"
 LP_PLACEHOLDER="_LP_PLACEHOLDER_"
