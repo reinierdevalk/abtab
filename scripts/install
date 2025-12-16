@@ -269,7 +269,7 @@ PYTHON_="$PYTHON"
 handle_file "$REPO_PATH""$BIN_DIR""$abtabfile_" true
 handle_file "$REPO_PATH""$LIB_DIR""$classpathfile_" true
 handle_file "$REPO_PATH""$LIB_DIR""$configfile_" false
-handle_file "$REPO_PATH""$LIB_DIR""$gitignorefile_" false
+handle_file "$REPO_PATH""$gitignorefile_" false
 handle_file "$REPO_PATH""$LIB_DIR""$pathsfile_" false
 handle_file "$REPO_PATH""$LIB_DIR""$repositoriesfile_" false
 handle_file "$REPO_PATH""$SCRIPTS_DIR_""$requirementsfile_" false
