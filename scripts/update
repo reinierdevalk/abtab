@@ -1,0 +1,208 @@
+#!/usr/bin/env bash
+
+# Script that updates abtab.
+#
+# NB: When editing this file with Sublime, set the line endings to Unix: 
+#     View > Line endings > Unix
+
+
+# 0. GLOBAL VARIABLES
+# a. Set manually
+# Variables that have the same value across scripts, but cannot be 
+# placed in common.sh because they are needed to call that script
+LIB_DIR="lib/"
+commonfile="common.sh"
+TMP_DIR="tmp/"
+
+# b. Set automatically
+SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)""/" # the absolute path of the current script (.../scripts/)
+LIB_PATH="$(cd "$SCRIPT_PATH/.." && pwd)""/" # the path holding scripts/
+
+
+handle_file() {
+    local file="$1"
+    local make_executable="$2"
+    # If the file exists, handle it
+    if [[ -f "$file" ]]; then
+        # Remove any carriage returns
+        # All line endings in a script called by bash must be Unix style ('\n') 
+        # and not Windows style ('\r\n'), which cause the following error:
+        # 
+        #   ./<my_script>.sh: line <n>: $'\r': command not found
+        #    
+        # Any carriage returns ('\r') must therefore be removed.
+        #
+        # NB: Carriage returns can be avoided by creating the file in Sublime 4,
+        # after adding the following in the right field at Preferences > Settings:
+        #
+        #   {
+        #    "default_line_ending": "unix"
+        #   }
+        _remove_carriage_returns "$file"
+
+        # Make executable (if applicable)
+        if [[ "$make_executable" == "true" ]]; then
+            chmod +x "$file"
+        fi
+    # If not, return error
+    else
+        echo "File not found: $file."
+        exit 1
+    fi
+}
+
+_remove_carriage_returns() {
+    local file="$1"
+    if grep -q $'\r' "$file"; then
+        tr -d '\r' <"$file" >file.new && mv file.new "$file"
+    fi
+}
+
+
+# 1. SCRIPT CODE
+# 1. Handle files
+source "$LIB_PATH$LIB_DIR$commonfile"
+ABTABNAME_="$ABTABNAME"
+example1_="$example1"
+example2_="$example2"
+GITHUB_USER_="$GITHUB_USER"
+GITHUB_URL_="$GITHUB_URL"
+DATA_DIR_="$DATA_DIR"
+EXAMPLES_DIR_="$EXAMPLES_DIR"
+MODELS_DIR_="$MODELS_DIR"
+SCRIPTS_DIR_="$SCRIPTS_DIR"
+TEMPLATES_DIR_="$TEMPLATES_DIR"
+configfile_="$configfile"
+installfile_="$installfile"
+templatefile_="$templatefile"
+versionfile_="$versionfile"
+
+# 2. Update
+# TODOOOOOOOOOOOOOOOOOOOOOOO! set != back to ==
+installed_version="$(cat "$LIB_PATH$versionfile_")"
+latest_version=$(
+	curl -fsSL \
+	"https://raw.githubusercontent.com/$GITHUB_USER_/$ABTABNAME_/master/$LIB_DIR$versionfile_"
+)
+if [[ "$installed_version" != "$latest_version" ]]; then
+	echo "Already up to date ($ABTABNAME_ $installed_version)"
+	exit 0
+else
+	echo "Updating to $ABTABNAME_ $latest_version"
+
+	# TODO remove
+	handle_file "$LIB_PATH$configfile_" false
+
+	# 1. Configure paths
+	# All paths are normalised by constructing them from the base paths
+	source "$LIB_PATH$configfile_"
+	ROOT_PATH_="$ROOT_PATH"
+	LIB_PATH_="$LIB_PATH"
+	EXE_PATH_="$EXE_PATH"
+	GETOPT_PATH_="$GETOPT_PATH"
+#	user="$user"
+	TMP_PATH="$LIB_PATH_$TMP_DIR"
+	DATA_PATH_TMP="$TMP_PATH""$DATA_DIR_"
+	EXAMPLES_PATH_TMP="$TMP_PATH""$EXAMPLES_DIR_"
+	TEMPLATES_PATH_TMP="$TMP_PATH""$TEMPLATES_DIR_"
+	DATA_PATH_ROOT="$ROOT_PATH_""$DATA_DIR_"
+	EXAMPLES_PATH_ROOT="$ROOT_PATH_""$EXAMPLES_DIR_"
+	LIB_PATH_ROOT="$ROOT_PATH_""$LIB_DIR"
+	MODELS_PATH_ROOT="$ROOT_PATH_""$MODELS_DIR_"
+	SCRIPTS_PATH_ROOT="$ROOT_PATH_""$SCRIPTS_DIR_"
+	TEMPLATES_PATH_ROOT="$ROOT_PATH_""$TEMPLATES_DIR_"
+	check_pathname ROOT_PATH_
+	check_pathname LIB_PATH_
+	check_pathname EXE_PATH_
+	if [[ -n "$GETOPT_PATH_" ]]; then # if non-empty
+		check_pathname GETOPT_PATH_
+	fi
+	check_pathname TMP_PATH
+	check_pathname DATA_PATH_TMP
+	check_pathname EXAMPLES_PATH_TMP
+	check_pathname TEMPLATES_PATH_TMP
+	check_pathname DATA_PATH_ROOT
+	check_pathname EXAMPLES_PATH_ROOT
+	check_pathname LIB_PATH_ROOT
+	check_pathname MODELS_PATH_ROOT
+	check_pathname SCRIPTS_PATH_ROOT
+	check_pathname TEMPLATES_PATH_ROOT
+
+	# Set full path for files needed in this script
+	configfile_="$LIB_PATH_""$configfile_"
+
+	# 2. Create tmp/
+	if [[ ! -d "$TMP_PATH" ]]; then
+		mkdir -p "$TMP_PATH"
+	fi
+	
+	# 3. Preserve user data (directories and files) from ROOT_PATH_: move to TMP_PATH/
+	# NB User directories are data/, examples/, templates/, and anything the user has added 
+	#    manually. User files are anything the user has added manually. The only non-user 
+	#    directory is models/
+	for item in "$ROOT_PATH_"*; do
+		if [[ "$item" != "${MODELS_PATH_ROOT%/}" ]]; then # without trailing slash 
+			mv "$item" "$TMP_PATH"
+		fi
+	done
+	# Make backups
+	suffix="-pre-$latest_version"
+	# In examples/: rename default example files by adding suffix
+	for item in "$EXAMPLES_PATH_TMP"*; do
+		basename="${item##*/}"
+		name="${basename%.*}"
+		if [[ "$name" == "$example1_" || "$name" == "$example2_" ]]; then
+			ext="${basename##*.}"
+			newname="$name$suffix.$ext"
+			mv "$item" "$EXAMPLES_PATH_TMP""$newname"
+		fi
+	done
+	# In templates/: rename default template file by adding suffix
+	for item in "$TEMPLATES_PATH_TMP"*; do
+		basename="${item##*/}"
+		if [[ "$basename" == "$templatefile_" ]]; then
+			name="${basename%.*}"
+			ext="${basename##*.}"
+			newname="$name$suffix.$ext"
+			mv "$item" "$TEMPLATES_PATH_TMP""$newname"
+		fi
+	done
+
+	# 4. Clear ROOT_PATH_ (now only containing models/) and clone abtab repo into it
+	shopt -s nullglob dotglob
+	rm -rf -- "$ROOT_PATH_"*
+	shopt -u nullglob dotglob
+	git clone "$GITHUB_URL_$ABTABNAME_.git" "${ROOT_PATH_%/}" # without trailing slash
+
+	# 5.  Place configfile back in ROOT_PATH_
+	if [[ -f "$configfile_" ]]; then
+		cp "$configfile_" "$LIB_PATH_ROOT" # empty file is overwritten  
+	fi
+
+	# 6. Reinstall
+	"$SCRIPTS_PATH_ROOT$installfile_"
+
+	# 7. Place user data back in ROOT_PATH
+#	# data/ 
+#	if [[ -d "$DATA_PATH_TMP" ]]; then
+#		mv "$DATA_PATH_TMP" "$ROOT_PATH_"
+#	fi
+	# Files in examples/
+	for item in "$EXAMPLES_PATH_TMP"*; do
+		mv "$item" "$EXAMPLES_PATH_ROOT"
+	done
+	# Files in templates/
+	for item in "$TEMPLATES_PATH_TMP"*; do
+		mv "$item" "$TEMPLATES_PATH_ROOT"
+	done
+	# data/ and any directory/file the user has added manually
+	for item in "$TMP_PATH"*; do
+		mv "$item" "$ROOT_PATH_"
+	done
+
+	# 8. Delete tmp/
+	if [[ ! -d "$TMP_PATH" ]]; then
+		rm -rf $TMP_PATH
+	fi
+
+fi

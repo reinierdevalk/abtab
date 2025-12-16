@@ -2,13 +2,24 @@
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [unreleased]
-- Automatic update of `abtab` using `abtab --update`.
 - Install TensorFlow (1.6.0?) in the virtual environment.
+
+## [0.3.0] - 2025-12-16
+### Added
+- Added `-u`/`--update` option: updates the current `abtab` installation, using the configuration in the existing `config.cfg`.
+### Changed
+- Added `examples/` directory in `ROOT_PATH`, containing the example files. 
+- Example files are no longer copied into the `data/` subdirectories when installing/updating.
+- When updating
+  - The entire `data/` directory, containing user files, is kept as-is.
+  - The pre-update default example files and the default template file are kept (with a name suffix).
+- Updated `README`.
+### Deprecated
+- Manual reinstallation process.
 
 ## [0.2.4] - 2025-12-11
 ### Changed
 - Restructured `abtab` repository. 
-- Adapted `install` script and `abtab` executable accordingly.
 - Updated `README`.
 
 ## [0.2.3] - 2025-11-30

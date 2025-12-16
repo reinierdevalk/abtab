@@ -1,32 +1,27 @@
 #!/usr/bin/env bash
 
-# Script that runs abtab.
+# abtab executable.
 #
 # NB: When editing this file with Sublime, set the line endings to Unix: 
 #     View > Line endings > Unix
 
+
 # 0. GLOBAL VARIABLES
-classpathfile="classpath.sh" # OK for dev case
-configfile="config.cfg" # OK
-commonfile="common.sh" # OK for dev case
-repositoriesfile="repositories.txt"
-versionfile="VERSION" # OK 
-
-PYTHON_DIR_TRANSCRIBER="transcriber/py/"
+# a. Set manually
+# Variables that have the same value across scripts, but cannot be 
+# placed in common.sh because they are needed to call that script
 LIB_DIR="lib/"
-
-# Must be the same as in install
+#SCRIPTS_DIR="scripts/" # exception for this script
+#configfile="config.cfg" # exception for this script
+commonfile="common.sh"
 RP_PLACEHOLDER="_RP_PLACEHOLDER_"
 LP_PLACEHOLDER="_LP_PLACEHOLDER_"
 GP_PLACEHOLDER="_GP_PLACEHOLDER_"
 
-# a. Set manually
-TOOLS_DESC=(
-	"analyser|Analyse" 
-	"converter|Convert" 
-	"tabmapper|Map"
-	"transcriber|Transcribe"
-)
+# Directories
+PYTHON_DIR_TRANSCRIBER="transcriber/py/"
+
+# Other
 # Each row in an OPTS_VALS array contains the following comma-separated elements
 # [0] short opt
 # [1] long opt
@@ -49,9 +44,9 @@ file="-f|--file|*.mei *.tab *.tbp *.tc *.txt *.xml||n/a|file|Process only the gi
 all="-a|--all|t n|tablature non-tablature|t||Process all files in the given format; options|"
 help="-h|--help|||n/a||Display this help message|"
 version="-v|--version|||n/a||Display version information|"
+update="-u|--update|||n/a||Update to latest version|"
 OPTS_WITHOUT_VAL=("-h" "--help" "-v" "--version")
-# Opts that per tool always have their default values and
-# are not shown in --help
+# Opts that per tool always have their default values and are not shown in --help
 OPTS_ALWAYS_DEFAULT=(
 	"converter -u -t -y"
 	"tabmapper -u -a"
@@ -59,6 +54,7 @@ OPTS_ALWAYS_DEFAULT=(
 TOOLBOX_OPTS_VALS=(
 	"$help"
 	"$version"
+	"$update"
 )
 ANALYSER_OPTS_VALS=(
 	"-n|--analysis|VC VR VRO||n/a|analysis|Analysis; options|"
@@ -125,26 +121,19 @@ CONVERTER_ARGS=(
 provided, an editor, additionally facilitating editing and viewing of the source file, is opened"
 	"<destination>|Destination file (optional; must always be provided together with <source>)"
 )
+TOOLS_DESC=(
+	"analyser|Analyse" 
+	"converter|Convert" 
+	"tabmapper|Map"
+	"transcriber|Transcribe"
+)
 
 # b. Set automatically
-# From configfile
-ROOT_PATH_=
-LIB_PATH_=	
-GETOPT_PATH_=
-# From commonfile
-IS_WIN_=
-PYTHON_=
-# Created
-LIB_PATH_LIB= # is the same as LIB_PATH_ in DEV case, where there is a flat code structure (all code in LIB_PATH_; no lib/ dir)
-CLASS_PATH_STR=
-
-TOOLBOX=$(basename "$0")
-DEV=false
-if [[ "$TOOLBOX" == 'abtab-dev' ]]; then
-	TOOLBOX='abtab'
+if [[ "$(basename "$0")" == *-dev ]]; then
 	DEV=true
+else
+	DEV=false
 fi
-
 unset TOOL
 unset OPTS_VALS
 unset OPTS
@@ -196,7 +185,7 @@ _show_help() {
 		local tools=($(_get_column 0 "${TOOLS_DESC[@]}"))
 		local descs=($(_get_column 1 "${TOOLS_DESC[@]}"))
 		echo "Usage:"
-    	echo "  $TOOLBOX [global-options] [tool] [options] <arguments>"
+    	echo "  $TOOLBOX_ [global-options] [tool] [options] <arguments>"
     	echo
     	echo "Global options:"
     	for row in "${TOOLBOX_OPTS_VALS[@]}"; do # str
@@ -213,11 +202,11 @@ _show_help() {
 			printf "%-30s %-20s\n" "  ${tools[i]}" "${descs[i]}"
     	done
     	echo
-    	echo "Use '$TOOLBOX [tool] -h' to see usage and options for each tool"
+    	echo "Use '$TOOLBOX_ [tool] -h' to see usage and options for each tool"
 	else
 		echo "Usage:"
 		if [[ "$TOOL" == "converter" ]]; then
-			echo "  $TOOLBOX $TOOL [options] [<source> <destination>]"
+			echo "  $TOOLBOX_ $TOOL [options] [<source> <destination>]"
 			echo
 			echo "Arguments:"
 			for row in "${ARGS[@]}"; do # str
@@ -228,7 +217,7 @@ _show_help() {
 			done
 			echo
 		else
-			echo "  $TOOLBOX $TOOL [options]"
+			echo "  $TOOLBOX_ $TOOL [options]"
 			echo
 		fi
     	echo "Options:"		
@@ -380,19 +369,27 @@ source_filtered() {
 
 check_first_arg() {
 	# Checks the first argument given to the script, which should be
-	# '-h', '--help', '-v', '--version', or a valid tool.
+	# any of those in TOOLBOX_OPTS_VALS, or a valid tool.
 
-	# No args provided or -h/--help
-	if [[ $# -eq 0 || "$1" == "-h" || "$1" == "--help" ]]; then
+	# No args provided
+	if [[ $# -eq 0 ]]; then
 		_show_help "all"
 	    exit 1
+	# -h/--help
+	elif [[ "$1" == "-h" || "$1" == "--help" ]]; then
+		_show_help "all"
+	    exit 0
 	# -v/--version
 	elif [[ "$1" == "-v" || "$1" == "--version" ]]; then
-	    echo "$TOOLBOX $(cat "${LIB_PATH_}$versionfile")"
+	    echo "$TOOLBOX_ $(cat "$versionfile_")"
+		exit 0
+	# -u/--update
+	elif [[ "$1" == "-u" || "$1" == "--update" ]]; then
+		"$updatefile_"
 		exit 0
 	# Invalid tool
 	elif ! _array_contains "$1" $(_get_column 0 "${TOOLS_DESC[@]}"); then
-		echo "$TOOLBOX: unknown tool -- $1"
+		echo "$TOOLBOX_: unknown tool -- $1"
 		_show_help "all"
 		exit 1
 	else
@@ -582,7 +579,7 @@ populate_opts_and_vals_lists() {
 				if [[ "$1" != "-f" && "$1" != "--file" ]]; then
 					if ! _array_contains "$2" "${vals[@]}"; then
 						# NB same layout as 'unknown option -- <opt>' message given by getopt
-						echo ""$TOOLBOX": unknown value for option "${1##*-}" -- "$2""
+						echo ""$TOOLBOX_": unknown value for option "${1##*-}" -- "$2""
 						_show_help ""
 						exit 1
 					fi
@@ -590,7 +587,7 @@ populate_opts_and_vals_lists() {
 					local extension="*.${2##*.}" # wildcard (*) + extension
 					if ! _array_contains "$extension" "${vals[@]}"; then
 						# NB same layout as 'unknown option -- <opt>' message given by getopt
-						echo ""$TOOLBOX": invalid file type -- "$extension""
+						echo ""$TOOLBOX_": invalid file type -- "$extension""
 						_show_help ""
 						exit 1
 					fi
@@ -690,39 +687,83 @@ _encode_args() {
 
 
 # 2. SCRIPT CODE
-# 1. Set paths; source files
-# Paths (unix-style) are read from config 
+# 1. Handle files
+# NB All files have already been handled in install  
+if "$DEV"; then
+	lib_path=""
+	lib_dir=""
+else
+	lib_path="$LP_PLACEHOLDER"
+	lib_dir="$LIB_DIR"
+fi
+source_filtered "$lib_path""$lib_dir""$commonfile" 
+TOOLBOX_="$ABTABNAME"
+SCRIPTS_DIR_="$SCRIPTS_DIR"
+classpathfile_="$classpathfile"
+configfile_="$configfile"
+repositoriesfile_="$repositoriesfile"
+updatefile_="$updatefile"
+versionfile_="$versionfile"
+IS_WIN_="$IS_WIN"
+PYTHON_="$PYTHON"
+# configfile may be changed by the user, so it must be handled every time abtab is called
+handle_file "$lib_path""$configfile_" false
+
+# 2. Configure paths
+# NB All paths have already been checked in install
 # DEV case: paths set every time this script is called (below);
 # config is in same directory as abtab and can be sourced immediately
+# NB In the DEV case there is a flat directory structure (all code in LIB_PATH_; 
+# no lib/ dir), so LIB_PATH_LIB and LIB_PATH_SCRIPTS are the same as LIB_PATH_  
 if "$DEV"; then
-	source_filtered "$configfile"
+	source_filtered "$configfile_"
 	ROOT_PATH_="$ROOT_PATH" # from config
 	LIB_PATH_="$LIB_PATH" # from config
 	GETOPT_PATH_="$GETOPT_PATH" # from config
 	LIB_PATH_LIB="$LIB_PATH_"
-# Real-world case: paths added once during installation (in install.sh);
+	LIB_PATH_SCRIPTS="$LIB_PATH_"
+# Real-world case: paths added once during installation (in install);
 # config is in LIB_PATH_ and can only be sourced once that is known
 else
 	ROOT_PATH_="$RP_PLACEHOLDER" # from config via install
 	LIB_PATH_="$LP_PLACEHOLDER" # from config via install
 	GETOPT_PATH_="$GETOPT_PATH" # from config via install
 	LIB_PATH_LIB="$LIB_PATH_""$LIB_DIR"
-	source_filtered "$LIB_PATH_""$configfile"
-#	GETOPT_PATH_="$GETOPT_PATH" # from config
+	LIB_PATH_SCRIPTS="$LIB_PATH_""$SCRIPTS_DIR_"
+	source_filtered "$LIB_PATH_""$configfile_"
 fi
-# Source commonfile
-source_filtered "$LIB_PATH_LIB$commonfile"
-IS_WIN_="$IS_WIN"
-PYTHON_="$PYTHON"
+#check_pathname ROOT_PATH_
+#check_pathname LIB_PATH_
+#if [[ -n "$GETOPT_PATH_" ]]; then # if non-empty
+#	check_pathname GETOPT_PATH_
+#fi
+#check_pathname LIB_PATH_LIB
+#check_pathname LIB_PATH_SCRIPTS
 
-# Create class path string
+#source_filtered "$LIB_PATH_LIB$commonfile"
+#TOOLBOX_="$ABTABNAME"
+#classpathfile_="$classpathfile"
+#repositoriesfile_="$repositoriesfile"
+#updatefile_="$updatefile"
+#versionfile_="$versionfile"
+#IS_WIN_="$IS_WIN"
+#PYTHON_="$PYTHON"
+
+# Set full path for files needed in this script
+classpathfile_="$LIB_PATH_LIB$classpathfile_"
+#configfile_="$LIB_PATH_$configfile_"
+repositoriesfile_="$LIB_PATH_$repositoriesfile_"
+updatefile_="$LIB_PATH_SCRIPTS$updatefile_"
+versionfile_="$LIB_PATH_$versionfile_"
+
+# 2. Create class path string
 # NB Instead of creating the class path every time this script is
 # called, it can also be created once, in install.sh. However, the
 # former is more flexible as it enables addition of code to the 
 # class path after installation (and it is very fast anyway (< 0.5s))
-CLASS_PATH_STR=$("$LIB_PATH_LIB$classpathfile" "$LIB_PATH_LIB" "$LIB_PATH_$repositoriesfile" "$IS_WIN_")
+CLASS_PATH_STR=$("$classpathfile_" "$LIB_PATH_LIB" "$repositoriesfile_" "$IS_WIN_")
 
-# 2. Set GETOPT_CMD
+# 3. Set GETOPT_CMD
 if [[ "$IS_WIN_" == "true" ]]; then
 	GETOPT_CMD="getopt" # Cygwin and Linux
 else
@@ -738,24 +779,24 @@ else
 	fi
 fi
 
-# 3. Check first argument provided, which must be -h/--help or a valid tool
+# 4. Check first argument provided, which must be -h/--help or a valid tool
 check_first_arg "$@"
 
-# 4. Set global vars
+# 5. Set global vars
 set_global_vars "$TOOL"
 
-# 5. Parse args
+# 6. Parse args
 # NB $@ is *not* updated inside parse_options() and retains its initial
 #    value (all args passed to the script via the terminal)
 parsed_args=($(parse_options "$@"))
 parsed_args=($(expand_args "${parsed_args[@]}"))
 
-# 6. Populate options_used and values_used with the parsed args
+# 7. Populate options_used and values_used with the parsed args
 options_used=()
 values_used=()
 populate_opts_and_vals_lists "${parsed_args[@]}"
 
-# 7. Call tool
+# 8. Call tool
 # Join array elements into a string with space as delimiter
 opts_java="${OPTS[*]}"
 default_vals_java="${VALS_DEFAULT[*]}"
