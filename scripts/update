@@ -141,12 +141,13 @@ else
 	#    directory is models/
 	for item in "$ROOT_PATH_"*; do
 		if [[ "$item" != "${MODELS_PATH_ROOT%/}" ]]; then # without trailing slash 
-			mv "$item" "$TMP_PATH"
+			rsync -a "$item" "$TMP_PATH" 
+#			mv "$item" "$TMP_PATH"
 		fi
 	done
-	# Make backups
+	# Make backup files
 	suffix="-pre-$latest_version"
-	# In examples/: rename default example files by adding suffix
+	# In examples/: rename default example files by adding suffix; leave any other files untouched
 	# NB If examples/ was deleted from ROOT_PATH_ by the user, it does not exist
 	if [[ -d "$EXAMPLES_PATH_TMP" ]]; then
 		for item in "$EXAMPLES_PATH_TMP"*; do
@@ -159,7 +160,7 @@ else
 			fi
 		done
 	fi
-	# In templates/: rename default template file by adding suffix
+	# In templates/: rename default template file by adding suffix; leave any other files untouched
 	for item in "$TEMPLATES_PATH_TMP"*; do
 		basename="${item##*/}"
 		if [[ "$basename" == "$templatefile_" ]]; then
@@ -176,33 +177,43 @@ else
 	shopt -u nullglob dotglob
 	git clone "$GITHUB_URL_$ABTABNAME_.git" "${ROOT_PATH_%/}" # without trailing slash
 
-	# 5.  Place configfile back in ROOT_PATH_
+	# 5.  Place configfile back in ROOT_PATH_ (needed in install)
 	if [[ -f "$configfile_" ]]; then
 		cp "$configfile_" "$LIB_PATH_ROOT" # empty file is overwritten  
 	fi
 
-	# 6. Reinstall
+	# 6. Place data/ back in ROOT_PATH_ (so that it exist upon install)
+	if [[ -f "$DATA_PATH_TMP" ]]; then
+		rsync -a "$" "$DATA_PATH_TMP" "$ROOT_PATH_"
+	fi
+
+	# 7. Reinstall
 	"$SCRIPTS_PATH_ROOT$installfile_"
 
-	# 7. Place user data back in ROOT_PATH
+	# 8. Place user data back in ROOT_PATH
 #	# data/ 
 #	if [[ -d "$DATA_PATH_TMP" ]]; then
 #		mv "$DATA_PATH_TMP" "$ROOT_PATH_"
 #	fi
-	# Files in examples/
+	# Files in examples/ (now exists in ROOT_DIR_); then delete dir
 	for item in "$EXAMPLES_PATH_TMP"*; do
-		mv "$item" "$EXAMPLES_PATH_ROOT"
+		rsync -a "$item" "$EXAMPLES_PATH_ROOT"
+#		mv "$item" "$EXAMPLES_PATH_ROOT"
 	done
-	# Files in templates/
+	rm -rf "$EXAMPLES_PATH_TMP"
+	# Files in templates/ (now exists in ROOT_DIR_); then delete dir
 	for item in "$TEMPLATES_PATH_TMP"*; do
-		mv "$item" "$TEMPLATES_PATH_ROOT"
+		rsync -a "$item" "$TEMPLATES_PATH_ROOT"
+#		mv "$item" "$TEMPLATES_PATH_ROOT"
 	done
-	# data/ and any directory/file the user has added manually
+	rm -rf "$TEMPLATES_PATH_TMP"
+	# Any remaining directory/file the user has added manually
 	for item in "$TMP_PATH"*; do
-		mv "$item" "$ROOT_PATH_"
+		rsync -a "$item" "$ROOT_PATH_"
+#		mv "$item" "$ROOT_PATH_"
 	done
 
-	# 8. Delete tmp/
+	# 9. Delete tmp/
 	if [[ ! -d "$TMP_PATH" ]]; then
 		rm -rf $TMP_PATH
 	fi
