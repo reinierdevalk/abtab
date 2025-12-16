@@ -141,7 +141,7 @@ else
 	#    directory is models/
 	for item in "$ROOT_PATH_"*; do
 		if [[ "$item" != "${MODELS_PATH_ROOT%/}" ]]; then # without trailing slash 
-			rsync -a "$item" "$TMP_PATH" 
+			cp -a "$item" "$TMP_PATH" && rm -rf "$item" # only delete if copy succeeded
 #			mv "$item" "$TMP_PATH"
 		fi
 	done
@@ -184,7 +184,8 @@ else
 
 	# 6. Place data/ back in ROOT_PATH_ (so that it exist upon install)
 	if [[ -f "$DATA_PATH_TMP" ]]; then
-		rsync -a "$" "$DATA_PATH_TMP" "$ROOT_PATH_"
+		cp -a "$DATA_PATH_TMP" "$ROOT_PATH_" && rm -rf "$DATA_PATH_TMP" # only delete if copy succeeded
+#		rsync -a "$DATA_PATH_TMP" "$ROOT_PATH_"
 	fi
 
 	# 7. Reinstall
@@ -197,19 +198,22 @@ else
 #	fi
 	# Files in examples/ (now exists in ROOT_DIR_); then delete dir
 	for item in "$EXAMPLES_PATH_TMP"*; do
-		rsync -a "$item" "$EXAMPLES_PATH_ROOT"
+		cp -a "$item" "$EXAMPLES_PATH_ROOT" && rm -rf "$item"
+#		rsync -a "$item" "$EXAMPLES_PATH_ROOT"
 #		mv "$item" "$EXAMPLES_PATH_ROOT"
 	done
 	rm -rf "$EXAMPLES_PATH_TMP"
 	# Files in templates/ (now exists in ROOT_DIR_); then delete dir
 	for item in "$TEMPLATES_PATH_TMP"*; do
-		rsync -a "$item" "$TEMPLATES_PATH_ROOT"
+		cp -a "$item" "$TEMPLATES_PATH_ROOT" && rm -rf "$item"
+#		rsync -a "$item" "$TEMPLATES_PATH_ROOT"
 #		mv "$item" "$TEMPLATES_PATH_ROOT"
 	done
 	rm -rf "$TEMPLATES_PATH_TMP"
 	# Any remaining directory/file the user has added manually
 	for item in "$TMP_PATH"*; do
-		rsync -a "$item" "$ROOT_PATH_"
+		cp -a "$item" "$ROOT_PATH_" && rm -rf "$item"
+#		rsync -a "$item" "$ROOT_PATH_"
 #		mv "$item" "$ROOT_PATH_"
 	done
 
