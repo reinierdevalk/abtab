@@ -78,13 +78,12 @@ templatefile_="$templatefile"
 versionfile_="$versionfile"
 
 # 2. Update
-# TODOOOOOOOOOOOOOOOOOOOOOOO! set != back to ==
 installed_version="$(cat "$LIB_PATH$versionfile_")"
 latest_version=$(
 	curl -fsSL \
 	"https://raw.githubusercontent.com/$GITHUB_USER_/$ABTABNAME_/master/$LIB_DIR$versionfile_"
 )
-if [[ "$installed_version" != "$latest_version" ]]; then
+if [[ "$installed_version" == "$latest_version" ]]; then
 	echo "Already up to date ($ABTABNAME_ $installed_version)"
 	exit 0
 else
