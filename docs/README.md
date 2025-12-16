@@ -15,8 +15,7 @@ Native command-line package managers for Windows, such as [Chocolatey](https://c
 ## External software dependencies
 The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to be installed on your system. Before proceeding to [Installing `abtab`](#installing-abtab), complete [Appendix I: Installing external software dependencies](#appendix-i-installing-external-software-dependencies) to make sure that you have the mimimum required version of each of these installed. Once you have completed Appendix I, return here by following the link at the end of it.  
 
->:warning: **Note**
-Project-specific Python packages (such as `music21`) are not installed system-wide, but in a virtual environment; this is covered in [Installing `abtab`](#installing-abtab). 
+>:warning: **Note** Project-specific Python packages (such as `music21`) are not installed system-wide, but in a virtual environment; this is covered in [Installing `abtab`](#installing-abtab). 
 
 # Installing `abtab`
 1. Create, on a path of choice on your computer, a directory called `abtab/`. The path up to and including this directory is referred to as `<root_path>`, and the directory itself is where you will be working from.
@@ -67,8 +66,10 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
    If you encounter execute permission issues when running the script, see [Execute permission issues](#execute-permission-issues).  
     
    The installation script 
-   - Checks whether `lib_path` and `exe_path` exist. If not, creates them; if so, it handles any previously installed version of `abtab`: clears `<lib_path>` and removes any old `abtab` executable from `<exe_path>`. 
-   - Creates, in `<root_path>`, the `data/` directory structure, and moves the example files in the `examples/` directory into the appropriate `data/<tool>/` subdirectories.
+   - Checks whether `lib_path` and `exe_path` exist. If not, creates them; if so, it handles any previously installed version of `abtab`: clears `<lib_path>` and removes any old `abtab` executable from `<exe_path>`.
+   - Sets `<root_path>` and `<lib_path>` in the `abtab` executable. 
+   - Creates, in `<root_path>`, the `examples/` directory.
+   - Creates, in `<root_path>`, the `data/` directory structure.<!--, and moves the example files in the `examples/` directory into the appropriate `data/<tool>/` subdirectories.-->
    - Clones the required repositories from `https://github.com/reinierdevalk/`. These include
        - Code repositories, as listed in `lib/repositories.txt` (before the empty line); these are cloned into `<lib_path>`'s `lib/` directory.
        - Non-code repositories, as listed in `lib/repositories.txt` (after the empty line); these are cloned into `<root_path>`. 
@@ -76,9 +77,10 @@ Project-specific Python packages (such as `music21`) are not installed system-wi
    - Installs `abtab`: moves the executable in `bin/` to `<exe_path>`; moves all files in the `lib/` directory to `<lib_path>` and its `lib/` directory; moves the `docs/` and  `scripts/` directories to `<lib_path>`, and cleans up `<root_path>`.
 
    When the installation process has finished, `<root_path>` contains
-   - The `data/` directory. Contains, for each tool, the directories from which the input files are read (`in/`) and to which the output files are stored (`out/`). Apart from the example files moved into them during the installation process, these directories are empty. NB: the `converter` tool does not have the `in/` and `out/` subdirectories.  
-   - The `models/` directory. Contains the trained machine learning models called by the `transcriber` tool.
-   - The `templates/` directory. Contains a high-level template of an MEI file, whose `<header>` can be adapted at will. 
+   - The `data/` directory. Contains, for each tool, the directories from which the input files are read (`in/`) and to which the output files are stored (`out/`). After initial installation, these directories are empty.<!--Apart from the example files moved into them during the installation process, these directories are empty.--> NB: the `converter` tool does not have the `in/` and `out/` subdirectories.  
+   - The `examples/` directory. Contains default example files that you can use to try out the different tools. You can freely modify the contents of this directory, or even delete it.
+   - The `models/` directory. Contains the trained machine learning models called by the `transcriber` tool. **This directory is read-only; do not modify its contents.**
+   - The `templates/` directory. Contains a high-level template of an MEI file; whose `<header>` can be customised freely. 
 
 <!--
 5. It is recommended to use a virtual environment to isolate project-specific Python package installations from system-wide
@@ -120,6 +122,16 @@ Use the help (`-h` or `--help`) option to get started; among other things, this 
     $ abtab --help 
 
 For examples of how to use the different tools, see [Example usage](#example-usage).
+
+# Updating `abtab`
+Use the update (`-u` or `--update`) option to update `abtab` to the latest available version.
+
+    $ abtab -u 
+    $ abtab --update 
+
+When updating, all user data in `<root_path>` is retained. The `data/` directory and its entire contents are left untouched, and while the default template file for the latest version is added to the `templates/` directory (the file may have changed), the existing pre-update template file is kept with the suffix `-pre-x.y.z` added to its name. If you did not customise the default template file, you can safely delete this backup file. If you did, and you want to keep using your customisation, you must transfer the backup file's contents to the newly added default template file -- accounting for any changes to the latter -- before deleting the backup file. Similarly, the default example files for the latest version are added to the `examples/` directory (the files may have changed), and any existing pre-update example files are kept with the aforementioned suffix added to their names. In case you have added your own files to the `examples/` directory, these are left untouched.
+
+>:warning: **Note** If you have added any other content to `<root_path>` manually, this will also be left untouched.
 
 # Example usage
 You can use the provided example files to experiment with the various tools. 
