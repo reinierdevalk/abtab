@@ -148,15 +148,18 @@ else
 	# Make backups
 	suffix="-pre-$latest_version"
 	# In examples/: rename default example files by adding suffix
-	for item in "$EXAMPLES_PATH_TMP"*; do
-		basename="${item##*/}"
-		name="${basename%.*}"
-		if [[ "$name" == "$example1_" || "$name" == "$example2_" ]]; then
-			ext="${basename##*.}"
-			newname="$name$suffix.$ext"
-			mv "$item" "$EXAMPLES_PATH_TMP""$newname"
-		fi
-	done
+	# NB If examples/ was deleted from ROOT_PATH_ by the user, it does not exist
+	if [[ -d "$EXAMPLES_PATH_TMP" ]]; then
+		for item in "$EXAMPLES_PATH_TMP"*; do
+			basename="${item##*/}"
+			name="${basename%.*}"
+			if [[ "$name" == "$example1_" || "$name" == "$example2_" ]]; then
+				ext="${basename##*.}"
+				newname="$name$suffix.$ext"
+				mv "$item" "$EXAMPLES_PATH_TMP""$newname"
+			fi
+		done
+	fi
 	# In templates/: rename default template file by adding suffix
 	for item in "$TEMPLATES_PATH_TMP"*; do
 		basename="${item##*/}"
