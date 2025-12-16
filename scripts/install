@@ -108,6 +108,8 @@ normalise_path() {
 
 	# Ensure exactly one trailing slash
 	p="${p%/}/"
+
+	echo "$p"
 }
 
 #convert_win_path() {
