@@ -44,7 +44,7 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to 
     
    If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the missing directories will be created by the installation script.
 
-   >:warning: If you prefer to package everything together and locate `lib_path` and `exe_path` on `root_path`, you must **avoid making the `lib/` and `bin/` directories direct children of `<root_path>`** (e.g., `<root_path>/lib/abtab/` or `<root_path>/bin/`), as this causes problems during installation. Instead, use a 'buffer' directory, and place the `lib/` and `bin/` directories inside it (e.g., `<root_path>/user/lib/abtab/` and `<root_path>/user/bin/`).  
+   >:warning: **Note** If you prefer to package everything together and locate `lib_path` and `exe_path` on `root_path`, you must **avoid making the `lib/` and `bin/` directories direct children of `<root_path>`** (e.g., `<root_path>/lib/abtab/` or `<root_path>/bin/`), as this causes problems during installation. Instead, use a 'buffer' directory, and place the `lib/` and `bin/` directories inside it (e.g., `<root_path>/user/lib/abtab/` and `<root_path>/user/bin/`).  
 
    >:warning: **Note for macOS users** If your GNU `getopt` installation path deviates from its typical installation paths (see [GNU `getopt`](#gnu-getopt)), replace the default value of the `GETOPT_PATH` variable with the path that you noted down; **make sure it ends with a `/`**.
 
