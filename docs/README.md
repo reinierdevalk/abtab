@@ -67,7 +67,7 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to 
 
    If you encounter execute permission issues when running the script, see [Execute permission issues](#execute-permission-issues).
 
-   >:warning: **Note for Windows users** If the installation process exits with an error like `Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut` Windows is trying to use a Microsoft Store 'app execution alias' for Python that is misconfigured. To disable this alias, see [Disabling the Microsoft Store Python alias](#disabling_the_microsoft_store_python_alias).
+   >:warning: **Note for Windows users** If the installation process exits with an error like `Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut` Windows is trying to use a Microsoft Store 'app execution alias' for Python that is misconfigured. To disable this alias, see [Disabling the Microsoft Store Python alias](#disabling-the-microsoft-store-python-alias).
 
    The installation script 
    - Checks whether `lib_path` and `exe_path` exist. If not, creates them; if so, it handles any previously installed version of `abtab`: clears `<lib_path>` and removes any old `abtab` executable from `<exe_path>`.
