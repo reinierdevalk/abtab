@@ -44,6 +44,8 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to 
     
    If the recommended `<lib_path>` and `<exe_path>` do not exist on your computer, you can still use them -- the missing directories will be created by the installation script.
 
+   >:warning: If you prefer to package everything together and locate `lib_path` and `exe_path` on `root_path`, you must **avoid making the `lib/` and `bin/` directories direct children of `<root_path>`** (e.g., `<root_path>/lib/abtab/` or `<root_path>/bin/`), as this causes problems during installation. Instead, use a 'buffer' directory, and place the `lib/` and `bin/` directories inside it (e.g., `<root_path>/user/lib/abtab/` and `<root_path>/user/bin/`).  
+
    >:warning: **Note for macOS users** If your GNU `getopt` installation path deviates from its typical installation paths (see [GNU `getopt`](#gnu-getopt)), replace the default value of the `GETOPT_PATH` variable with the path that you noted down; **make sure it ends with a `/`**.
 
    To ensure that `abtab` is available in the CLI, confirm that `<exe_path>` is on the system `PATH` by running 
@@ -63,8 +65,10 @@ The current version of `abtab` requires Bash, GNU `getopt`, Python, and Java to 
     $ ./scripts/install
     ```
 
-   If you encounter execute permission issues when running the script, see [Execute permission issues](#execute-permission-issues).  
-    
+   If you encounter execute permission issues when running the script, see [Execute permission issues](#execute-permission-issues).
+
+   >:warning: **Note for Windows users** If the installation process exits with an error like `Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut` Windows is trying to use a Microsoft Store 'app execution alias' for Python that is misconfigured. To disable this alias, see [Disabling the Microsoft Store Python alias](#disabling_the_microsoft_store_python_alias).
+
    The installation script 
    - Checks whether `lib_path` and `exe_path` exist. If not, creates them; if so, it handles any previously installed version of `abtab`: clears `<lib_path>` and removes any old `abtab` executable from `<exe_path>`.
    - Sets `<root_path>` and `<lib_path>` in the `abtab` executable. 
@@ -232,7 +236,7 @@ To install or update GNU `getopt`, run
 To install or update GNU `getopt`, run the Cygwin `setup` tool.
 
 ### 3. Confirming installation
-Once GNU `getopt` is installed, repeat Step 1. **On Windows**, if the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred; see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option; see [Creating a symlink](#creating-a-symlink)). **On macOS**, it is recommended not to do this: if GNU `getopt` is made the default `getopt` by adding it to the system `PATH`, scripts that depend on BSD `getopt` may not work anymore on your machine. `abtab` has a built-in mechanism that calls the `getopt` variant based on the operating system that it detects, and that ensures that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt` by using the extended command mentioned in Step 1.
+Once GNU `getopt` is installed, repeat Step 1. **On Windows**, if the output does not show the version you just installed, you must add the installation path to the system `PATH` (preferred; see [Adding an installation path to the system `PATH`](#adding-an-installation-path-to-the-system-PATH)) or create a symlink to the executable (alternative option; see [Creating a symlink](#creating-a-symlink)). **On macOS**, it is recommended not to do this: if GNU `getopt` is made the default `getopt` by adding it to the system `PATH`, scripts that depend on BSD `getopt` may not work anymore on your computer. `abtab` has a built-in mechanism that calls the `getopt` variant based on the operating system that it detects, and that ensures that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt` by using the extended command mentioned in Step 1.
 
 ## Python
 ### 1. Verifying installation
@@ -246,7 +250,7 @@ You should see output similar to
 
 If the output shows a version that is too old, or an error like `bash: python3: command not found`, indicating that Python is not installed, proceed to Steps 2 and 3. If you are on Windows, first read the note below.
 
->:warning: **Note for Windows users** If the command `python3 --version` returns a `command not found error`, try running `python --version` instead. If you see the expected output (`Python3.x.y`), Python3 has been installed, but no symlink to it has been created. You can either just use `python` (and not `python3`) in your commands, or create a symlink. To create the symlink, run
+>:warning: **Note for Windows users** If the command `python3 --version` returns a `command not found` error, try running `python --version` instead. If you see the expected output (`Python3.x.y`), Python3 has been installed, but no symlink to it has been created. You can either just use `python` (and not `python3`) in your commands, or create a symlink. To create the symlink, run
 
     $ ln -s $(which python) /usr/bin/python3
 
@@ -375,7 +379,12 @@ Check if the path has been added to the system `PATH`.
 
     $ echo $PATH
 
->:warning: **Note for Windows users** On Windows, the installation paths that are on the system `PATH` must be in the Unix-style format that the CLI understands. Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.
+>:warning: **Note for Windows users** On Windows, the installation paths added manually in shell startup files such as `.bash_profile` must be written in the Unix-style format that the CLI understands. <!--Cygwin, for example, uses the prefix `/cygdrive/c/` to replace the `C:/` in the Windows path -- meaning that every `C:/...` path becomes `/cygdrive/c/...`.--> In Cygwin, for example, the Windows drive `C:` is available under `/cygdrive/c/`, meaning that a Windows path like `C:/...` must be written as `/cygdrive/c/...`. Other CLIs may use a different prefix.
+
+## Disabling the Microsoft Store Python alias 
+To disable the Microsoft Store 'app execution alias' for Python, open **Settings**, go to **Apps** > **Advanced app settings** > **App execution aliases**, and turn off `python.exe` and `python3.exe`. After disabling the aliases, close and reopen the CLI terminal, so that the changes take effect.
+
+For more information, see the [Windows documentation](https://learn.microsoft.com/en-us/windows/python/faqs#why-does-running-python-exe-open-the-microsoft-store-).
 
 ## Creating a symlink
 As an alternative to adding an installation path to the system `PATH`, to ensure that a software application is available system-wide in the CLI, you can create a symbolic link (symlink) to its executable. To do so, identify the installation path of the executable (`<installation_path>`), as well as a path that is already on the system $PATH (`<PATH_path>`), and run
@@ -486,7 +495,7 @@ If this returns `/usr/local/opt/gnu-getopt/bin/getopt` or `/opt/homebrew/opt/gnu
 
 ### 4. Adding the installation path to the system `PATH`
 #### macOS
-macOS comes with its own default version of `getopt`, BSD `getopt`. If GNU `getopt` is made the default `getopt` by adding it to the `PATH`, scripts that rely on BSD `getopt` may not work anymore on your machine. It is therefore recommended not to do this.
+macOS comes with its own default version of `getopt`, BSD `getopt`. If GNU `getopt` is made the default `getopt` by adding it to the `PATH`, scripts that rely on BSD `getopt` may not work anymore on your computer. It is therefore recommended not to do this.
 
 Instead, `abtab` has a built-in check that selects the `getopt` version based on the operating system that it detects -- ensuring that on macOS, the default BSD `getopt` is bypassed in favour of GNU `getopt`.
 

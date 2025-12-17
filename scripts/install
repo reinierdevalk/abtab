@@ -480,17 +480,22 @@ deactivate
 echo "... installing $ABTABNAME_ ..."
 # Move files and dirs from ROOT_PATH_
 # a. To EXE_PATH_
-mv "$abtabfile_" "$EXE_PATH_"
+cp "$abtabfile_" "$EXE_PATH_" && rm -rf "$abtabfile_"
+#mv "$abtabfile_" "$EXE_PATH_"
 # b. To LIB_PATH_
 for item in "$LIB_PATH_ROOT"*; do 
 	if [[ "$item" == *".sh" ]]; then
-		mv "$item" "$LIB_PATH_LIB"
+		cp "$item" "$LIB_PATH_LIB" && rm -rf "$item"
+#		mv "$item" "$LIB_PATH_LIB"
 	else
-		mv "$item" "$LIB_PATH_"
+		cp "$item" "$LIB_PATH_" && rm -rf "$item"
+#		mv "$item" "$LIB_PATH_"
 	fi
 done
-mv "$SCRIPTS_PATH_ROOT" "$LIB_PATH_"
-mv "$DOCS_PATH_ROOT" "$LIB_PATH_"
+cp -a "$SCRIPTS_PATH_ROOT" "$LIB_PATH_" && rm -rf "$SCRIPTS_PATH_ROOT"
+#mv "$SCRIPTS_PATH_ROOT" "$LIB_PATH_"
+cp -a "$DOCS_PATH_ROOT" "$LIB_PATH_" && rm -rf "$DOCS_PATH_ROOT"
+#mv "$DOCS_PATH_ROOT" "$LIB_PATH_"
 # Clean up
 rm -rf "$GIT_PATH_ROOT"
 rm -rf "$BIN_PATH_ROOT" # now empty

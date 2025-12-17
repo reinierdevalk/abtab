@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file. The format 
 ## [unreleased]
 - Install TensorFlow (1.6.0?) in the virtual environment.
 
+## [0.3.1] - 2025-12-17
+### Added
+- Added to README
+  - Warning about using a buffer directory for `lib/abtab/` and `bin/` when packaging everything together in `ROOT_PATH`.
+  - `Disabling the Microsoft Store Python alias` section, and reference to it in `Installing abtab`. 
+### Fixed
+- `Permission denied` errors when moving directories/files during installing.
+
 ## [0.3.0] - 2025-12-16
 ### Added
 - Added `-u`/`--update` option: updates the current `abtab` installation, using the configuration in the existing `config.cfg`.

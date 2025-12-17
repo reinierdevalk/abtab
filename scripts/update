@@ -141,7 +141,7 @@ else
 	#    directory is models/
 	for item in "$ROOT_PATH_"*; do
 		if [[ "$item" != "${MODELS_PATH_ROOT%/}" ]]; then # without trailing slash 
-			cp -a "$item" "$TMP_PATH" && rm -rf "$item" # only delete if copy succeeded
+			cp -a "$item" "$TMP_PATH" && rm -rf "$item"
 #			mv "$item" "$TMP_PATH"
 		fi
 	done
@@ -183,8 +183,8 @@ else
 	fi
 
 	# 6. Place data/ back in ROOT_PATH_ (so that it exist upon install)
-	if [[ -f "$DATA_PATH_TMP" ]]; then
-		cp -a "$DATA_PATH_TMP" "$ROOT_PATH_" && rm -rf "$DATA_PATH_TMP" # only delete if copy succeeded
+	if [[ -d "$DATA_PATH_TMP" ]]; then
+		cp -a "$DATA_PATH_TMP" "$ROOT_PATH_" && rm -rf "$DATA_PATH_TMP"
 #		rsync -a "$DATA_PATH_TMP" "$ROOT_PATH_"
 	fi
 
@@ -198,14 +198,14 @@ else
 #	fi
 	# Files in examples/ (now exists in ROOT_DIR_); then delete dir
 	for item in "$EXAMPLES_PATH_TMP"*; do
-		cp -a "$item" "$EXAMPLES_PATH_ROOT" && rm -rf "$item"
+		cp "$item" "$EXAMPLES_PATH_ROOT" && rm -rf "$item"
 #		rsync -a "$item" "$EXAMPLES_PATH_ROOT"
 #		mv "$item" "$EXAMPLES_PATH_ROOT"
 	done
 	rm -rf "$EXAMPLES_PATH_TMP"
 	# Files in templates/ (now exists in ROOT_DIR_); then delete dir
 	for item in "$TEMPLATES_PATH_TMP"*; do
-		cp -a "$item" "$TEMPLATES_PATH_ROOT" && rm -rf "$item"
+		cp "$item" "$TEMPLATES_PATH_ROOT" && rm -rf "$item"
 #		rsync -a "$item" "$TEMPLATES_PATH_ROOT"
 #		mv "$item" "$TEMPLATES_PATH_ROOT"
 	done
