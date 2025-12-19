@@ -164,11 +164,13 @@ else
 	#     non-user directory is models/
 	# NB2 Not moved because they are now (possibly) obsolete are models/, and, if packaged, 
 	#     the wrapper folder containing lib/abtab/ and bin/
+	shopt -s nullglob dotglob
 	for item in "$ROOT_PATH_"*; do
 		[[ "$packaged" == "true" && "$item" == "$ROOT_PATH_""${wrapper_dir%/}" ]] && continue # without trailing slash
 		[[ "$item" == "${MODELS_PATH_ROOT%/}" ]] && continue # without trailing slash
 		cp -a "$item" "$TMP_PATH" && rm -rf "$item"
 	done
+	shopt -u nullglob dotglob
 	# Preserve configfile
 	cp "$configfile_" "$configfile_tmp"
 	# Make backup files
@@ -176,6 +178,7 @@ else
 	# In examples/: rename default example files by adding suffix; leave any other files untouched
 	# NB If examples/ was deleted from ROOT_PATH_ by the user, it does not exist
 	if [[ -d "$EXAMPLES_PATH_TMP" ]]; then
+		shopt -s nullglob dotglob
 		for item in "$EXAMPLES_PATH_TMP"*; do
 			basename="${item##*/}"
 			name="${basename%.*}"
@@ -185,8 +188,10 @@ else
 				mv "$item" "$EXAMPLES_PATH_TMP""$newname"
 			fi
 		done
+		shopt -u nullglob dotglob
 	fi
 	# In templates/: rename default template file by adding suffix; leave any other files untouched
+	shopt -s nullglob dotglob
 	for item in "$TEMPLATES_PATH_TMP"*; do
 		basename="${item##*/}"
 		if [[ "$basename" == "$templatefile_" ]]; then
@@ -196,6 +201,7 @@ else
 			mv "$item" "$TEMPLATES_PATH_TMP""$newname"
 		fi
 	done
+	shopt -u nullglob dotglob
 
 	# 4. Clear ROOT_PATH_ (now only containing models/ and, if packaged, wrapper dir)
 	# and clone abtab repo into it
@@ -227,21 +233,26 @@ else
 #		mv "$DATA_PATH_TMP" "$ROOT_PATH_"
 #	fi
 	# Files in examples/ (now exists in ROOT_DIR_); then delete dir
+	shopt -s nullglob dotglob
 	for item in "$EXAMPLES_PATH_TMP"*; do
 		cp "$item" "$EXAMPLES_PATH_ROOT" && rm -rf "$item"
 #		rsync -a "$item" "$EXAMPLES_PATH_ROOT"
 #		mv "$item" "$EXAMPLES_PATH_ROOT"
 	done
+	shopt -u nullglob dotglob
 	rm -rf "$EXAMPLES_PATH_TMP"
 	# Files in templates/ (now exists in ROOT_DIR_); then delete dir
+	shopt -s nullglob dotglob
 	for item in "$TEMPLATES_PATH_TMP"*; do
 		cp "$item" "$TEMPLATES_PATH_ROOT" && rm -rf "$item"
 #		rsync -a "$item" "$TEMPLATES_PATH_ROOT"
 #		mv "$item" "$TEMPLATES_PATH_ROOT"
 	done
+	shopt -u nullglob dotglob
 	rm -rf "$TEMPLATES_PATH_TMP"
 	# Any remaining directory/file the user has added manually
 
+	shopt -s nullglob dotglob
 	for item in "$TMP_PATH"*; do
 #		# If packaged: do not move back dir with old code
 #		if [[ "$packaged" == "true" ]]; then
@@ -253,6 +264,7 @@ else
 #		rsync -a "$item" "$ROOT_PATH_"
 #		mv "$item" "$ROOT_PATH_"
 	done
+	shopt -u nullglob dotglob
 
 	# 9. Delete tmp/
 	if [[ -d "$TMP_PATH" ]]; then
