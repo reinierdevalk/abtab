@@ -19,44 +19,44 @@ SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)""/" # the absolute pa
 LIB_PATH="$(cd "$SCRIPT_PATH/.." && pwd)""/" # the path holding scripts/
 
 
-handle_file() {
-    local file="$1"
-    local make_executable="$2"
-    # If the file exists, handle it
-    if [[ -f "$file" ]]; then
-        # Remove any carriage returns
-        # All line endings in a script called by bash must be Unix style ('\n') 
-        # and not Windows style ('\r\n'), which cause the following error:
-        # 
-        #   ./<my_script>.sh: line <n>: $'\r': command not found
-        #    
-        # Any carriage returns ('\r') must therefore be removed.
-        #
-        # NB: Carriage returns can be avoided by creating the file in Sublime 4,
-        # after adding the following in the right field at Preferences > Settings:
-        #
-        #   {
-        #    "default_line_ending": "unix"
-        #   }
-        _remove_carriage_returns "$file"
+#handle_file() {
+#    local file="$1"
+#    local make_executable="$2"
+#    # If the file exists, handle it
+#    if [[ -f "$file" ]]; then
+#        # Remove any carriage returns
+#        # All line endings in a script called by bash must be Unix style ('\n') 
+#        # and not Windows style ('\r\n'), which cause the following error:
+#        # 
+#        #   ./<my_script>.sh: line <n>: $'\r': command not found
+#        #    
+#        # Any carriage returns ('\r') must therefore be removed.
+#        #
+#        # NB: Carriage returns can be avoided by creating the file in Sublime 4,
+#        # after adding the following in the right field at Preferences > Settings:
+#        #
+#        #   {
+#        #    "default_line_ending": "unix"
+#        #   }
+#        _remove_carriage_returns "$file"
+#
+#        # Make executable (if applicable)
+#        if [[ "$make_executable" == "true" ]]; then
+#            chmod +x "$file"
+#        fi
+#    # If not, return error
+#    else
+#        echo "File not found: $file."
+#        exit 1
+#    fi
+#}
 
-        # Make executable (if applicable)
-        if [[ "$make_executable" == "true" ]]; then
-            chmod +x "$file"
-        fi
-    # If not, return error
-    else
-        echo "File not found: $file."
-        exit 1
-    fi
-}
-
-_remove_carriage_returns() {
-    local file="$1"
-    if grep -q $'\r' "$file"; then
-        tr -d '\r' <"$file" >file.new && mv file.new "$file"
-    fi
-}
+#_remove_carriage_returns() {
+#    local file="$1"
+#    if grep -q $'\r' "$file"; then
+#        tr -d '\r' <"$file" >file.new && mv file.new "$file"
+#    fi
+#}
 
 
 # 1. SCRIPT CODE
@@ -89,8 +89,8 @@ if [[ "$installed_version" == "$latest_version" ]]; then
 else
 	echo "Updating to $ABTABNAME_ $latest_version"
 
-	# TODO remove
-	handle_file "$LIB_PATH$configfile_" false
+#	# TODO remove
+#	handle_file "$LIB_PATH$configfile_" false
 
 	# 1. Configure paths
 	# All paths are normalised by constructing them from the base paths
@@ -99,10 +99,12 @@ else
 	LIB_PATH_="$LIB_PATH"
 	EXE_PATH_="$EXE_PATH"
 	GETOPT_PATH_="$GETOPT_PATH"
-#	user="$user"
-	TMP_PATH="$LIB_PATH_$TMP_DIR"
+	TMP_PATH="$(get_parent "$ROOT_PATH_")""$TMP_DIR"
+#	TMP_PATH="$LIB_PATH_$TMP_DIR"
 	DATA_PATH_TMP="$TMP_PATH""$DATA_DIR_"
 	EXAMPLES_PATH_TMP="$TMP_PATH""$EXAMPLES_DIR_"
+#	LIB_PATH_TEMP="" # if packaged
+	MODELS_PATH_TMP="$TMP_PATH""$MODELS_DIR_"
 	TEMPLATES_PATH_TMP="$TMP_PATH""$TEMPLATES_DIR_"
 	DATA_PATH_ROOT="$ROOT_PATH_""$DATA_DIR_"
 	EXAMPLES_PATH_ROOT="$ROOT_PATH_""$EXAMPLES_DIR_"
@@ -119,6 +121,7 @@ else
 	check_pathname TMP_PATH
 	check_pathname DATA_PATH_TMP
 	check_pathname EXAMPLES_PATH_TMP
+	check_pathname MODELS_PATH_TMP
 	check_pathname TEMPLATES_PATH_TMP
 	check_pathname DATA_PATH_ROOT
 	check_pathname EXAMPLES_PATH_ROOT
@@ -127,24 +130,47 @@ else
 	check_pathname SCRIPTS_PATH_ROOT
 	check_pathname TEMPLATES_PATH_ROOT
 
+	# Check if packaged (LIB_PATH_ and EXE_PATH_ inside ROOT_PATH_); retrieve subpaths
+	packaged=false
+	if [[ "$LIB_PATH_" == "$ROOT_PATH_"* ]]; then # && "$EXE_PATH_" == "$ROOT_PATH_"* ]]; then
+		packaged=true
+		lib_subpath="${LIB_PATH_#"$ROOT_PATH_"}"
+		wrapper_dir="${lib_subpath%%/*}/"
+#		LIB_PATH_TEMP="$TMP_PATH""$lib_subpath"
+#		check_pathname LIB_PATH_TEMP
+#		exe_subpath="${EXE_PATH_#"$ROOT_PATH_"}"
+	fi
+
 	# Set full path for files needed in this script
 	configfile_="$LIB_PATH_""$configfile_"
+	configfile_tmp="$TMP_PATH""$(basename "$configfile_")"
+
+#	# If packaged, configfile_ will be moved from ROOT_PATH_/lib_subpath/ to LIB_PATH_TMP;
+#	# else, it stays in LIB_PATH
+#	if [[ "$packaged" == "true" ]]; then
+#		configfile_="$LIB_PATH_TEMP""$configfile_"
+#	else	
+#		configfile_="$LIB_PATH_""$configfile_"
+#	fi
 
 	# 2. Create tmp/
 	if [[ ! -d "$TMP_PATH" ]]; then
 		mkdir -p "$TMP_PATH"
 	fi
 	
-	# 3. Preserve user data (directories and files) from ROOT_PATH_: move to TMP_PATH/
-	# NB User directories are data/, examples/, templates/, and anything the user has added 
-	#    manually. User files are anything the user has added manually. The only non-user 
-	#    directory is models/
+	# 3. Preserve user data (directories and files) from ROOT_PATH_: move to TMP_PATH
+	# NB1 User directories are data/, examples/, templates/, and anything the user has 
+	#     added manually. User files are anything the user has added manually. The only  
+	#     non-user directory is models/
+	# NB2 Not moved because they are now (possibly) obsolete are models/, and, if packaged, 
+	#     the wrapper folder containing lib/abtab/ and bin/
 	for item in "$ROOT_PATH_"*; do
-		if [[ "$item" != "${MODELS_PATH_ROOT%/}" ]]; then # without trailing slash 
-			cp -a "$item" "$TMP_PATH" && rm -rf "$item"
-#			mv "$item" "$TMP_PATH"
-		fi
+		[[ "$packaged" == "true" && "$item" == "$ROOT_PATH_""${wrapper_dir%/}" ]] && continue # without trailing slash
+		[[ "$item" == "${MODELS_PATH_ROOT%/}" ]] && continue # without trailing slash
+		cp -a "$item" "$TMP_PATH" && rm -rf "$item"
 	done
+	# Preserve configfile
+	cp "$configfile_" "$configfile_tmp"
 	# Make backup files
 	suffix="-pre-$latest_version"
 	# In examples/: rename default example files by adding suffix; leave any other files untouched
@@ -171,24 +197,28 @@ else
 		fi
 	done
 
-	# 4. Clear ROOT_PATH_ (now only containing models/) and clone abtab repo into it
+	# 4. Clear ROOT_PATH_ (now only containing models/ and, if packaged, wrapper dir)
+	# and clone abtab repo into it
 	shopt -s nullglob dotglob
 	rm -rf -- "$ROOT_PATH_"*
 	shopt -u nullglob dotglob
 	git clone "$GITHUB_URL_$ABTABNAME_.git" "${ROOT_PATH_%/}" # without trailing slash
 
-	# 5.  Place configfile back in ROOT_PATH_ (needed in install)
-	if [[ -f "$configfile_" ]]; then
-		cp "$configfile_" "$LIB_PATH_ROOT" # empty file is overwritten  
-	fi
-
-	# 6. Place data/ back in ROOT_PATH_ (so that it exist upon install)
+	# 5. Place data/ back in ROOT_PATH_ (so that it exist upon install); then delete dir
 	if [[ -d "$DATA_PATH_TMP" ]]; then
 		cp -a "$DATA_PATH_TMP" "$ROOT_PATH_" && rm -rf "$DATA_PATH_TMP"
 #		rsync -a "$DATA_PATH_TMP" "$ROOT_PATH_"
 	fi
 
+	#### if packaged: at install no problem with lib_path/bin_path: will just be recreated
+
+	# 6.  Place configfile back in ROOT_PATH_ (needed in install)
+	if [[ -f "$configfile_tmp" ]]; then
+		cp "$configfile_tmp" "$LIB_PATH_ROOT" && rm -rf "$configfile_tmp" # empty file is overwritten  
+	fi
+
 	# 7. Reinstall
+	# NB If packaged, LIB_PATH and EXE_PATH will be recreated
 	"$SCRIPTS_PATH_ROOT$installfile_"
 
 	# 8. Place user data back in ROOT_PATH
@@ -211,7 +241,14 @@ else
 	done
 	rm -rf "$TEMPLATES_PATH_TMP"
 	# Any remaining directory/file the user has added manually
+
 	for item in "$TMP_PATH"*; do
+#		# If packaged: do not move back dir with old code
+#		if [[ "$packaged" == "true" ]]; then
+#			[[ "$item" == "$TMP_PATH""${wrapper_dir%/}" ]] && continue # without trailing slash
+#		fi
+#		# Do not move back models/ 
+#		[[ "$item" == "$MODELS_PATH_TMP" ]] && continue # without trailing slash
 		cp -a "$item" "$ROOT_PATH_" && rm -rf "$item"
 #		rsync -a "$item" "$ROOT_PATH_"
 #		mv "$item" "$ROOT_PATH_"

@@ -297,7 +297,7 @@ LIB_PATH_ROOT="$ROOT_PATH_""$LIB_DIR"
 SCRIPTS_PATH_ROOT="$ROOT_PATH_""$SCRIPTS_DIR_"
 # c. Paths on LIB_PATH_
 LIB_PATH_LIB="$LIB_PATH_""$LIB_DIR"
-LIB_PATH_TMP="$LIB_PATH_""$TMP_DIR_"
+#LIB_PATH_TMP="$LIB_PATH_""$TMP_DIR_"
 VENV_PATH_LIB="$LIB_PATH_LIB""$VENV_DIR"
 check_pathname ROOT_PATH_
 check_pathname LIB_PATH_
@@ -313,7 +313,7 @@ check_pathname GIT_PATH_ROOT
 check_pathname LIB_PATH_ROOT
 check_pathname SCRIPTS_PATH_ROOT
 check_pathname LIB_PATH_LIB
-check_pathname LIB_PATH_TMP
+#check_pathname LIB_PATH_TMP
 check_pathname VENV_PATH_LIB
 # Check that ROOT_PATH_ is the same as the current working directory (REPO_PATH)
 repo_path="$(normalise_path "$REPO_PATH")"
@@ -366,12 +366,12 @@ for pathvar in LIB_PATH_ EXE_PATH_; do
 		if [[ "$path" == "$LIB_PATH_" ]]; then
 			shopt -s nullglob dotglob # ensure that filename expansion (*) includes dotfiles; avoid literal globs
 			echo "    ... clearing $pathvar $path ..."
-			# In the update case, do not delete TMP_DIR
-			for item in "$path"*; do
-				[[ "$item/" == "$LIB_PATH_TMP" ]] && continue # add slash after item because glob returns dir names w/o trailing slash
-				rm -rf "$item"
-			done
-#			rm -rf "$path"*
+#			# In the update case, do not delete TMP_DIR
+#			for item in "$path"*; do
+#				[[ "$item/" == "$LIB_PATH_TMP" ]] && continue # add slash after item because glob returns dir names w/o trailing slash
+#				rm -rf "$item"
+#			done
+			rm -rf "$path"*
 			shopt -u nullglob dotglob # unset nullglob and dotglob
 		# EXE_PATH_ case: remove executable from EXE_PATH_
 		else

@@ -8,7 +8,7 @@ EXAMPLES_DIR="examples/"
 MODELS_DIR="models/"
 SCRIPTS_DIR="scripts/"
 TEMPLATES_DIR="templates/"
-TMP_DIR="tmp/"
+TMP_DIR="abtab-tmp/"
 abtabfile="$ABTABNAME"
 classpathfile="classpath.sh"
 configfile="config.cfg"
@@ -90,4 +90,21 @@ check_pathname() {
     if [[ "${ref: -1}" != "/" ]]; then
         ref="${ref}/"
     fi
+}
+
+get_parent() {
+    # Returns the given directory's parent directory, 
+    # including trailing slash.
+    local p="$1"
+    local parent
+
+    p="${p%/}" # strip trailing slash
+    parent="${p%/*}/" # strip last path dir, add trailing slash back
+
+    echo "$parent"
+}
+
+get_last_dir() {
+    local p="${1%/}" # trim trailing slash
+    echo "${p##*/}"
 }

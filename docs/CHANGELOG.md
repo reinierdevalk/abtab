@@ -4,10 +4,14 @@ All notable changes to this project will be documented in this file. The format 
 ## [unreleased]
 - Install TensorFlow (1.6.0?) in the virtual environment.
 
+## [0.3.2] - 2025-12-19
+### Fixed 
+- Possibility to package everything together in `ROOT_PATH`.
+
 ## [0.3.1] - 2025-12-17
 ### Added
 - Added to README
-  - Warning about using a buffer directory for `lib/abtab/` and `bin/` when packaging everything together in `ROOT_PATH`.
+  - Warning about using a wrapper directory for `lib/abtab/` and `bin/` when packaging everything together in `ROOT_PATH`.
   - `Disabling the Microsoft Store Python alias` section, and reference to it in `Installing abtab`. 
 ### Fixed
 - `Permission denied` errors when moving directories/files during installing.
