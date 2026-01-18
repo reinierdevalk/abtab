@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file. The format 
 ## [unreleased]
 - Install TensorFlow (1.6.0?) in the virtual environment.
 
+## [0.4.0] - 2026-01-18
+### Added
+- Added to `<meiHead>` > `<encodingDesc>` > `<appInfo>` > `<application>`: child element `<p>`, containing the output file name. 
+
 ## [0.3.2] - 2025-12-19
 ### Fixed 
-- Possibility to package everything together in `ROOT_PATH`.
+- Now possible to package everything together in `ROOT_PATH` (i.e., also `lib/abtab/` and `bin/`).
 
 ## [0.3.1] - 2025-12-17
 ### Added
