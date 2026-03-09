@@ -5,9 +5,13 @@ All notable changes to this project will be documented in this file. The format 
 - Implement improved diplomatic transcriber that uses `notationtype=tab.staff-like`.
 - Install TensorFlow (1.6.0?) in the virtual environment.
 
+## [0.5.1] - 2026-03-10
+### Fixed
+- Fixed naming of functions in `utils/py/utils.py`.
+
 ## [0.5.0] - 2026-02-01
 ### Added
-- Added missing tunings (D and E) to diplomatic `transcriber`. 
+- Added missing tunings (D and E) to diplomatic `transcriber`.
 
 ## [0.4.0] - 2026-01-18
 ### Added
