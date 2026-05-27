@@ -2,8 +2,14 @@
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [unreleased]
-- Implement improved diplomatic transcriber that uses `notationtype=tab.staff-like`.
+- Add models trained on three-voice intabulations.
 - Install TensorFlow (1.6.0?) in the virtual environment.
+
+## [0.6.0] - 2026-05-27
+### Changed
+- Complete overhaul of `abtab transcriber -l d`, which now uses `notationtype=tab.staff-like`, and can handle all markup.
+- Switched from `ElementTree` to `lxml` in `diplomat.py` and `mei2tbp.py`.
+- Refactored helper files in `utils/py/` and 
 
 ## [0.5.1] - 2026-03-10
 ### Fixed
