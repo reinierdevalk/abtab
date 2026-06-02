@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file. The format 
 - Add models trained on three-voice intabulations.
 - Install TensorFlow (1.6.0?) in the virtual environment.
 
+## [0.6.1] - 2026-06-02
+### Fixed
+- Enabled any element as child of `<choice>` branch.
+- Fix bug in conversion `.mei` to `.tbp`: if the time signature given in the MEI does not correspond to the total duration of the piece, the calculated value of the `.tbp`'s `METER_INFO` is replaced by an empty string. 
+
 ## [0.6.0] - 2026-05-27
 ### Changed
 - Complete overhaul of `abtab transcriber -l d`, which now uses `notationtype=tab.staff-like`, and can handle all markup.
