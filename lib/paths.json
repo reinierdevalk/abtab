@@ -1,4 +1,6 @@
-// This file itself must be on the CODE_PATH
+// This file itself must be on the CODE_PATH.
+// For alternative paths in development mode, see 
+// <CODE_PATH>/utils/src/interfaces/CLInterface.java 
 {
     "paths": {
         // Paths set from config.cfg
@@ -7,8 +9,8 @@
 
         // Paths on ROOT_PATH
         // model-dev case 
-        "ENCODINGS_PATH":               "data/annotated/voice_separation/encodings/", // (Dataset)
-        "MIDI_PATH":                    "data/annotated/voice_separation/MIDI/", // (Dataset)
+        "ENCODINGS_PATH":               "data/annotated/{dataset}/encodings/", // (Dataset)
+        "MIDI_PATH":                    "data/annotated/{dataset}/MIDI/", // (Dataset)
         "ENCODINGS_PATH_JOSQUINTAB":    "data/annotated/tabmapper/josquin-int/in/tab/", // (tests only)
         "MIDI_PATH_JOSQUINTAB":         "data/annotated/tabmapper/josquin-int/in/MIDI/", // (tests only)
         "DATASETS_PATH":                "datasets/", // (Runner)
@@ -32,6 +34,12 @@
         "ANALYSIS_PYTHON_PATH":         "lib/analysis/py/", // (Analyser)
         "FORMATS_PYTHON_PATH":          "lib/formats/py/", // (TabImport)
         "VENV_PATH":                    "lib/.venv/" // (Editor, Tabmapper, UI)
+    },
+    "directories": {
+        "IN_DIR":						"in/",
+        "OUT_DIR":						"out/",
+        "DATA_DIR":						"data/",
+        "LIB_DIR":						"lib/"
     },
     "files": {
         "MEI2TBP_SCRIPT":               "mei2tbp.py",

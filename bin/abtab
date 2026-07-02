@@ -104,8 +104,9 @@ TRANSCRIBER_OPTS_VALS=(
 	# Other
 	"-c|--custom|dlaute plaute user||n/a|custom|Use customised, pre-defined set of options; options|\
 Overwrites any provided options already in the customised set"
-	"-o|--model|N-bwd-thesis-int-4vv N-fwd-thesis-int-4vv D-bwd-thesis-int-4vv||N-bwd-thesis-int-4vv|model|\
-* Trained model; options|"
+	"-o|--voices|3 4 i||i|voices|* Number of voices; options|If i, calculated from the input file"
+	"-d|--model|N-fwd-all-int N-bwd-all-int D-bwd-thesis-int||N-bwd-all-int|model|\
+* Trained model; options|Further specifications in the models/ directory"
 	"-v|--verbose|y n||n||* Verbose|"
 	# Input
 	"$file"
@@ -231,6 +232,8 @@ _show_help() {
 			local vals_catch_all="${row_array[5]}"
 			local help_text="${row_array[6]}"
 			local add_help_text="${row_array[7]}"
+			# Replace \n with actual newlines
+			add_help_text=$(printf '%b' "$add_help_text")
 
 			# Skip option that can only have its default value
 			skip=false
@@ -332,7 +335,27 @@ _show_help() {
     fi
 }
 
+
 _print_help_cols() {
+	local left_col="$1"
+	local right_col="$2"
+	local max_line_len="$3"
+
+	local first=true
+
+	while IFS= read -r paragraph; do
+		while IFS= read -r line; do
+			if $first; then
+				printf "%-30s %s\n" "$left_col" "$line"
+				first=false
+			else
+				printf "%-30s %s\n" "" "$line"
+			fi
+		done < <(printf "%s\n" "$paragraph" | fold -s -w "$max_line_len")
+	done <<< "$right_col"
+}
+
+_print_help_cols_OLD() {
 	# Prints the left and right column of the help item; breaks the right  
 	# column into multiple lines if its length exceeds the give max length.
 
@@ -831,7 +854,7 @@ elif [ "$TOOL" == "converter" ]; then
 #	java -cp "$CLASS_PATH_STR" tbp.editor.Editor "${encoded_java_args[@]}"
 elif [ "$TOOL" == "tabmapper" ]; then
 	ignore_opts=("")
-	user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false)
+	user_opts_vals_java=$(create_cli_args "options_used[@]" "values_used[@]" "ignore_opts[@]" false) 
 	java_args=("$DEV" "$opts_java" "$default_vals_java" "$user_opts_vals_java")
 	call_java tabmapper.TabMapper "${java_args[@]}"
 #	encoded_java_args_str=$(encode_args "${java_args[@]}")

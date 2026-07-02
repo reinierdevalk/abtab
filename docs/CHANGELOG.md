@@ -2,8 +2,18 @@
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [unreleased]
-- Add models trained on three-voice intabulations.
 - Install TensorFlow (1.6.0?) in the virtual environment.
+
+## [0.7.0] - 2026-07-02
+### Added
+- Two models trained on three-voice intabulations (19 pieces); updated models trained on four-voice intabulations (retrained on 57 pieces).
+- Option to set desired number of voices for `transcriber -l p`; if not specified, it is estimated from the input file (fickle).
+### Changed
+- Option to select model type for `transcriber -l p` now independent of number of voices. Best-performing model (`N-bwd-all-int`) is still default.
+- Added `in/`, `out/`, `lib/`, and `data/` directories to `paths.json` to avoid having to hardcode them repeatedly.
+- Enabled combining of `Dataset`s for easily training user models on more data (not part of toolbox yet).
+### Deprecated
+- Usage of `paths-dev.json` in development mode.
 
 ## [0.6.1] - 2026-06-02
 ### Fixed
@@ -12,7 +22,7 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [0.6.0] - 2026-05-27
 ### Changed
-- Complete overhaul of `abtab transcriber -l d`, which now uses `notationtype=tab.staff-like`, and can handle all markup.
+- Complete overhaul of `transcriber -l d`, which now uses `notationtype=tab.staff-like`, and can handle all markup.
 - Switched from `ElementTree` to `lxml` in `diplomat.py` and `mei2tbp.py`.
 - Refactored helper files in `utils/py/` and 
 
